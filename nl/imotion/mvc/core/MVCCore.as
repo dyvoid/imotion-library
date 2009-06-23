@@ -1,6 +1,5 @@
 ﻿package nl.imotion.mvc.core 
 {
-	import adobe.utils.CustomActions;
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
