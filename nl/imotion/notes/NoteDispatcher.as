@@ -14,7 +14,7 @@ package nl.imotion.notes
 		{
 			if ( !allowInstantiation )
 			{
-				throw new Error("Error: Instantiation failed: Use NoteDispatcher.getInstance() instead of new.");
+				throw new Error( "Instantiation failed: Use NoteDispatcher.getInstance() instead of constructor." );
 			}
 		}
 		

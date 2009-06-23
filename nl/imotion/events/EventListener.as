@@ -4,7 +4,7 @@ package nl.imotion.events
 	
 	
 	
-	public class EventListener
+	internal class EventListener
 	{
 		private var _target				:IEventDispatcher
 		private var _type				:String

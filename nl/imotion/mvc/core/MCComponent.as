@@ -65,7 +65,7 @@ package nl.imotion.mvc.core
 		
 		protected function dispatchNote( note:Note ):void
 		{
-			noteDispatcher.dispatchNote( note );
+			NoteDispatcher.getInstance().dispatchNote( note );
 		}
 		
 		
@@ -84,13 +84,6 @@ package nl.imotion.mvc.core
 		{
 			if ( !_eventManager ) _eventManager = new EventManager();
 			return _eventManager;
-		}
-		
-		
-		
-		private function get noteDispatcher():NoteDispatcher
-		{
-			return NoteDispatcher.getInstance();
 		}
 	}
 }
