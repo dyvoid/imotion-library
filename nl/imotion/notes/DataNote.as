@@ -7,9 +7,9 @@
 	 */
 	public class DataNote extends Note
 	{
-		public var _data:Object;
+		private var _data:Object;
 		
-		public function DataNote( type:String, data:Object ) 
+		public function DataNote( type:String, data:Object = null ) 
 		{
 			super( type );
 			
@@ -18,6 +18,11 @@
 		
 		
 		public function get data():Object { return _data; }
+		
+		public function set data(value:Object):void 
+		{
+			_data = value;
+		}
 		
 	}
 	

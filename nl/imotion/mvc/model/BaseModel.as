@@ -2,6 +2,7 @@ package nl.imotion.mvc.model
 {
 
 	import nl.imotion.mvc.core.MCComponent;
+	import nl.imotion.mvc.core.MVCCore;
 
 	public class BaseModel extends MCComponent implements IModel
 	{
@@ -12,24 +13,19 @@ package nl.imotion.mvc.model
 		{
 			_name = name;
 			
-			modelLocator.register( this );
+			MVCCore.getInstance().registerModel( this );
 		}
 		
 		
 		override public function destroy():void
 		{
-			modelLocator.remove( this );
+			MVCCore.getInstance().removeModel( this );
 			
 			super.destroy();
 		}
 		
 		
 		public function get name():String { return _name; }
-		
-		private function get modelLocator():ModelLocator
-		{
-			return ModelLocator.getInstance();
-		}
 		
 	}
 	

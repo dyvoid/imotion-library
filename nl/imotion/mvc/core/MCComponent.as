@@ -4,10 +4,8 @@ package nl.imotion.mvc.core
 	import flash.events.IEventDispatcher;
 	import nl.imotion.events.EventManager;
 	import nl.imotion.mvc.model.IModel;
-	import nl.imotion.mvc.model.ModelLocator;
 	import nl.imotion.notes.Note;
 	import nl.imotion.notes.NoteDispatcher;
-	import nl.imotion.notes.NoteManager;
 	
 	
 	public class MCComponent implements IDestroyable
@@ -15,7 +13,7 @@ package nl.imotion.mvc.core
 		
 		protected function retrieveModel( name:String ):IModel
 		{
-			return ModelLocator.getInstance().retrieve( name );
+			return MVCCore.getInstance().retrieveModel( name );
 		}
 		
 		
@@ -65,18 +63,6 @@ package nl.imotion.mvc.core
 		}
 		
 		
-		protected function startNoteInterest( type:String, listener:Function ):void
-		{
-			noteManager.registerListener( type, listener );
-		}
-		
-		
-		protected function stopNoteInterest( type:String, listener:Function ):void
-		{
-			noteManager.removeListener( type, listener );
-		}
-		
-		
 		protected function dispatchNote( note:Note ):void
 		{
 			noteDispatcher.dispatchNote( note );
@@ -90,11 +76,6 @@ package nl.imotion.mvc.core
 				_eventManager.removeAllListeners();
 				_eventManager = null;
 			}
-			if ( _noteManager != null )
-			{
-				_noteManager.removeAllListeners();
-				_noteManager = null;
-			}
 		}
 		
 		
@@ -105,12 +86,7 @@ package nl.imotion.mvc.core
 			return _eventManager;
 		}
 		
-		private var _noteManager:NoteManager;
-		private function get noteManager():NoteManager
-		{
-			if ( !_noteManager ) _noteManager = new NoteManager();
-			return _noteManager;
-		}
+		
 		
 		private function get noteDispatcher():NoteDispatcher
 		{

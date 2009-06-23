@@ -4,6 +4,7 @@ package nl.imotion.mvc.controller
 	import nl.imotion.mvc.core.MCComponent;
 	import nl.imotion.mvc.model.IModel;
 	import nl.imotion.mvc.view.IView;
+	import nl.imotion.notes.NoteManager;
 
 	public class BaseController extends MCComponent implements IController
 	{
@@ -12,10 +13,22 @@ package nl.imotion.mvc.controller
 		protected var defaultModel:IModel;
 		
 		
-		public function BaseController( defaultView:IView = null, defaultModel:IModel = null )
+		public function BaseController( defaultView:IView, defaultModel:IModel = null )
 		{
 			this.defaultView 	= defaultView;
 			this.defaultModel 	= defaultModel;
+		}
+		
+		
+		protected function startNoteInterest( type:String, listener:Function ):void
+		{
+			noteManager.registerListener( type, listener );
+		}
+		
+		
+		protected function stopNoteInterest( type:String, listener:Function ):void
+		{
+			noteManager.removeListener( type, listener );
 		}
 		
 		
@@ -24,7 +37,21 @@ package nl.imotion.mvc.controller
 			defaultView 	= null;
 			defaultModel 	= null;
 			
+			if ( _noteManager != null )
+			{
+				_noteManager.removeAllListeners();
+				_noteManager = null;
+			}
+			
 			super.destroy();
+		}
+		
+		
+		private var _noteManager:NoteManager;
+		private function get noteManager():NoteManager
+		{
+			if ( !_noteManager ) _noteManager = new NoteManager();
+			return _noteManager;
 		}
 		
 	}
