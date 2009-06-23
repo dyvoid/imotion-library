@@ -9,7 +9,6 @@
 	import nl.imotion.mvc.controller.IController;
 	import nl.imotion.mvc.model.IModel;
 	import nl.imotion.mvc.view.IView;
-	import nl.imotion.mvctest.TestModel;
 	
 	/**
 	 * @author Pieter van de Sluis
