@@ -7,7 +7,7 @@ package nl.imotion.notes
 		private static var allowInstantiation:Boolean = false;
 		private static var instance:NoteDispatcher;
 		
-		private var listeners:Dictionary = new Dictionary();
+		private var listenerMap:Dictionary = new Dictionary();
 		
 		
 		public function NoteDispatcher()
@@ -33,7 +33,7 @@ package nl.imotion.notes
 		
 		public function addNoteListener( type:String, listener:Function ):void
 		{
-			var typeListeners:Array = listeners[ type ];
+			var typeListeners:Array = listenerMap[ type ];
 			
 			if ( typeListeners ) 
 			{
@@ -48,14 +48,14 @@ package nl.imotion.notes
 			} 
 			else 
 			{
-				listeners[ type ] = [ listener ];	
+				listenerMap[ type ] = [ listener ];	
 			}
 		}
 		
 		
 		public function removeNoteListener( type:String, listener:Function ):void
 		{
-			var typeListeners:Array = listeners[ type ];
+			var typeListeners:Array = listenerMap[ type ];
 			
 			if ( typeListeners )
 			{
@@ -70,7 +70,7 @@ package nl.imotion.notes
 				
 				if ( typeListeners.length == 0)
 				{
-					delete listeners[ type ];
+					delete listenerMap[ type ];
 				}
 			}
 		}
@@ -78,13 +78,13 @@ package nl.imotion.notes
 		
 		public function hasNoteListener( type:String ):Boolean
 		{
-			return ( listeners[ type ] != null );
+			return ( listenerMap[ type ] != null );
 		}
 		
 		
 		public function dispatchNote( note:Note ):void
 		{
-			var typeListeners:Array = listeners[ note.type ];
+			var typeListeners:Array = listenerMap[ note.type ];
 			
 			for each( var f:Function in typeListeners )
 			{

@@ -6,7 +6,7 @@ package nl.imotion.mvc.view
 	import nl.imotion.events.EventManager;
 	
 	
-	public class BaseViewSprite extends MovieClip implements IView
+	public class BaseViewMovieClip extends MovieClip implements IView
 	{
 		
 		public function BaseViewMovieClip() { }

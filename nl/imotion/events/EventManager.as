@@ -5,7 +5,7 @@ package nl.imotion.events
 	
 	public class EventManager
 	{
-		private var listeners:/*EventListenerInfo*/Array = [];
+		private var listenerMap:/*EventListenerInfo*/Array = [];
 		
         //__________________________________________________________________________________________________________________
         //                                                                                                                  |
@@ -38,7 +38,7 @@ package nl.imotion.events
          */
 		public function registerListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false ):void
 		{
-			for each( var l:EventListener in listeners )
+			for each( var l:EventListener in listenerMap )
 			{
 				if ( (target == l.target ) && ( type == l.type ) && ( listener == l.listener ) && ( useCapture == l.useCapture ) )
 				{
@@ -46,7 +46,7 @@ package nl.imotion.events
 				}
 			}
 			
-			listeners.push( new EventListener( target, type, listener, useCapture ) );
+			listenerMap.push( new EventListener( target, type, listener, useCapture ) );
 		}
 		
 		
@@ -61,9 +61,9 @@ package nl.imotion.events
 		 */
 		public function removeListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false ):void
 		{
-            for ( var i:int = 0; i < listeners.length; i++ )
+            for ( var i:int = 0; i < listenerMap.length; i++ )
             {
-                var l:EventListener = listeners[ i ];
+                var l:EventListener = listenerMap[ i ];
 
                 if ( (target == l.target ) && ( type == l.type ) && ( listener == l.listener ) && ( useCapture == l.useCapture ) )
                 {
@@ -91,11 +91,11 @@ package nl.imotion.events
 
 		
         /**
-         * Removes all registered event listeners
+         * Removes all registered event listenerMap
          */
 		public function removeAllListeners():void
 		{
-            for ( var i:int = listeners.length - 1; i >= 0; i-- )
+            for ( var i:int = listenerMap.length - 1; i >= 0; i-- )
             {
                 removeListenerByIndex( i );
             }
@@ -108,7 +108,7 @@ package nl.imotion.events
 		
         private function removeListenerByIndex( index:uint ):void
         {
-            var l:EventListener = listeners[ index ];
+            var l:EventListener = listenerMap[ index ];
 			
             if ( l )
             {
@@ -117,7 +117,7 @@ package nl.imotion.events
 					l.target.removeEventListener( l.type, l.listener, l.useCapture );
 				}
 				
-                listeners.splice( index, 1 );
+                listenerMap.splice( index, 1 );
             }
         }
 	}

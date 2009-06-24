@@ -107,9 +107,10 @@
 		
 		private function addedToStageHandler( e:Event ):void 
 		{
-			if ( e.target is IView )
+			var view:DisplayObject = e.target as DisplayObject;
+			
+			if ( boundMap[ view ] == null )
 			{
-				var view:IView = e.target as IView;
 				var viewClass:Class = getDefinitionByName( getQualifiedClassName( view ) ) as Class;
 				
 				if ( bindMap[ viewClass ] )
@@ -125,19 +126,17 @@
 		
 		private function removedFromStageHandler( e:Event ):void 
 		{
-			if ( e.target is IView )
+			var view:DisplayObject = e.target as DisplayObject;
+			
+			if ( boundMap[ view ] )
 			{
-				var view:IView = e.target as IView;
+				var controller:IController = boundMap[ view ];
+				controller.destroy();
 				
-				if ( boundMap[ view ] )
-				{
-					var controller:IController = boundMap[ view ];
-					controller.destroy();
-					
-					delete boundMap[ view ];
-				}
+				delete boundMap[ view ];
 			}
 		}
+		
 		
 		public function get isStarted():Boolean { return _isStarted; }
 		
