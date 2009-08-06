@@ -1,15 +1,15 @@
 package nl.imotion.mvc.model
 {
 
-	import nl.imotion.mvc.core.MCComponent;
+	import nl.imotion.mvc.core.MVCComponent;
 	import nl.imotion.mvc.core.MVCCore;
 
-	public class BaseModel extends MCComponent implements IModel
+	public class AbstractModel extends MVCComponent implements IModel
 	{
 		private var _name:String;
 		
 		
-		public function BaseModel( name:String ):void
+		public function AbstractModel( name:String ):void
 		{
 			_name = name;
 			

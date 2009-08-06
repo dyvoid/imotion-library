@@ -8,7 +8,7 @@ package nl.imotion.mvc.core
 	import nl.imotion.notes.NoteDispatcher;
 	
 	
-	public class MCComponent implements IDestroyable
+	public class MVCComponent implements IDestroyable
 	{
 		
 		protected function retrieveModel( name:String ):IModel

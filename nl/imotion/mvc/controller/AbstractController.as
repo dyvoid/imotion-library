@@ -2,18 +2,18 @@ package nl.imotion.mvc.controller
 {
 	
 	import flash.display.DisplayObject;
-	import nl.imotion.mvc.core.MCComponent;
+	import nl.imotion.mvc.core.MVCComponent;
 	import nl.imotion.mvc.model.IModel;
 	import nl.imotion.notes.NoteManager;
 
-	public class BaseController extends MCComponent implements IController
+	public class AbstractController extends MVCComponent implements IController
 	{
 		
 		protected var defaultView:DisplayObject;
 		protected var defaultModel:IModel;
 		
 		
-		public function BaseController( defaultView:DisplayObject, defaultModel:IModel = null )
+		public function AbstractController( defaultView:DisplayObject, defaultModel:IModel = null )
 		{
 			this.defaultView 	= defaultView;
 			this.defaultModel 	= defaultModel;
