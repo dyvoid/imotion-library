@@ -91,7 +91,7 @@ package nl.imotion.events
 
 		
         /**
-         * Removes all registered event listenerMap
+         * Removes all registered event listeners
          */
 		public function removeAllListeners():void
 		{

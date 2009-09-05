@@ -1,13 +1,14 @@
 ﻿package nl.imotion.delegates 
 {
+	import nl.imotion.commands.ICommand;
 	
 	/**
 	 * @author Pieter van de Sluis
 	 * Based on code by Thomas Reppa (www.reppa.net)
 	 */
-	public class AbstractDelegate implements IDelegate
+	public class AbstractDelegate implements IDelegate, ICommand
 	{
-		protected static var _defaultResponder	:IDelegateResponder;
+		protected static var defaultResponder	:IDelegateResponder;
 		
 		private var _operationName	:String;
 		private var _data			:Object
@@ -24,7 +25,7 @@
 		
 		public static function setDefaultResponder( responder:IDelegateResponder ):void
 		{
-			_defaultResponder = responder;
+			defaultResponder = responder;
 		}
 		
 		
@@ -50,7 +51,7 @@
 		
 		public function get responder():IDelegateResponder 
 		{ 
-			return ( _responder == null ) ? _defaultResponder : _responder;
+			return ( _responder == null ) ? defaultResponder : _responder;
 		}
 		public function set responder( value:IDelegateResponder ):void
 		{

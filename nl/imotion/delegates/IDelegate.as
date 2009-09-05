@@ -1,14 +1,13 @@
 ﻿package nl.imotion.delegates 
 {
+	import nl.imotion.commands.ICommand;
 	
 	/**
 	 * @author Pieter van de Sluis
 	 * Based on code by Thomas Reppa (www.reppa.net)
 	 */
-	public interface IDelegate 
+	public interface IDelegate extends ICommand
 	{
-		function execute():void
-		
 		function get operationName():String
 		function set operationName( value:String ):void 
 		

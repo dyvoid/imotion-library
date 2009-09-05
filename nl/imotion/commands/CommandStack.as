@@ -27,9 +27,9 @@
 		 */
 		private function enforceMaxLength():void
 		{
-			if ( maxLength != 0 && stack.length > maxLength )
+			if ( _maxLength != 0 && stack.length > _maxLength )
 			{
-				stack.splice( stack.length - maxLength );
+				stack.splice( stack.length - _maxLength );
 				
 				_index = stack.length - 1;
 			}
