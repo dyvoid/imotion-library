@@ -29,7 +29,7 @@
 		{
 			if ( maxLength != 0 && stack.length > maxLength )
 			{
-				stack.splice( 0, stack.length - maxLength );
+				stack.splice( stack.length - maxLength );
 				
 				_index = stack.length - 1;
 			}
@@ -67,7 +67,7 @@
 		
 		/**
 		 * Undos a number of steps in stack
-		 * @param	nrOfSteps	The number of steps to undo
+		 * @param	nrOfSteps	the number of steps to undo
 		 */
 		public function undo( nrOfSteps:uint = 1 ):void
 		{
@@ -94,7 +94,7 @@
 		
 		/**
 		 * Redos a number of steps in stack
-		 * @param	nrOfSteps	The number of steps to redo
+		 * @param	nrOfSteps	the number of steps to redo
 		 */
 		public function redo( nrOfSteps:uint = 1 ):void
 		{
