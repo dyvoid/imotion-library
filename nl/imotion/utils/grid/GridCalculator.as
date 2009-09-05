@@ -4,28 +4,28 @@
 	
 	
 	/**
-	* Generates a grid, that can be used to calculate individual cell positions.
+	* Generates a <code>GridCalculator</code>, that can be used to calculate individual cell positions.
 	* @author Pieter van de Sluis
 	*/
 	public class Grid
 	{
-		public var gridWidth:Number = 0;
-		public var cellWidth:Number = 0;
-		public var cellHeight:Number = 0;
-		public var margin:Number = 0;
-		public var nrOfCells:int = -1;
-		public var startX:Number = 0;
-		public var startY:Number = 0;
+		private var _gridWidth:Number = 0;
+		private var _cellWidth:Number = 0;
+		private var _cellHeight:Number = 0;
+		private var _margin:Number = 0;
+		private var _nrOfCells:int = -1;
+		private var _x:Number = 0;
+		private var _Y:Number = 0;
 		
 		/**
-		 * Constructs a new <code>Grid</code> 
+		 * Constructs a new <code>GridCalculator</code> 
 		 * @param	gridWidth The width of the grid
 		 * @param	cellWidth The width of a cell in the grid
 		 * @param	cellHeight The height of a cell in the grid
 		 * @param	margin The margin in pixels between the cells
 		 * @param	nrOfCells The total number of cells in the grid. Optional, it is only necessary if the <code>height</code> and <code>nrOfRows</code> properties are to be used.
 		 */
-		public function Grid( gridWidth:Number, cellWidth:Number, cellHeight:Number, margin:Number, nrOfCells:int = -1 )
+		public function GridCalculator( gridWidth:Number, cellWidth:Number, cellHeight:Number, margin:Number, nrOfCells:int = -1 )
 		{
 			this.gridWidth = gridWidth;
 			this.cellWidth = cellWidth;
@@ -135,6 +135,78 @@
 			{
 				return 0;
 			}
+		}
+		
+		
+		/**
+		 * The width of the grid
+		 */
+		public function get gridWidth():Number { return _gridWidth; }
+		public function set gridWidth(value:Number):void 
+		{
+			_gridWidth = value;
+		}
+		
+		
+		/**
+		 * The width of a cell in the grid
+		 */		
+		public function get cellWidth():Number { return _cellWidth; }
+		public function set cellWidth(value:Number):void 
+		{
+			_cellWidth = value;
+		}
+		
+		
+		/**
+		 * The height of a cell in the grid
+		 */
+		public function get cellHeight():Number { return _cellHeight; }
+		
+		public function set cellHeight(value:Number):void 
+		{
+			_cellHeight = value;
+		}
+		
+		
+		/**
+		 * The margin in pixels between the cells
+		 */
+		public function get margin():Number { return _margin; }
+		public function set margin(value:Number):void 
+		{
+			_margin = value;
+		}
+		
+		
+		/**
+		 * The total number of cells in the grid. Optional, it is only necessary if the <code>height</code> and <code>nrOfRows</code> properties are to be used.
+		 */
+		public function get nrOfCells():int { return _nrOfCells; }
+		
+		public function set nrOfCells(value:int):void 
+		{
+			_nrOfCells = value;
+		}
+		
+		
+		/**
+		 * The x position of the grid
+		 */
+		public function get x():Number { return _x; }
+		public function set x(value:Number):void 
+		{
+			_x = value;
+		}
+		
+		
+		/**
+		 * The y position of the grid
+		 */
+		public function get y():Number { return _y; }
+		public function set y(value:Number):void 
+		{
+			_y = value;
 		}
 		
 	}
