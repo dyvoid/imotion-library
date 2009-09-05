@@ -13,7 +13,6 @@ package nl.imotion.utils.range
 		
 		/**
 		 * Constructs a new <code>Range</code>
-		 * 
 		 * @param	boundary1 the first boundary value of the range
 		 * @param	boundary2 the second boundary value of the range
 		 */
