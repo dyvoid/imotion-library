@@ -1,4 +1,4 @@
-﻿package nl.imotion.commandstack
+﻿package nl.imotion.commands
 {
 
 	/**
@@ -6,7 +6,7 @@
 	*/
 	public interface IUndoableCommand extends ICommand
 	{
-		function undo():Void 
+		function undo():void 
 	}
 	
 }

@@ -1,4 +1,4 @@
-﻿package nl.imotion.commandstack
+﻿package nl.imotion.commands
 {
 	
 	/**
@@ -73,7 +73,7 @@
 		{
 			if ( stack.length > 0 )
 			{
-				nrOfSteps = Math.min( nrOfSteps, stack.length );
+				nrOfSteps = Math.min( nrOfSteps, index + 1 );
 				
 				for ( var i:int = 0; i < nrOfSteps; i++ ) 
 				{
@@ -121,16 +121,5 @@
 		 */
 		public function get length():uint { return stack.length; }
 		
-		
-		/**
-		 * The maximum length of the stack. 0 is unlimited (default)
-		 */
-		public function get maxLength():uint { return _maxLength; }
-		public function set maxLength( value:uint ):void
-		{
-			_maxLength = value;
-			
-			enforceMaxLength();
-		}
 	}
 }
