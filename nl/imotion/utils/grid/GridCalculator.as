@@ -7,7 +7,7 @@
 	* Generates a <code>GridCalculator</code>, that can be used to calculate individual cell positions.
 	* @author Pieter van de Sluis
 	*/
-	public class Grid
+	public class GridCalculator
 	{
 		private var _gridWidth:Number = 0;
 		private var _cellWidth:Number = 0;
@@ -15,7 +15,7 @@
 		private var _margin:Number = 0;
 		private var _nrOfCells:int = -1;
 		private var _x:Number = 0;
-		private var _Y:Number = 0;
+		private var _y:Number = 0;
 		
 		/**
 		 * Constructs a new <code>GridCalculator</code> 
@@ -53,8 +53,8 @@
 			var colPos:Number = cellNr % nrOfCols;
 			var rowPos:Number = Math.floor( cellNr / nrOfCols );
 			
-			cellPoint.x = ( colPos == 0 ) ? startX : ( this.cellWidth + this.margin ) * colPos + startX;
-			cellPoint.y = ( rowPos == 0 ) ? startY : ( this.cellHeight + this.margin ) * rowPos + startY;
+			cellPoint.x = ( colPos == 0 ) ? _x : ( this.cellWidth + this.margin ) * colPos + _x;
+			cellPoint.y = ( rowPos == 0 ) ? _y : ( this.cellHeight + this.margin ) * rowPos + _y;
 			
 			return cellPoint;
 		}
