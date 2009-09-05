@@ -3,6 +3,7 @@ package nl.imotion.utils.range
 	
 	/**
 	 * Utility class that allows calculations on values within a range and translation to other ranges
+	 * @author Pieter van de Sluis
 	 */
 	public class Range
 	{
