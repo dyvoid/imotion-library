@@ -74,6 +74,12 @@ package nl.imotion.utils.range
 		}
 		
 		
+		public static function translate( value:Number, sourceBoundary1:Number, sourceBoundary2:Number, targetBoundary1:Number, targetBoundary2:Number ):Number
+		{
+			var sourceRange:Range = new Range( sourceBoundary1, sourceBoundary2 );
+			return sourceRange.translate( value, new Range( targetBoundary1, targetBoundary2 ) );
+		}
+		
 		/**
 		 * Constrains a value to the boundaries of the range
 		 * @param	value the value that should be constrained
