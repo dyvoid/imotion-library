@@ -2,7 +2,7 @@ package nl.imotion.utils.range
 {
 	
 	/**
-	 * Utility class that allows calculations on values within a range and translation to other ranges
+	 * The <code>Range</code> class allows calculations on values within a range and translation to other ranges
 	 * @author Pieter van de Sluis
 	 */
 	public class Range
@@ -108,9 +108,6 @@ package nl.imotion.utils.range
 		 * The first boundary of the range
 		 */
 		public function get boundary1():Number { return _boundary1; }
-		/**
-		 * @private
-		 */
 		public function set boundary1( value:Number ):void
 		{
 			_boundary1 = value;
@@ -121,9 +118,6 @@ package nl.imotion.utils.range
 		 * The second boundary of the range
 		 */
 		public function get boundary2():Number { return _boundary2; }
-		/**
-		 * @private
-		 */
 		public function set boundary2( value:Number ):void
 		{
 			_boundary2 = value;

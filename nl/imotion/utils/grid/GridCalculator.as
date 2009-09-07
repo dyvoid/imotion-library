@@ -4,12 +4,12 @@
 	
 	
 	/**
-	* Generates a <code>GridCalculator</code>, that can be used to calculate individual cell positions.
+	* The <code>GridCalculator</code> class creates a virtual grid, that can be used to calculate individual cell positions.
 	* @author Pieter van de Sluis
 	*/
 	public class GridCalculator
 	{
-		private var _gridWidth:Number = 0;
+		private var _maxWidth:Number = 0;
 		private var _cellWidth:Number = 0;
 		private var _cellHeight:Number = 0;
 		private var _margin:Number = 0;
@@ -17,21 +17,22 @@
 		private var _x:Number = 0;
 		private var _y:Number = 0;
 		
+		
 		/**
 		 * Constructs a new <code>GridCalculator</code> 
-		 * @param	gridWidth The width of the grid
+		 * @param	maxWidth The maximum width of the grid. The <code>GridCalculator</code> will build a row of cells, until this value is reached
 		 * @param	cellWidth The width of a cell in the grid
 		 * @param	cellHeight The height of a cell in the grid
-		 * @param	margin The margin in pixels between the cells
+		 * @param	margin The margin between cells, in pixels
 		 * @param	nrOfCells The total number of cells in the grid. Optional, it is only necessary if the <code>height</code> and <code>nrOfRows</code> properties are to be used.
 		 */
-		public function GridCalculator( gridWidth:Number, cellWidth:Number, cellHeight:Number, margin:Number, nrOfCells:int = -1 )
+		public function GridCalculator( maxWidth:Number, cellWidth:Number, cellHeight:Number, margin:Number, nrOfCells:int = -1 )
 		{
-			this.gridWidth = gridWidth;
-			this.cellWidth = cellWidth;
-			this.cellHeight = cellHeight;
-			this.margin = margin;
-			this.nrOfCells = nrOfCells;
+			_maxWidth = maxWidth;
+			_cellWidth = cellWidth;
+			_cellHeight = cellHeight;
+			_margin = margin;
+			_nrOfCells = nrOfCells;
 		}
 		
 		
@@ -87,14 +88,14 @@
 		 */
 		public function get nrOfCols():Number
 		{
-			return Math.floor( ( this.gridWidth + this.margin ) / ( this.cellWidth + this.margin ) );
+			return Math.floor( ( this.maxWidth + this.margin ) / ( this.cellWidth + this.margin ) );
 		}
 		/**
 		 * @private
 		 */
 		public function set nrOfCols( _nrOfCols:Number ):void
 		{
-			this.gridWidth = ( this.cellWidth + this.margin ) * _nrOfCols + this.margin;
+			this.maxWidth = ( this.cellWidth + this.margin ) * _nrOfCols + this.margin;
 		}
 		
 		
@@ -123,7 +124,7 @@
 		
 		
 		/**
-		 * The height of the grid
+		 * The height of the grid. Can only be calculated if <code>nrOfCells</code> has been set.
 		 */
 		public function get height():Number
 		{
@@ -139,12 +140,12 @@
 		
 		
 		/**
-		 * The width of the grid
+		 * The maximum width of the grid. The <code>GridCalculator</code> will build a row of cells, until this value is reached
 		 */
-		public function get gridWidth():Number { return _gridWidth; }
-		public function set gridWidth(value:Number):void 
+		public function get maxWidth():Number { return _maxWidth; }
+		public function set maxWidth(value:Number):void 
 		{
-			_gridWidth = value;
+			_maxWidth = value;
 		}
 		
 		
@@ -170,7 +171,7 @@
 		
 		
 		/**
-		 * The margin in pixels between the cells
+		 * The margin between cells, in pixels
 		 */
 		public function get margin():Number { return _margin; }
 		public function set margin(value:Number):void 
