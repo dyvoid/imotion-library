@@ -12,6 +12,23 @@ package nl.imotion.utils.range
 		
 		
 		/**
+		 * Translates a value within a range to a value in a target range.
+		 * The input value is automatically constrained to the boundaries of the source range.
+		 * @param	value the value that is to be translated
+		 * @param	sourceBoundary1 the first boundary value of the source range
+		 * @param	sourceBoundary2 the second boundary value of the source range
+		 * @param	targetBoundary1 the first boundary value of the target range
+		 * @param	targetBoundary2 the second boundary value of the target range
+		 * @return	the translated value
+		 */
+		public static function translate( value:Number, sourceBoundary1:Number, sourceBoundary2:Number, targetBoundary1:Number, targetBoundary2:Number ):Number
+		{
+			var sourceRange:Range = new Range( sourceBoundary1, sourceBoundary2 );
+			return sourceRange.translate( value, new Range( targetBoundary1, targetBoundary2 ) );
+		}
+		
+		
+		/**
 		 * Constructs a new <code>Range</code>
 		 * @param	boundary1 the first boundary value of the range
 		 * @param	boundary2 the second boundary value of the range
@@ -74,19 +91,13 @@ package nl.imotion.utils.range
 		}
 		
 		
-		public static function translate( value:Number, sourceBoundary1:Number, sourceBoundary2:Number, targetBoundary1:Number, targetBoundary2:Number ):Number
-		{
-			var sourceRange:Range = new Range( sourceBoundary1, sourceBoundary2 );
-			return sourceRange.translate( value, new Range( targetBoundary1, targetBoundary2 ) );
-		}
-		
 		/**
 		 * Constrains a value to the boundaries of the range
 		 * @param	value the value that should be constrained
 		 * @return	the constrained value
 		 */
 		public function constrain( value:Number ):Number
-		{			
+		{
 			if ( _boundary2 > _boundary1 )
 			{
 				return constrainTo( value, _boundary1, _boundary2 );
@@ -98,13 +109,23 @@ package nl.imotion.utils.range
 		}
 		
 		
+		/**
+		 * Constrains a value to an upper and lower limit
+		 * @param	value the value that should be constrained
+		 * @param	lower the lower limit
+		 * @param	upper the upper limit
+		 * @return	the constrained value
+		 */
 		private function constrainTo( value:Number, lower:Number, upper:Number ):Number
 		{
 			return Math.max( lower, Math.min( value, upper ) );
 		}
 		
 		
-		private function get rangeSize():Number
+		/**
+		 * The total size of the range
+		 */
+		public function get rangeSize():Number
 		{
 			return Math.abs( _boundary2 - _boundary1 );
 		}
