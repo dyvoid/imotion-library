@@ -38,12 +38,12 @@
 		
 		/**
 		 * Gets the position of a cell as a <code>Point</code>
-		 * @param	cellNr the cell index number
+		 * @param	index the index of a cell
 		 * @return	the position of the cell
 		 */
-		public function getCellPos( cellNr:uint ):Point
+		public function getCellPos( index:uint ):Point
 		{
-			if ( cellNr < 0 || ( nrOfCells != -1 && cellNr >= nrOfCells ) )
+			if ( index < 0 || ( nrOfCells != -1 && index >= nrOfCells ) )
 			{
 				return null;
 			}
@@ -51,10 +51,10 @@
 			var cellPoint:Point = new Point();
 			
 			var nrOfCols:uint = this.nrOfCols;
-			var colPos:Number = cellNr % nrOfCols;
-			var rowPos:Number = Math.floor( cellNr / nrOfCols );
+			var colPos:Number = index % nrOfCols;
+			var rowPos:Number = Math.floor( index / nrOfCols );
 			
-			cellPoint.x = ( colPos == 0 ) ? _x : ( this.cellWidth + this.margin ) * colPos + _x;
+			cellPoint.x = ( colPos == 0 ) ? _x : ( this.cellWidth  + this.margin ) * colPos + _x;
 			cellPoint.y = ( rowPos == 0 ) ? _y : ( this.cellHeight + this.margin ) * rowPos + _y;
 			
 			return cellPoint;
@@ -66,7 +66,7 @@
 		 * @param	index the index of a cell
 		 * @return	the x position of the cell
 		 */
-		public function getCellX ( index:Number ):Number
+		public function getCellX ( index:uint ):Number
 		{
 			return this.getCellPos( index ).x;
 		}
@@ -77,7 +77,7 @@
 		 * @param	index the index of a cell
 		 * @return	the y position of the cell
 		 */
-		public function getCellY ( index:Number ):Number
+		public function getCellY ( index:uint ):Number
 		{
 			return this.getCellPos( index ).y;
 		}
@@ -86,16 +86,13 @@
 		/**
 		 * The number of columns in the grid
 		 */
-		public function get nrOfCols():Number
+		public function get nrOfCols():uint
 		{
 			return Math.floor( ( this.maxWidth + this.margin ) / ( this.cellWidth + this.margin ) );
 		}
-		/**
-		 * @private
-		 */
-		public function set nrOfCols( _nrOfCols:Number ):void
+		public function set nrOfCols( value:uint ):void
 		{
-			this.maxWidth = ( this.cellWidth + this.margin ) * _nrOfCols + this.margin;
+			this.maxWidth = ( this.cellWidth + this.margin ) * value + this.margin;
 		}
 		
 		
@@ -143,7 +140,7 @@
 		 * The maximum width of the grid. The <code>GridCalculator</code> will build a row of cells, until this value is reached
 		 */
 		public function get maxWidth():Number { return _maxWidth; }
-		public function set maxWidth(value:Number):void 
+		public function set maxWidth( value:Number ):void 
 		{
 			_maxWidth = value;
 		}
@@ -153,7 +150,7 @@
 		 * The width of a cell in the grid
 		 */		
 		public function get cellWidth():Number { return _cellWidth; }
-		public function set cellWidth(value:Number):void 
+		public function set cellWidth( value:Number ):void 
 		{
 			_cellWidth = value;
 		}
@@ -163,8 +160,7 @@
 		 * The height of a cell in the grid
 		 */
 		public function get cellHeight():Number { return _cellHeight; }
-		
-		public function set cellHeight(value:Number):void 
+		public function set cellHeight( value:Number ):void 
 		{
 			_cellHeight = value;
 		}
@@ -174,7 +170,7 @@
 		 * The margin between cells, in pixels
 		 */
 		public function get margin():Number { return _margin; }
-		public function set margin(value:Number):void 
+		public function set margin( value:Number ):void 
 		{
 			_margin = value;
 		}
@@ -183,9 +179,8 @@
 		/**
 		 * The total number of cells in the grid. Optional, it is only necessary if the <code>height</code> and <code>nrOfRows</code> properties are to be used.
 		 */
-		public function get nrOfCells():int { return _nrOfCells; }
-		
-		public function set nrOfCells(value:int):void 
+		public function get nrOfCells():uint { return _nrOfCells; }
+		public function set nrOfCells( value:uint ):void 
 		{
 			_nrOfCells = value;
 		}
@@ -195,7 +190,7 @@
 		 * The x position of the grid
 		 */
 		public function get x():Number { return _x; }
-		public function set x(value:Number):void 
+		public function set x( value:Number ):void 
 		{
 			_x = value;
 		}
@@ -205,7 +200,7 @@
 		 * The y position of the grid
 		 */
 		public function get y():Number { return _y; }
-		public function set y(value:Number):void 
+		public function set y( value:Number ):void 
 		{
 			_y = value;
 		}
