@@ -19,7 +19,7 @@ package nl.imotion.mvc.model
 		
 		override public function destroy():void
 		{
-			MVCCore.getInstance().removeModel( this );
+			MVCCore.getInstance().removeModel( _name );
 			
 			super.destroy();
 		}

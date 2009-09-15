@@ -85,22 +85,26 @@
 		}
 		
 		
-		public function removeModel( model:IModel ):void
+		public function retrieveModel( modelName:String ):IModel
 		{
-			if ( modelMap[ model.name ] )
+			if ( modelMap[ modelName ] )
 			{
-				delete modelMap[ model.name ];
+				return modelMap[ modelName ];
 			}
+			return null;
 		}
 		
 		
-		public function retrieveModel( name:String ):IModel
+		public function removeModel( modelName:String ):IModel
 		{
-			if ( modelMap[ name ] )
+			var model:IModel = modelMap[ modelName ];
+			
+			if ( model )
 			{
-				return modelMap[ name ];
+				delete modelMap[ modelName ];
 			}
-			return null;
+			
+			return model;
 		}
 		
 		
