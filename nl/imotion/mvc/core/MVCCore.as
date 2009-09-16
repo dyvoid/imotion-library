@@ -1,4 +1,4 @@
-﻿package nl.imotion.mvc.core 
+package nl.imotion.mvc.core
 {
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -11,7 +11,7 @@
 	/**
 	 * @author Pieter van de Sluis
 	 */
-	public class MVCCore 
+	public class MVCCore
 	{
 		private static var allowInstantiation:Boolean = false;
 		private static var instance:MVCCore;
@@ -108,7 +108,7 @@
 		}
 		
 		
-		private function addedToStageHandler( e:Event ):void 
+		private function addedToStageHandler( e:Event ):void
 		{
 			var view:DisplayObject = e.target as DisplayObject;
 			
@@ -127,7 +127,7 @@
 		}
 		
 		
-		private function removedFromStageHandler( e:Event ):void 
+		private function removedFromStageHandler( e:Event ):void
 		{
 			var view:DisplayObject = e.target as DisplayObject;
 			
