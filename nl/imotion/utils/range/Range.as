@@ -33,7 +33,7 @@ package nl.imotion.utils.range
 		 * @param	boundary1 the first boundary value of the range
 		 * @param	boundary2 the second boundary value of the range
 		 */
-		public function Range( boundary1:Number, boundary2:Number ):void
+		public function Range( boundary1:Number, boundary2:Number )
 		{
 			_boundary1 = boundary1;
 			_boundary2 = boundary2;

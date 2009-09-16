@@ -1,4 +1,4 @@
-﻿package  nl.imotion.utils.grid
+package  nl.imotion.utils.grid
 {
 	import flash.geom.Point;
 	

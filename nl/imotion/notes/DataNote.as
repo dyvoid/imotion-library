@@ -1,4 +1,4 @@
-﻿package nl.imotion.notes 
+package nl.imotion.notes 
 {
 	import nl.imotion.notes.Note;
 	

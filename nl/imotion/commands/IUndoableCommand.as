@@ -1,4 +1,4 @@
-﻿package nl.imotion.commands
+package nl.imotion.commands
 {
 
 	/**

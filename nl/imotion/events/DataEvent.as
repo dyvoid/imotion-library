@@ -1,4 +1,4 @@
-﻿package nl.imotion.events 
+package nl.imotion.events 
 {
 	import flash.events.Event;
 	

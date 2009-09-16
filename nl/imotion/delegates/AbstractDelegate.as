@@ -1,4 +1,4 @@
-﻿package nl.imotion.delegates 
+package nl.imotion.delegates 
 {
 	import nl.imotion.commands.ICommand;
 	
