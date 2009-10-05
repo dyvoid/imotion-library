@@ -10,12 +10,6 @@
 	public class StackPanelParser implements IBurstParser
 	{
 		
-		public function StackPanelParser() 
-		{
-			
-		}
-		
-		
 		public function create( xml:XML, burst:Burst ):DisplayObject
 		{
 			var s:StackPanel = new StackPanel( xml.@orientation );
