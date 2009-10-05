@@ -10,7 +10,7 @@ package nl.imotion.burst
 	public class Burst 
 	{
 		
-		private var bindMap:Dictionary = new Dictionary();
+		protected var bindMap:Dictionary = new Dictionary();
 		
 		
 		public function Burst() 
@@ -20,20 +20,19 @@ package nl.imotion.burst
 		
 		
 		public function parse( xml:XML ):DisplayObject 
-		{			
-			var binding:BurstBinding = bindMap[ xml.name() ];
-			
-			if ( binding )
+		{
+			if ( hasBinding( xml.name() ) )
 			{
+				var binding:BurstBinding = bindMap[ xml.name() ];
 				var instance:* = new binding.classRef();
 				
-				switch( true )
+				switch( binding.type )
 				{
-					case ( instance is IBurstParser ):
-						return IBurstParser( instance ).parse( xml, this );
+					case BurstBindingType.PARSER:
+						return IBurstParser( instance ).create( xml, this );
 					break;
 					
-					case ( instance is DisplayObject ):
+					case BurstBindingType.DISPLAY_OBJECT:
 						return instance as DisplayObject;
 					break;
 				}

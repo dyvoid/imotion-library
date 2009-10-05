@@ -16,13 +16,13 @@
 		}
 		
 		
-		public function parse( xml:XML, burst:Burst ):DisplayObject
+		public function create( xml:XML, burst:Burst ):DisplayObject
 		{
 			var s:StackPanel = new StackPanel( xml.@orientation );
 			
-			var list:XMLList = xml.*;
+			var childNodes:XMLList = xml.children();
 			
-			for each ( var node:XML in list )
+			for each ( var node:XML in childNodes )
 			{
 				var d:DisplayObject = burst.parse( node );
 				

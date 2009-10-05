@@ -1,7 +1,7 @@
 package nl.imotion.burst 
 {
 
-	internal class BurstBinding 
+	public class BurstBinding 
 	{
 
 		private var _classRef	:Class;
