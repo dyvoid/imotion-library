@@ -1,7 +1,6 @@
 package nl.imotion.notes 
 {
 	import flash.utils.Dictionary;
-	import nl.imotion.notes.NoteDispatcher;
 	
 	/**
 	 * @author Pieter van de Sluis

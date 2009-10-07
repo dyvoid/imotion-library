@@ -1,9 +1,6 @@
 ﻿package flash.display
 {
 	import flash.media.SoundTransform;
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.display.Graphics;
 	import flash.geom.Rectangle;
 
 	

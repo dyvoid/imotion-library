@@ -1,6 +1,5 @@
 ﻿package flash.display
 {
-	import flash.display.DisplayObject;
 	import flash.text.TextSnapshot;
 	import flash.geom.Point;
 

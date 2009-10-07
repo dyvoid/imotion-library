@@ -11,11 +11,13 @@ package nl.imotion.burst.components.stackpanel
 		
 		private var _orientation		:String;
 		private var _autoDistribute		:Boolean;
+		private var _margin				:uint;
 		
-		public function StackPanel( orientation:String = "vertical", autoDistribute:Boolean = true ) 
+		public function StackPanel( orientation:String = "vertical", autoDistribute:Boolean = false, margin:uint = 0 ) 
 		{
-			_orientation 	= orientation;
+			_orientation 	= ( orientation == StackPanelOrientation.HORIZONAL || orientation == StackPanelOrientation.VERTICAL ) ? orientation : StackPanelOrientation.VERTICAL;
 			_autoDistribute	= autoDistribute;
+			_margin			= margin;
 		}
 		
 		
@@ -23,33 +25,34 @@ package nl.imotion.burst.components.stackpanel
 		
 		public function get autoDistribute():Boolean { return _autoDistribute; }
 		
+		public function get margin():uint { return _margin; }
+		
 		
 		override public function addChild( child:DisplayObject ):DisplayObject 
 		{
-			switch ( _orientation )
+			if ( _autoDistribute && child is BurstSprite )
 			{
-				case StackPanelOrientation.HORIZONAL:
-					child.x = this.width;
-					
-					if ( _autoDistribute && child is BurstSprite )
-					{
-						child.addEventListener( BurstComponentEvent.WIDTH_CHANGED,	childSizeChangedHandler );
-						child.addEventListener( BurstComponentEvent.SIZE_CHANGED,  	childSizeChangedHandler );
-					}
-				break;
+				child.addEventListener( BurstComponentEvent.SIZE_CHANGED,  	childSizeChangedHandler );
 				
-				case StackPanelOrientation.VERTICAL:
-					child.y = this.height;
+				switch ( _orientation )
+				{
+					case StackPanelOrientation.HORIZONAL:
+						child.addEventListener( BurstComponentEvent.WIDTH_CHANGED,	childSizeChangedHandler );
+					break;
 					
-					if ( _autoDistribute && child is BurstSprite )
-					{
+					case StackPanelOrientation.VERTICAL:
 						child.addEventListener( BurstComponentEvent.HEIGHT_CHANGED, childSizeChangedHandler );
-						child.addEventListener( BurstComponentEvent.SIZE_CHANGED,  	childSizeChangedHandler );
-					}
-				break;
+					break;
+				}
 			}
 			
-			return super.addChild( child );
+			super.addChild( child );
+			
+			distributeChildren( child );
+			
+			dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
+			
+			return child;
 		}
 		
 		
@@ -68,42 +71,67 @@ package nl.imotion.burst.components.stackpanel
 				child.removeEventListener( BurstComponentEvent.SIZE_CHANGED, childSizeChangedHandler );
 			}
 			
+			dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
+			
 			return super.removeChild(child);
+		}
+		
+		
+		private function distributeChildren( startChild:DisplayObject = null ):void
+		{
+			var startChildIndex:uint = ( startChild != null ) ? getChildIndex( startChild ) : 0;
+			
+			if ( numChildren > 1 )
+			{
+				if ( startChildIndex == 0 ) startChildIndex = 1;
+				var i:int = startChildIndex;
+				
+				switch ( _orientation )
+				{
+					case StackPanelOrientation.HORIZONAL:
+						var xPos:Number = getChildAt( startChildIndex - 1 ).getBounds( this ).right + margin;
+						
+						for ( i; i < numChildren; i++ ) 
+						{
+							var horzChild:DisplayObject = getChildAt( i );
+							horzChild.x = xPos;
+							
+							xPos = horzChild.getBounds( this ).right + margin;
+						}
+						break;
+						
+					case StackPanelOrientation.VERTICAL:
+						var yPos:Number = getChildAt( startChildIndex - 1 ).getBounds( this ).bottom + margin;
+						
+						for ( i; i < numChildren; i++ ) 
+						{
+							var vertChild:DisplayObject = getChildAt( i );
+							vertChild.y = yPos;
+							
+							yPos = vertChild.getBounds( this ).bottom + margin;
+						}
+						break;
+				}
+				
+				dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
+			}
 		}
 		
 		
 		private function childSizeChangedHandler( e:BurstComponentEvent ):void 
 		{
-			var i:uint = 0;
-			
-			switch ( _orientation )
+			try
 			{
-				case StackPanelOrientation.HORIZONAL:
-					var xPos:Number = 0;
-					
-					for ( i = 0; i < numChildren; i++ ) 
-					{
-						var horzChild:DisplayObject = getChildAt( i );
-						horzChild.x = xPos;
-						
-						xPos += horzChild.width;
-					}
-				break;
-				
-				case StackPanelOrientation.VERTICAL:
-					var yPos:Number = 0;
-					
-					for ( i = 0; i < numChildren; i++ ) 
-					{
-						var vertChild:DisplayObject = getChildAt( i );
-						vertChild.y = yPos;
-						
-						yPos += vertChild.height;
-					}
-				break;
+				if ( this.contains( e.target as DisplayObject ) )
+				{
+					distributeChildren( e.target as DisplayObject );
+				}
+			} 
+			catch ( e:ArgumentError ) 
+			{ 
+				distributeChildren();
 			}
 			
-			dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
 		}
 		
 	}

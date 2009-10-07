@@ -1,6 +1,5 @@
 ﻿package flash.display
 {
-	import flash.display.Graphics;
 
 	public interface IShape extends IDisplayObject
 	{

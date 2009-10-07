@@ -2,13 +2,9 @@ package flash.display
 {
 	import flash.events.IEventDispatcher;
 	import flash.geom.Transform;
-	import flash.display.Stage;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.accessibility.AccessibilityProperties;
-	import flash.display.DisplayObjectContainer;
-	import flash.display.DisplayObject;
-	import flash.display.LoaderInfo;
 
 
 	public interface IDisplayObject extends IEventDispatcher

@@ -1,7 +1,5 @@
 ﻿package flash.display
 {
-	import flash.display.Scene;
-
 	
 	public interface IMovieClip extends ISprite
 	{

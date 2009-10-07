@@ -1,11 +1,14 @@
 package nl.imotion.burst.components 
 {
 
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import nl.imotion.burst.components.events.BurstComponentEvent;
 
-	[Event("burstComponentEvent")]
-
+	[Event(name="widthChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
+	[Event(name="heightChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
+	[Event(name = "sizeChanged", type = "nl.imotion.burst.components.events.BurstComponentEvent")]
+	
 	public class BurstSprite extends Sprite implements IBurstComponent 
 	{
 
@@ -55,6 +58,19 @@ package nl.imotion.burst.components
 			
 		}
 		
+		override public function addChild( child:DisplayObject ):DisplayObject 
+		{
+			dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
+			
+			return super.addChild(child);
+		}
+		
+		override public function removeChild( child:DisplayObject ):DisplayObject 
+		{
+			dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
+			
+			return super.removeChild(child);
+		}
 		
 		public function get explicitWidth():Number 
 		{

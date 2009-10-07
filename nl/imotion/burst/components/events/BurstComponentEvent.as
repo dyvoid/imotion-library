@@ -6,9 +6,9 @@ package nl.imotion.burst.components.events
 	public class BurstComponentEvent extends Event 
 	{
 
-		public static const WIDTH_CHANGED:String 	= "BurstComponentEvent::WIDTH_CHANGED";
-		public static const HEIGHT_CHANGED:String 	= "BurstComponentEvent::HEIGHT_CHANGED";
-		public static const SIZE_CHANGED:String 	= "BurstComponentEvent::SIZE_CHANGED";
+		public static const WIDTH_CHANGED:String 	= "widthChanged";
+		public static const HEIGHT_CHANGED:String 	= "heightChanged";
+		public static const SIZE_CHANGED:String 	= "sizeChanged";
 		
 		
 		public function BurstComponentEvent(type:String, bubbles:Boolean = true, cancelable:Boolean = false) 

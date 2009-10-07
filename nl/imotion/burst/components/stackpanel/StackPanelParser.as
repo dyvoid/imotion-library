@@ -12,7 +12,11 @@
 		
 		public function create( xml:XML, burst:Burst ):DisplayObject
 		{
-			var s:StackPanel = new StackPanel( xml.@orientation );
+			const orientation:String 		= xml.@orientation || StackPanelOrientation.VERTICAL;
+			const autoDistribute:Boolean 	= ( xml.@autoDistribute == "true" );
+			const margin:uint 				= ( xml.@margin != undefined ) ? parseInt( xml.@margin ) : 0;
+			
+			var s:StackPanel = new StackPanel( orientation, autoDistribute, margin );
 			
 			var childNodes:XMLList = xml.children();
 			

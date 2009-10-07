@@ -11,13 +11,12 @@
 		
 		public function create( xml:XML, burst:Burst ):DisplayObject
 		{
-			var c:Canvas = new Canvas();
-			
-			var childNodes:XMLList = xml.children();
+			const c:Canvas = new Canvas();
+			const childNodes:XMLList = xml.children();
 			
 			for each ( var node:XML in childNodes )
 			{
-				var d:DisplayObject = burst.parse( node );
+				const d:DisplayObject = burst.parse( node );
 				
 				if ( d )
 				{

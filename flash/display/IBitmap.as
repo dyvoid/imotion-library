@@ -1,6 +1,5 @@
 ﻿package flash.display
 {
-	import flash.display.BitmapData;
 
 	public interface IBitmap extends IDisplayObject
 	{

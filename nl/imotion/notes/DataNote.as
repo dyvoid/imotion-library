@@ -1,6 +1,5 @@
 package nl.imotion.notes 
 {
-	import nl.imotion.notes.Note;
 	
 	/**
 	 * @author Pieter van de Sluis

@@ -14,16 +14,19 @@ package nl.imotion.bindmvc.view
 		
 		protected function startEventInterest( target:*, type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
 		{
-			if ( target is IEventDispatcher )
+			switch( true )
 			{
-				registerEventListener( target, type, listener, useCapture, priority, useWeakReference );
-			}
-			if ( target is Array )
-			{
-				for each( var currTarget:IEventDispatcher in target )
-				{
-					registerEventListener( currTarget, type, listener, useCapture, priority, useWeakReference );
-				}
+				case ( target is IEventDispatcher ):
+					registerEventListener( target, type, listener, useCapture, priority, useWeakReference );
+					break;
+					
+				case ( target is Array ):
+					for each( var currTarget:IEventDispatcher in target )
+					{
+						registerEventListener( currTarget, type, listener, useCapture, priority, useWeakReference );
+					}
+					break;
+				
 			}
 		}
 		
@@ -38,16 +41,18 @@ package nl.imotion.bindmvc.view
 		
 		protected function stopEventInterest( target:*, type:String, listener:Function, useCapture:Boolean = false ):void
 		{
-			if ( target is IEventDispatcher )
+			switch( true )
 			{
-				unregisterEventListener( target, type, listener, useCapture );
-			}
-			if ( target is Array )
-			{
-				for each( var currTarget:IEventDispatcher in target )
-				{
-					unregisterEventListener( currTarget, type, listener, useCapture );
-				}
+				case ( target is IEventDispatcher ):
+					unregisterEventListener( target, type, listener, useCapture );
+					break;
+					
+				case ( target is Array ):
+					for each( var currTarget:IEventDispatcher in target )
+					{
+						unregisterEventListener( currTarget, type, listener, useCapture );
+					}
+					break;
 			}
 		}
 		
