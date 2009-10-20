@@ -7,7 +7,7 @@ package nl.imotion.burst.components
 
 	[Event(name="widthChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
 	[Event(name="heightChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
-	[Event(name = "sizeChanged", type = "nl.imotion.burst.components.events.BurstComponentEvent")]
+	[Event(name="sizeChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
 	
 	public class BurstSprite extends Sprite implements IBurstComponent 
 	{
@@ -17,7 +17,7 @@ package nl.imotion.burst.components
 			
 		}
 		
-
+		
 		override public function set width( value:Number ):void 
 		{
 			if ( value != super.width )
@@ -27,7 +27,8 @@ package nl.imotion.burst.components
 			}
 			
 		}
-
+		
+		
 		override public function set height( value:Number ):void 
 		{
 			if ( value != super.height )
