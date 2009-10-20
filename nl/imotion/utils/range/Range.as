@@ -12,7 +12,7 @@ package nl.imotion.utils.range
 		
 		
 		/**
-		 * Translates a value within a range to a value in target range.
+		 * Translates a value within a range to a value in a target range.
 		 * The input value is automatically constrained to the boundaries of the source range.
 		 * @param	value the value that is to be translated
 		 * @param	sourceBoundary1 the first boundary value of the source range
@@ -23,8 +23,7 @@ package nl.imotion.utils.range
 		 */
 		public static function translateValue( value:Number, sourceBoundary1:Number, sourceBoundary2:Number, targetBoundary1:Number, targetBoundary2:Number ):Number
 		{
-			var sourceRange:Range = new Range( sourceBoundary1, sourceBoundary2 );
-			return sourceRange.translate( value, new Range( targetBoundary1, targetBoundary2 ) );
+			return new Range( sourceBoundary1, sourceBoundary2 ).translate( value, new Range( targetBoundary1, targetBoundary2 ) );
 		}
 		
 		
