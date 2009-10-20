@@ -1,28 +1,24 @@
-package nl.imotion.bindmvc.core
+package nl.imotion.display
 {
 
+	import flash.display.Sprite;
 	import flash.events.IEventDispatcher;
 	import nl.imotion.events.EventManager;
-	import nl.imotion.bindmvc.model.IBindModel;
-	import nl.imotion.notes.Note;
-	import nl.imotion.notes.NoteDispatcher;
 	
 	
-	public class BindComponent implements IDestroyable
+	public class EventManagedSprite extends Sprite implements IEventManagedDisplayObject
 	{
 		
-		protected function retrieveModel( name:String ):IBindModel
-		{
-			return BindMVCCore.getInstance().retrieveModel( name );
-		}
+		public function EventManagedSprite() { }
 		
 		
 		private var _eventManager:EventManager;
-		private function get eventManager():EventManager
+		protected function get eventManager():EventManager
 		{
 			if ( !_eventManager ) _eventManager = new EventManager();
 			return _eventManager;
 		}
+		
 		
 		protected function startEventInterest( target:*, type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
 		{
@@ -81,18 +77,17 @@ package nl.imotion.bindmvc.core
 		}
 		
 		
-		protected function dispatchNote( note:Note ):void
-		{
-			NoteDispatcher.getInstance().dispatchNote( note );
-		}
-		
-		
 		public function destroy():void
 		{
 			if ( _eventManager != null )
 			{
 				_eventManager.removeAllListeners();
 				_eventManager = null;
+			}
+			
+			if ( this.parent != null )
+			{
+				parent.removeChild( this );
 			}
 		}
 		

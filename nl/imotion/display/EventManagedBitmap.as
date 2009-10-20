@@ -1,20 +1,15 @@
-package nl.imotion.bindmvc.core
+package nl.imotion.display
 {
 
+	import flash.display.Bitmap;
 	import flash.events.IEventDispatcher;
 	import nl.imotion.events.EventManager;
-	import nl.imotion.bindmvc.model.IBindModel;
-	import nl.imotion.notes.Note;
-	import nl.imotion.notes.NoteDispatcher;
 	
 	
-	public class BindComponent implements IDestroyable
+	public class EventManagedBitmap extends Bitmap implements IEventManagedDisplayObject
 	{
 		
-		protected function retrieveModel( name:String ):IBindModel
-		{
-			return BindMVCCore.getInstance().retrieveModel( name );
-		}
+		public function EventManagedBitmap() { }
 		
 		
 		private var _eventManager:EventManager;
@@ -81,12 +76,6 @@ package nl.imotion.bindmvc.core
 		}
 		
 		
-		protected function dispatchNote( note:Note ):void
-		{
-			NoteDispatcher.getInstance().dispatchNote( note );
-		}
-		
-		
 		public function destroy():void
 		{
 			if ( _eventManager != null )
@@ -94,8 +83,12 @@ package nl.imotion.bindmvc.core
 				_eventManager.removeAllListeners();
 				_eventManager = null;
 			}
+			
+			if ( this.parent != null )
+			{
+				parent.removeChild( this );
+			}
 		}
-		
 	}
 	
 }

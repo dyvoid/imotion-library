@@ -23,18 +23,18 @@ package nl.imotion.burst
 		{
 			if ( hasBinding( xml.name() ) )
 			{
-				var binding:BurstBinding = bindMap[ xml.name() ];
-				var instance:* = new binding.classRef();
+				var instance:* = new bindMap[ xml.name() ]();
 				
-				switch( binding.type )
+				switch( true )
 				{
-					case BurstBindingType.PARSER:
+					case ( instance is IBurstParser ):
 						return IBurstParser( instance ).create( xml, this );
-					break;
 					
-					case BurstBindingType.DISPLAY_OBJECT:
+					case ( instance is DisplayObject ):
 						return instance as DisplayObject;
-					break;
+						
+					default:
+						return null;
 				}
 			}
 			
@@ -44,13 +44,13 @@ package nl.imotion.burst
 		
 		public function bindParser( name:String, parserClass:Class ):void 
 		{
-			bindMap[ name ] = new BurstBinding( parserClass, BurstBindingType.PARSER );
+			bindMap[ name ] = parserClass;
 		}
 		
 		
 		public function bindDisplayObject( name:String, displayObjectClass:Class ):void
 		{
-			bindMap[ name ] = new BurstBinding( displayObjectClass, BurstBindingType.DISPLAY_OBJECT );
+			bindMap[ name ] = displayObjectClass;
 		}
 		
 		

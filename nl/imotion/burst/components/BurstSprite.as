@@ -3,18 +3,20 @@ package nl.imotion.burst.components
 
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import nl.imotion.burst.components.events.BurstComponentEvent;
+	import nl.imotion.display.EventManagedSprite;
 
 	[Event(name="widthChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
 	[Event(name="heightChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
 	[Event(name="sizeChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
 	
-	public class BurstSprite extends Sprite implements IBurstComponent 
+	public class BurstSprite extends EventManagedSprite implements IBurstComponent
 	{
-
+		
 		public function BurstSprite() 
 		{
-			
+			startEventInterest( this, Event.REMOVED_FROM_STAGE, removedFromStageHandler );
 		}
 		
 		
@@ -48,7 +50,7 @@ package nl.imotion.burst.components
 			}
 			
 		}
-
+		
 		override public function set scaleY( value:Number ):void 
 		{
 			if ( value != super.scaleY )
@@ -61,17 +63,48 @@ package nl.imotion.burst.components
 		
 		override public function addChild( child:DisplayObject ):DisplayObject 
 		{
-			dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
+			var prevWidth	:Number = width;
+			var prevHeight	:Number = height;
 			
-			return super.addChild(child);
+			super.addChild( child );
+			
+			broadcastSizeChange( prevWidth, prevHeight );
+
+			return child;
 		}
+		
 		
 		override public function removeChild( child:DisplayObject ):DisplayObject 
 		{
-			dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
+			var prevWidth	:Number = width;
+			var prevHeight	:Number = height;
 			
-			return super.removeChild(child);
+			super.removeChild( child );
+			
+			broadcastSizeChange( prevWidth, prevHeight );
+
+			return child;
 		}
+		
+		
+		protected function broadcastSizeChange( prevWidth:Number, prevHeight:Number ):void
+		{
+			switch( true )
+			{
+				case ( prevWidth != width && prevHeight != height ):
+					dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
+				break;
+				
+				case ( prevWidth != width ):
+					dispatchEvent( new BurstComponentEvent( BurstComponentEvent.WIDTH_CHANGED ) );
+				break;
+				
+				case ( prevHeight != height ):
+					dispatchEvent( new BurstComponentEvent( BurstComponentEvent.HEIGHT_CHANGED ) );
+				break; 
+			}
+		}
+		
 		
 		public function get explicitWidth():Number 
 		{
@@ -95,6 +128,20 @@ package nl.imotion.burst.components
 		{
 			this.height = value;
 		}
+		
+		
+		private function removedFromStageHandler():void
+		{
+			destroy();
+		}
+		
+		
+		override public function destroy():void 
+		{
+			eventManager.removeAllListeners();
+		}
 
 	}
+	
+	
 }

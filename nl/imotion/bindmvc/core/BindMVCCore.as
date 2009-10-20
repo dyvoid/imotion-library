@@ -28,7 +28,7 @@ package nl.imotion.bindmvc.core
 		{
 			if ( !allowInstantiation )
 			{
-				throw new Error( "Instantiation failed: Use BindMVCCore.getInstance() instead of constructor." );
+				throw new Error( "Instantiation failed: Use BindMVCCore.getInstance() Singleton factory method instead of constructor." );
 			}
 		}
 		
@@ -61,10 +61,7 @@ package nl.imotion.bindmvc.core
 		
 		public function bind( viewClass:Class, controllerClass:Class ):void
 		{
-			if ( !_isStarted )
-			{
-				throw new Error( "BindMVCCore has not been initiated properly. Please use startup method." );
-			}
+			checkStartup();
 			
 			bindMap[ viewClass ] = controllerClass;
 		}
@@ -72,6 +69,8 @@ package nl.imotion.bindmvc.core
 		
 		public function unbind( viewClass:Class, controllerClass:Class ):void
 		{
+			checkStartup();
+			
 			if ( bindMap[ viewClass ] == controllerClass )
 			{
 				delete bindMap[ viewClass ];
@@ -137,6 +136,15 @@ package nl.imotion.bindmvc.core
 				controller.destroy();
 				
 				delete boundMap[ view ];
+			}
+		}
+		
+		
+		private function checkStartup():void
+		{
+			if ( !_isStarted )
+			{
+				throw new Error( "BindMVCCore has not been initiated properly. Please use startup method." );
 			}
 		}
 		

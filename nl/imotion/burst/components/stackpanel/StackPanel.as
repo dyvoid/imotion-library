@@ -13,7 +13,8 @@ package nl.imotion.burst.components.stackpanel
 		private var _autoDistribute		:Boolean;
 		private var _margin				:uint;
 		
-		public function StackPanel( orientation:String = "vertical", autoDistribute:Boolean = false, margin:uint = 0 ) 
+		
+		public function StackPanel( orientation:String = StackPanelOrientation.VERTICAL, autoDistribute:Boolean = false, margin:uint = 0 ) 
 		{
 			_orientation 	= ( orientation == StackPanelOrientation.HORIZONAL || orientation == StackPanelOrientation.VERTICAL ) ? orientation : StackPanelOrientation.VERTICAL;
 			_autoDistribute	= autoDistribute;
@@ -30,59 +31,61 @@ package nl.imotion.burst.components.stackpanel
 		
 		override public function addChild( child:DisplayObject ):DisplayObject 
 		{
-			if ( _autoDistribute && child is BurstSprite )
+			if ( _autoDistribute && child is IBurstComponent )
 			{
-				child.addEventListener( BurstComponentEvent.SIZE_CHANGED,  	childSizeChangedHandler );
+				startEventInterest( child, BurstComponentEvent.SIZE_CHANGED, childSizeChangedHandler );
 				
 				switch ( _orientation )
 				{
 					case StackPanelOrientation.HORIZONAL:
-						child.addEventListener( BurstComponentEvent.WIDTH_CHANGED,	childSizeChangedHandler );
+						startEventInterest( child, BurstComponentEvent.WIDTH_CHANGED,	childSizeChangedHandler );
 					break;
 					
 					case StackPanelOrientation.VERTICAL:
-						child.addEventListener( BurstComponentEvent.HEIGHT_CHANGED, childSizeChangedHandler );
+						startEventInterest( child, BurstComponentEvent.HEIGHT_CHANGED, childSizeChangedHandler );
 					break;
 				}
 			}
 			
 			super.addChild( child );
 			
+			var prevWidth	:Number = width;
+			var prevHeight	:Number = height;
+			
 			distributeChildren( child );
 			
-			dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
+			broadcastSizeChange( prevWidth, prevHeight );
 			
 			return child;
 		}
 		
 		
-		override public function removeChild(child:DisplayObject):DisplayObject 
+		override public function removeChild( child:DisplayObject ):DisplayObject 
 		{
-			if ( child.hasEventListener( BurstComponentEvent.WIDTH_CHANGED ) )
-			{
-				child.removeEventListener( BurstComponentEvent.WIDTH_CHANGED, childSizeChangedHandler );
-			}
-			if ( child.hasEventListener( BurstComponentEvent.HEIGHT_CHANGED ) )
-			{
-				child.removeEventListener( BurstComponentEvent.HEIGHT_CHANGED, childSizeChangedHandler );
-			}
-			if ( child.hasEventListener( BurstComponentEvent.SIZE_CHANGED ) )
-			{
-				child.removeEventListener( BurstComponentEvent.SIZE_CHANGED, childSizeChangedHandler );
-			}
+			stopEventInterest( child, BurstComponentEvent.WIDTH_CHANGED, 	childSizeChangedHandler );
+			stopEventInterest( child, BurstComponentEvent.HEIGHT_CHANGED, 	childSizeChangedHandler );
+			stopEventInterest( child, BurstComponentEvent.SIZE_CHANGED, 	childSizeChangedHandler );
 			
-			dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
+			super.removeChild( child );
 			
-			return super.removeChild(child);
+			var prevWidth	:Number = width;
+			var prevHeight	:Number = height;
+			
+			distributeChildren();
+			
+			return child;
 		}
 		
 		
 		private function distributeChildren( startChild:DisplayObject = null ):void
 		{
-			var startChildIndex:uint = ( startChild != null ) ? getChildIndex( startChild ) : 0;
-			
 			if ( numChildren > 1 )
 			{
+				var prevWidth	:Number = width;
+				var prevHeight	:Number = height;
+				
+				var startChildIndex:uint = ( startChild != null ) ? getChildIndex( startChild ) : 1;
+				
 				if ( startChildIndex == 0 ) startChildIndex = 1;
 				var i:int = startChildIndex;
 				
@@ -113,18 +116,20 @@ package nl.imotion.burst.components.stackpanel
 						break;
 				}
 				
-				dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
+				broadcastSizeChange( prevWidth, prevHeight );
 			}
 		}
 		
 		
-		private function childSizeChangedHandler( e:BurstComponentEvent ):void 
+		private function childSizeChangedHandler( event:BurstComponentEvent ):void 
 		{
+			event.stopPropagation();
+			
 			try
 			{
-				if ( this.contains( e.target as DisplayObject ) )
+				if ( this.contains( event.target as DisplayObject ) )
 				{
-					distributeChildren( e.target as DisplayObject );
+					distributeChildren( event.target as DisplayObject );
 				}
 			} 
 			catch ( e:ArgumentError ) 
