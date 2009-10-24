@@ -48,7 +48,7 @@ package nl.imotion.bindmvc.controller
 		
 		
 		private var _noteManager:NoteManager;
-		private function get noteManager():NoteManager
+		protected function get noteManager():NoteManager
 		{
 			if ( !_noteManager ) _noteManager = new NoteManager();
 			return _noteManager;

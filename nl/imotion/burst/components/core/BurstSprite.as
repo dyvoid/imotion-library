@@ -1,4 +1,4 @@
-package nl.imotion.burst.components 
+package nl.imotion.burst.components.core 
 {
 
 	import flash.display.DisplayObject;
@@ -13,10 +13,13 @@ package nl.imotion.burst.components
 	
 	public class BurstSprite extends EventManagedSprite implements IBurstComponent
 	{
+		private var _explicitWidth	:Number;
+		private var _explicitHeight	:Number;
+		
 		
 		public function BurstSprite() 
 		{
-			startEventInterest( this, Event.REMOVED_FROM_STAGE, removedFromStageHandler );
+			
 		}
 		
 		
@@ -89,56 +92,37 @@ package nl.imotion.burst.components
 		
 		protected function broadcastSizeChange( prevWidth:Number, prevHeight:Number ):void
 		{
-			switch( true )
+			if ( this.stage )
 			{
-				case ( prevWidth != width && prevHeight != height ):
-					dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
-				break;
-				
-				case ( prevWidth != width ):
-					dispatchEvent( new BurstComponentEvent( BurstComponentEvent.WIDTH_CHANGED ) );
-				break;
-				
-				case ( prevHeight != height ):
-					dispatchEvent( new BurstComponentEvent( BurstComponentEvent.HEIGHT_CHANGED ) );
-				break; 
+				switch( true )
+				{
+					case ( prevWidth != width && prevHeight != height ):
+						dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
+					break;
+					
+					case ( prevWidth != width ):
+						dispatchEvent( new BurstComponentEvent( BurstComponentEvent.WIDTH_CHANGED ) );
+					break;
+					
+					case ( prevHeight != height ):
+						dispatchEvent( new BurstComponentEvent( BurstComponentEvent.HEIGHT_CHANGED ) );
+					break; 
+				}
 			}
 		}
 		
 		
-		public function get explicitWidth():Number 
-		{
-			return this.width;
-		}
-		
-		
+		public function get explicitWidth():Number { return isNaN( _explicitWidth) ? this.width : _explicitWidth; }		
 		public function set explicitWidth( value:Number ):void 
 		{
-			this.width = value;
+			_explicitWidth = value;
 		}
 		
 		
-		public function get explicitHeight():Number 
-		{
-			return this.height;
-		}
-		
-		
+		public function get explicitHeight():Number { return isNaN( _explicitHeight) ? this.height : _explicitHeight; }		
 		public function set explicitHeight( value:Number ):void 
 		{
-			this.height = value;
-		}
-		
-		
-		private function removedFromStageHandler():void
-		{
-			destroy();
-		}
-		
-		
-		override public function destroy():void 
-		{
-			eventManager.removeAllListeners();
+			_explicitHeight = value;
 		}
 
 	}

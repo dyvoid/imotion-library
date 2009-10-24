@@ -1,7 +1,7 @@
 ﻿package nl.imotion.burst.components.canvas 
 {
-	import nl.imotion.burst.components.IBurstComponent;
-	import nl.imotion.burst.components.BurstSprite;
+	import nl.imotion.burst.components.core.IBurstComponent;
+	import nl.imotion.burst.components.core.BurstSprite;
 	
 	/**
 	 * @author Pieter van de Sluis
@@ -13,5 +13,7 @@
 		{
 			
 		}
+		
+	}
 		
 }

@@ -1,4 +1,4 @@
-package nl.imotion.burst.components 
+package nl.imotion.burst.components.core
 {
 
 	import flash.display.IDisplayObject;

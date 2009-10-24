@@ -2,9 +2,9 @@ package nl.imotion.burst.components.stackpanel
 {
 
 	import flash.display.DisplayObject;
-	import nl.imotion.burst.components.BurstSprite;
+	import nl.imotion.burst.components.core.BurstSprite;
 	import nl.imotion.burst.components.events.BurstComponentEvent;
-	import nl.imotion.burst.components.IBurstComponent;
+	import nl.imotion.burst.components.core.IBurstComponent;
 
 	public class StackPanel extends BurstSprite 
 	{
@@ -49,8 +49,8 @@ package nl.imotion.burst.components.stackpanel
 			
 			super.addChild( child );
 			
-			var prevWidth	:Number = width;
-			var prevHeight	:Number = height;
+			const prevWidth		:Number = width;
+			const prevHeight	:Number = height;
 			
 			distributeChildren( child );
 			
@@ -68,8 +68,8 @@ package nl.imotion.burst.components.stackpanel
 			
 			super.removeChild( child );
 			
-			var prevWidth	:Number = width;
-			var prevHeight	:Number = height;
+			const prevWidth		:Number = width;
+			const prevHeight	:Number = height;
 			
 			distributeChildren();
 			
@@ -81,8 +81,8 @@ package nl.imotion.burst.components.stackpanel
 		{
 			if ( numChildren > 1 )
 			{
-				var prevWidth	:Number = width;
-				var prevHeight	:Number = height;
+				const prevWidth	:Number = width;
+				const prevHeight	:Number = height;
 				
 				var startChildIndex:uint = ( startChild != null ) ? getChildIndex( startChild ) : 1;
 				
@@ -97,9 +97,10 @@ package nl.imotion.burst.components.stackpanel
 						for ( i; i < numChildren; i++ ) 
 						{
 							var horzChild:DisplayObject = getChildAt( i );
+							var childWidth:Number = ( horzChild is IBurstComponent ) ? IBurstComponent( horzChild ).explicitWidth : horzChild.width;
 							horzChild.x = xPos;
 							
-							xPos = horzChild.getBounds( this ).right + margin;
+							xPos = horzChild.x + childWidth + margin;
 						}
 						break;
 						
@@ -109,9 +110,10 @@ package nl.imotion.burst.components.stackpanel
 						for ( i; i < numChildren; i++ ) 
 						{
 							var vertChild:DisplayObject = getChildAt( i );
+							var childHeight:Number = ( vertChild is IBurstComponent ) ? IBurstComponent( vertChild ).explicitHeight : vertChild.height;
 							vertChild.y = yPos;
 							
-							yPos = vertChild.getBounds( this ).bottom + margin;
+							yPos = vertChild.y + childHeight + margin;
 						}
 						break;
 				}

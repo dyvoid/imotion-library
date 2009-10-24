@@ -13,15 +13,15 @@ package nl.imotion.bindmvc.core
 	 */
 	public class BindMVCCore
 	{
-		private static var allowInstantiation:Boolean = false;
-		private static var instance:BindMVCCore;
+		protected static var allowInstantiation:Boolean = false;
+		protected static var instance:BindMVCCore;
 		
 		private var _isStarted	:Boolean = false;
 		
-		private var bindMap		:Dictionary = new Dictionary();
-		private var boundMap	:Dictionary = new Dictionary();
+		protected var bindMap		:Dictionary = new Dictionary();
+		protected var boundMap	:Dictionary = new Dictionary();
 		
-		private var modelMap	:Dictionary = new Dictionary();
+		protected var modelMap	:Dictionary = new Dictionary();
 		
 		
 		public function BindMVCCore()
@@ -86,17 +86,13 @@ package nl.imotion.bindmvc.core
 		
 		public function retrieveModel( modelName:String ):IBindModel
 		{
-			if ( modelMap[ modelName ] )
-			{
-				return modelMap[ modelName ];
-			}
-			return null;
+			return modelMap[ modelName ];
 		}
 		
 		
 		public function removeModel( modelName:String ):IBindModel
 		{
-			var model:IBindModel = modelMap[ modelName ];
+			const model:IBindModel = modelMap[ modelName ];
 			
 			if ( model )
 			{
@@ -107,18 +103,18 @@ package nl.imotion.bindmvc.core
 		}
 		
 		
-		private function addedToStageHandler( e:Event ):void
+		protected function addedToStageHandler( e:Event ):void
 		{
-			var view:DisplayObject = e.target as DisplayObject;
+			const view:DisplayObject = e.target as DisplayObject;
 			
 			if ( boundMap[ view ] == null )
 			{
-				var viewClass:Class = getDefinitionByName( getQualifiedClassName( view ) ) as Class;
+				const viewClass:Class = getDefinitionByName( getQualifiedClassName( view ) ) as Class;
 				
 				if ( bindMap[ viewClass ] )
 				{
-					var controllerClass:Class = bindMap[ viewClass ];
-					var controller:IBindController = new controllerClass( view );
+					const controllerClass:Class = bindMap[ viewClass ];
+					const controller:IBindController = new controllerClass( view );
 					
 					boundMap[ view ] = controller;
 				}
@@ -126,13 +122,13 @@ package nl.imotion.bindmvc.core
 		}
 		
 		
-		private function removedFromStageHandler( e:Event ):void
+		protected function removedFromStageHandler( e:Event ):void
 		{
-			var view:DisplayObject = e.target as DisplayObject;
+			const view:DisplayObject = e.target as DisplayObject;
+			const controller:IBindController = boundMap[ view ];
 			
-			if ( boundMap[ view ] )
+			if ( controller )
 			{
-				var controller:IBindController = boundMap[ view ];
 				controller.destroy();
 				
 				delete boundMap[ view ];
@@ -144,7 +140,7 @@ package nl.imotion.bindmvc.core
 		{
 			if ( !_isStarted )
 			{
-				throw new Error( "BindMVCCore has not been initiated properly. Please use startup method." );
+				throw new Error( "BindMVCCore has not been initiated properly to support binding. Please use startup method." );
 			}
 		}
 		

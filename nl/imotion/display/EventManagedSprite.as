@@ -2,14 +2,38 @@ package nl.imotion.display
 {
 
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import nl.imotion.events.EventManager;
 	
 	
 	public class EventManagedSprite extends Sprite implements IEventManagedDisplayObject
-	{
+	{	
 		
-		public function EventManagedSprite() { }
+		public function EventManagedSprite( autoDestroy:Boolean = true ) 
+		{
+			if ( autoDestroy )
+			{
+				startEventInterest( this, Event.REMOVED_FROM_STAGE, removedFromStageHandler );
+			}
+		}
+		
+		
+		private function removedFromStageHandler( e:Event ):void
+		{
+			//Wait for the next frame before destroying, so that functionality like 
+			//switching to a different parent DisplayObjectContainer does not break
+			startEventInterest( this, Event.ENTER_FRAME, enterFrameHandler );
+		}
+		
+		
+		private function enterFrameHandler( e:Event ):void
+		{
+			if ( !this.stage )
+			{
+				destroy();
+			}
+		}
 		
 		
 		private var _eventManager:EventManager;
@@ -87,7 +111,7 @@ package nl.imotion.display
 			
 			if ( this.parent != null )
 			{
-				parent.removeChild( this );
+				this.parent.removeChild( this );
 			}
 		}
 		
