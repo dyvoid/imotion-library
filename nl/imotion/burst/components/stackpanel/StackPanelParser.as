@@ -2,31 +2,34 @@
 {
 	import flash.display.DisplayObject;
 	import nl.imotion.burst.Burst;
+	import nl.imotion.burst.parsers.BurstDisplayObjectParser;
 	import nl.imotion.burst.parsers.BurstParser;
 	import nl.imotion.burst.parsers.IBurstParser;
 	
 	/**
 	 * @author Pieter van de Sluis
 	 */
-	public class StackPanelParser extends BurstParser implements IBurstParser
+	public class StackPanelParser extends BurstDisplayObjectParser implements IBurstParser
 	{
+		
 		public function StackPanelParser()
 		{
-			addAttributeFilter( "x", Number );
-			addAttributeFilter( "y", Number );
+			addAttributeMapping( "orientation", String, StackPanelOrientation.VERTICAL, [ StackPanelOrientation.HORIZONAL, StackPanelOrientation.VERTICAL ] );
+			addAttributeMapping( "autoDistribute", Boolean, "true" );
+			addAttributeMapping( "margin", Number, "0" );
 		}
 		
 		
-		override public function create( xml:XML, burst:Burst ):DisplayObject
+		override public function create( xml:XML, burst:Burst = null ):DisplayObject
 		{
-			const orientation:String 		= xml.@orientation || StackPanelOrientation.VERTICAL;
-			const autoDistribute:Boolean 	= ( xml.@autoDistribute == "true" );
-			const margin:uint 				= ( xml.@margin != undefined ) ? parseInt( xml.@margin ) : 0;
+			const orientation:String 		= getMappedValue( "orientation", xml );
+			const autoDistribute:Boolean 	= getMappedValue( "autoDistribute", xml );
+			const margin:uint 				= getMappedValue( "margin", xml );
 			
 			const s:StackPanel = new StackPanel( orientation, autoDistribute, margin );
 			
 			parseChildren( s, xml.children(), burst );
-			processFilters( s, xml );
+			applyMappings( s, xml );
 			
 			return s;
 		}

@@ -5,30 +5,29 @@
 	import flash.display.DisplayObjectContainer;
 	import flash.utils.Dictionary;
 	import nl.imotion.burst.Burst;
+	
+	
 	/**
 	 * @author Pieter van de Sluis
 	 */
 	public class BurstParser implements IBurstParser
 	{
-		protected var attributeFilterMap:Dictionary = new Dictionary();
-		protected var nodeFilterMap:Dictionary 		= new Dictionary();
+		private var xmlMappings:Dictionary 	= new Dictionary();
 		
 		
-		public function BurstParser() 
+		public function create( xml:XML, burst:Burst = null ):DisplayObject
 		{
-			
-		}
-		
-		
-		public function create( xml:XML, burst:Burst ):DisplayObject
-		{
-			//override in subclass
-			return null;
+			throw new Error( "create method should be overridden in subclass." );
 		}
 		
 		
 		protected function parseChildren( target:DisplayObjectContainer, children:XMLList, burst:Burst ):void
 		{
+			if ( !burst )
+			{
+				throw new Error( "Cannot parse children without a valid Burst instance" );
+			}
+			
 			for each ( var node:XML in children )
 			{
 				const d:DisplayObject = burst.parse( node );
@@ -41,77 +40,167 @@
 		}
 		
 		
-		protected function addAttributeFilter( attributeName:String, targetClass:Class ):void
+		protected function addAttributeMapping( attributeName:String, targetClass:Class, defaultValue:String = null, allowedValues:/*String*/Array = null ):void
 		{
-			attributeFilterMap[ attributeName ] = targetClass;
-		}
-		
-		
-		protected function addNodeFilter( nodeName:String, targetClass:Class ):void
-		{
-			nodeFilterMap[ nodeName ] = targetClass;
-		}
-		
-		
-		protected function processFilters( target:DisplayObject, xml:XML ):void
-		{
-			for ( var attributeName:String in attributeFilterMap ) 
-			{
-				processAttributeFilter( xml, target, attributeName, attributeFilterMap[ attributeName ] );
-			}
-			for ( var nodeName:String in nodeFilterMap ) 
-			{
-				processNodeFilter( xml, target, nodeName, nodeFilterMap[ nodeName ] );
-			}
-		}
-		
-		
-		protected function processAttributeFilter( xml:XML, target:DisplayObject, attributeName:String, targetClass:Class ):void
-		{
-			const value:* = xml.attribute( attributeName );
+			const mapping:BurstXMLMapping = xmlMappings [ attributeName ];
 			
-			if ( value && value != undefined )
+			if ( mapping && mapping.type == BurstXMLMappingType.NODE )
 			{
-				processValue( target, attributeName, value, targetClass );
+				throw new Error( "Mapping already exists for node type." );
 			}
-		}
-		
-		
-		protected function processNodeFilter( xml:XML, target:DisplayObject, nodeName:String, targetClass:Class ):void
-		{
-			const value:* = xml.child( nodeName ).toString();
 			
-			if ( value && value != undefined )
+			xmlMappings[ attributeName ] = new BurstXMLMapping( BurstXMLMappingType.ATTRIBUTE, attributeName, targetClass, defaultValue, allowedValues );
+		}
+		
+		
+		protected function removeAttributeMapping( attributeName:String ):Boolean
+		{
+			if ( xmlMappings[ attributeName ] )
 			{
-				processValue( target, nodeName, value, targetClass );
+				delete xmlMappings[ attributeName ];
+				return true;
+			}
+			return false;
+		}
+		
+		
+		protected function addNodeMapping( nodeName:String, targetClass:Class, defaultValue:String = null, allowedValues:/*String*/Array = null ):void
+		{
+			const mapping:BurstXMLMapping = xmlMappings [ nodeName ];
+			
+			if ( mapping && mapping.type == BurstXMLMappingType.ATTRIBUTE )
+			{
+				throw new Error( "Mapping already exists for attribute type." );
+			}
+			
+			xmlMappings[ nodeName ] = new BurstXMLMapping( BurstXMLMappingType.NODE, nodeName, targetClass, defaultValue, allowedValues );
+		}
+		
+		
+		protected function removeNodeMapping( nodeName:String ):Boolean
+		{
+			if ( xmlMappings[ nodeName ] )
+			{
+				delete xmlMappings[ nodeName ];
+				return true;
+			}
+			return false;
+		}
+		
+		
+		protected function applyMappings( target:DisplayObject, xml:XML ):void
+		{
+			for ( var name:String in xmlMappings ) 
+			{
+				applyMapping( xml, target, xmlMappings[ name ] as BurstXMLMapping );
 			}
 		}
 		
 		
-		private function processValue( target:DisplayObject, propertyName:String, value:String, targetClass:Class ):void
+		private function applyMapping( xml:XML, target:DisplayObject, mapping:BurstXMLMapping ):void
 		{
-			try { target[ propertyName ]; }
-			catch ( e:Error ) { return; }
+			var value:* = getMappedValue( mapping.itemName, xml );
+			
+			if ( value != null )
+			{
+				applyValue( target, mapping.itemName, value );
+			}
+		}
+		
+		
+		protected function getMappedValue( name:String, xml:XML ):*
+		{
+			var mapping:BurstXMLMapping = xmlMappings[ name ];
+			
+			if ( mapping )
+			{
+				var value:*;
+				
+				switch ( mapping.type )
+				{
+					case BurstXMLMappingType.ATTRIBUTE:
+						value = getValue( xml.attribute( mapping.itemName ), mapping );
+					break;
+					
+					case BurstXMLMappingType.NODE:
+						value = getValue( xml.child( mapping.itemName ).toString(), mapping );
+					break;
+				}
+				
+				if ( value )
+				{
+					var resultValue:*
+					
+					switch ( mapping.targetClass )
+					{
+						case uint: case int:
+							resultValue = parseInt( value );
+							if ( !isNaN ( resultValue ) )
+								return resultValue;
+						break;
+						
+						case Number:
+							resultValue = parseFloat( value );
+							if ( !isNaN ( resultValue ) )
+								return resultValue;
+						break;
+						
+						case String:
+							return value;
+						return;
+						
+						case Boolean:
+							 return ( value == "true" )
+						return;
+						
+						default:
+							return null;
+					}
+					
+					return null;
+				}
+				else
+				{
+					return null;
+				}
+			}
+			else
+			{
+				return null;
+			}
+		}
+		
+		
+		private function getValue( value:String, mapping:BurstXMLMapping ):String
+		{
+			if ( !value )
+			{ 
+				if ( mapping.defaultValue )
+				{
+					return mapping.defaultValue;
+				}
+				else
+				{
+					return null;
+				}
+			}
+			
+			if ( mapping.allowedValues && mapping.allowedValues.indexOf( value ) == -1 )
+			{
+				return mapping.defaultValue;
+			}
+			
+			return value;
+		}
 
-			switch ( targetClass )
-			{
-				case uint: case int:
-					target[ propertyName ] = parseInt( value );
-				return;
-				
-				case Number:
-					target[ propertyName ] = parseFloat( value );
-				return;
-				
-				case String:
-					target[ propertyName ] = value;
-				return;
-				
-				case Boolean:
-					target[ propertyName ] = ( value == "true" )
-				return;
-			}
+		
+		
+		private function applyValue( target:DisplayObject, propertyName:String, value:* ):void
+		{
+			try { target[ propertyName ] = value; }
+			catch ( e:Error ) { return; }
 		}
+		
 	}
 
 }

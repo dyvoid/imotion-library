@@ -140,7 +140,7 @@ package nl.imotion.bindmvc.core
 		{
 			if ( !_isStarted )
 			{
-				throw new Error( "BindMVCCore has not been initiated properly to support binding. Please use startup method." );
+				throw new Error( "BindMVCCore has not been initiated properly. Use the startup method to enable binding." );
 			}
 		}
 		
