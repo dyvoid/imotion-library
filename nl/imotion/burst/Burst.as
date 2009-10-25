@@ -42,29 +42,29 @@ package nl.imotion.burst
 		}
 		
 		
-		public function bindParser( name:String, parserClass:Class ):void 
+		public function bindParser( nodeName:String, parserClass:Class ):void 
 		{
-			bindMap[ name ] = parserClass;
+			bindMap[ nodeName ] = parserClass;
 		}
 		
 		
-		public function bindDisplayObject( name:String, displayObjectClass:Class ):void
+		public function bindDisplayObject( nodeName:String, displayObjectClass:Class ):void
 		{
-			bindMap[ name ] = displayObjectClass;
+			bindMap[ nodeName ] = displayObjectClass;
 		}
 		
 		
-		public function hasBinding( name:String ):Boolean
+		public function hasBinding( nodeName:String ):Boolean
 		{
-			return ( bindMap[ name ] != null );
+			return ( bindMap[ nodeName ] != null );
 		}
 		
 		
-		public function removeBinding( name:String ):Boolean 
+		public function removeBinding( nodeName:String ):Boolean 
 		{
-			if ( hasBinding( name ) )
+			if ( hasBinding( nodeName ) )
 			{
-				delete bindMap[ name ];
+				delete bindMap[ nodeName ];
 				return true;
 			}
 			return false;

@@ -30,11 +30,14 @@
 			
 			for each ( var node:XML in children )
 			{
-				const d:DisplayObject = burst.parse( node );
-				
-				if ( d )
+				if ( burst.hasBinding( node.name() ) )
 				{
-					target.addChild( d );
+					const parsedChild:DisplayObject = burst.parse( node );
+					
+					if ( parsedChild )
+					{
+						target.addChild( parsedChild );
+					}
 				}
 			}
 		}
@@ -43,6 +46,14 @@
 		protected function addAttributeMapping( attributeName:String, targetClass:Class, defaultValue:String = null, allowedValues:/*String*/Array = null ):void
 		{
 			const mapping:BurstXMLMapping = xmlMappings [ attributeName ];
+			
+			if ( defaultValue && allowedValues )
+			{
+				if ( allowedValues.indexOf( defaultValue ) == -1 )
+				{
+					throw new Error( "Default value does not match with allowed values.");
+				}
+			}
 			
 			if ( mapping && mapping.type == BurstXMLMappingType.NODE )
 			{
@@ -68,6 +79,14 @@
 		{
 			const mapping:BurstXMLMapping = xmlMappings [ nodeName ];
 			
+			if ( defaultValue && allowedValues )
+			{
+				if ( allowedValues.indexOf( defaultValue ) == -1 )
+				{
+					throw new Error( "Default value does not match with allowed values.");
+				}
+			}
+			
 			if ( mapping && mapping.type == BurstXMLMappingType.ATTRIBUTE )
 			{
 				throw new Error( "Mapping already exists for attribute type." );
@@ -90,14 +109,14 @@
 		
 		protected function applyMappings( target:DisplayObject, xml:XML ):void
 		{
-			for ( var name:String in xmlMappings ) 
+			for each ( var mapping:BurstXMLMapping in xmlMappings ) 
 			{
-				applyMapping( xml, target, xmlMappings[ name ] as BurstXMLMapping );
+				applyMapping( target, xml, mapping );
 			}
 		}
 		
 		
-		private function applyMapping( xml:XML, target:DisplayObject, mapping:BurstXMLMapping ):void
+		private function applyMapping( target:DisplayObject, xml:XML, mapping:BurstXMLMapping ):void
 		{
 			var value:* = getMappedValue( mapping.itemName, xml );
 			

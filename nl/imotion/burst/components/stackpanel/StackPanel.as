@@ -38,7 +38,7 @@ package nl.imotion.burst.components.stackpanel
 				switch ( _orientation )
 				{
 					case StackPanelOrientation.HORIZONAL:
-						startEventInterest( child, BurstComponentEvent.WIDTH_CHANGED,	childSizeChangedHandler );
+						startEventInterest( child, BurstComponentEvent.WIDTH_CHANGED, childSizeChangedHandler );
 					break;
 					
 					case StackPanelOrientation.VERTICAL:
@@ -81,7 +81,7 @@ package nl.imotion.burst.components.stackpanel
 		{
 			if ( numChildren > 1 )
 			{
-				const prevWidth	:Number = width;
+				const prevWidth		:Number = width;
 				const prevHeight	:Number = height;
 				
 				var startChildIndex:uint = ( startChild != null ) ? getChildIndex( startChild ) : 1;
@@ -96,8 +96,9 @@ package nl.imotion.burst.components.stackpanel
 						
 						for ( i; i < numChildren; i++ ) 
 						{
-							var horzChild:DisplayObject = getChildAt( i );
-							var childWidth:Number = ( horzChild is IBurstComponent ) ? IBurstComponent( horzChild ).explicitWidth : horzChild.width;
+							const horzChild:DisplayObject = getChildAt( i );
+							const childWidth:Number = ( ( horzChild is IBurstComponent ) ? IBurstComponent( horzChild ).explicitWidth : horzChild.width ) || 0;
+							
 							horzChild.x = xPos;
 							
 							xPos = horzChild.x + childWidth + margin;
@@ -109,8 +110,8 @@ package nl.imotion.burst.components.stackpanel
 						
 						for ( i; i < numChildren; i++ ) 
 						{
-							var vertChild:DisplayObject = getChildAt( i );
-							var childHeight:Number = ( vertChild is IBurstComponent ) ? IBurstComponent( vertChild ).explicitHeight : vertChild.height;
+							const vertChild:DisplayObject = getChildAt( i );
+							const childHeight:Number = ( ( vertChild is IBurstComponent ) ? IBurstComponent( vertChild ).explicitHeight : vertChild.height ) || 0;
 							vertChild.y = yPos;
 							
 							yPos = vertChild.y + childHeight + margin;

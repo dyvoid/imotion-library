@@ -14,23 +14,23 @@
 		
 		public function BurstDisplayObjectParser() 
 		{
-			initxmlMappings();
+			initMappings();
 		}
 		
 		
-		private function initxmlMappings():void
+		private function initMappings():void
 		{
-			addAttributeMapping( "x", Number, "0" );
-			addAttributeMapping( "y", Number, "0" );
+			addAttributeMapping( "x", Number );
+			addAttributeMapping( "y", Number );
 			addAttributeMapping( "width", Number );
 			addAttributeMapping( "height", Number );
-			addAttributeMapping( "scaleX", Number, "1" );
-			addAttributeMapping( "scaleY", Number, "1" );
-			addAttributeMapping( "alpha", Number, "1" );
-			addAttributeMapping( "blendMode", String, BlendMode.NORMAL, [ BlendMode.ADD, BlendMode.ALPHA, BlendMode.DIFFERENCE, BlendMode.ERASE, BlendMode.HARDLIGHT, BlendMode.INVERT, BlendMode.LAYER, BlendMode.LIGHTEN, BlendMode.MULTIPLY, BlendMode.NORMAL, BlendMode.OVERLAY, BlendMode.SCREEN, BlendMode.SUBTRACT ] );
-			addAttributeMapping( "cacheAsBitmap", Boolean, "true" );
-			addAttributeMapping( "rotation", Number, "0");
-			addAttributeMapping( "visible", Boolean, "true" );
+			addAttributeMapping( "scaleX", Number );
+			addAttributeMapping( "scaleY", Number );
+			addAttributeMapping( "alpha", Number );
+			addAttributeMapping( "blendMode", String, null, [ BlendMode.ADD, BlendMode.ALPHA, BlendMode.DIFFERENCE, BlendMode.ERASE, BlendMode.HARDLIGHT, BlendMode.INVERT, BlendMode.LAYER, BlendMode.LIGHTEN, BlendMode.MULTIPLY, BlendMode.NORMAL, BlendMode.OVERLAY, BlendMode.SCREEN, BlendMode.SUBTRACT ] );
+			addAttributeMapping( "cacheAsBitmap", Boolean );
+			addAttributeMapping( "rotation", Number );
+			addAttributeMapping( "visible", Boolean );
 		}
 		
 		
