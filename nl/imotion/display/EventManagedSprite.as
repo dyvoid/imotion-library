@@ -33,6 +33,10 @@ package nl.imotion.display
 			{
 				destroy();
 			}
+			else
+			{
+				stopEventInterest( this, Event.ENTER_FRAME, enterFrameHandler );
+			}
 		}
 		
 		

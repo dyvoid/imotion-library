@@ -15,7 +15,7 @@
 		public function StackPanelParser()
 		{
 			addAttributeMapping( "orientation", String, StackPanelOrientation.VERTICAL, [ StackPanelOrientation.HORIZONAL, StackPanelOrientation.VERTICAL ] );
-			addAttributeMapping( "autoDistribute", Boolean, "true" );
+			addAttributeMapping( "autoUpdate", Boolean, "true" );
 			addAttributeMapping( "margin", Number, "0" );
 		}
 		
@@ -23,10 +23,10 @@
 		override public function create( xml:XML, burst:Burst = null ):DisplayObject
 		{
 			const orientation:String 		= getMappedValue( "orientation", xml );
-			const autoDistribute:Boolean 	= getMappedValue( "autoDistribute", xml );
+			const autoUpdate:Boolean 	= getMappedValue( "autoUpdate", xml );
 			const margin:uint 				= getMappedValue( "margin", xml );
 			
-			const s:StackPanel = new StackPanel( orientation, autoDistribute, margin );
+			const s:StackPanel = new StackPanel( orientation, autoUpdate, margin );
 			
 			parseChildren( s, xml.children(), burst );
 			applyMappings( s, xml );

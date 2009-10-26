@@ -2,8 +2,6 @@ package nl.imotion.burst.components.core
 {
 
 	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.events.Event;
 	import nl.imotion.burst.components.events.BurstComponentEvent;
 	import nl.imotion.display.EventManagedSprite;
 

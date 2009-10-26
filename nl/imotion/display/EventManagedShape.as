@@ -2,6 +2,7 @@ package nl.imotion.display
 {
 
 	import flash.display.Shape;
+	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import nl.imotion.events.EventManager;
 	
@@ -31,6 +32,10 @@ package nl.imotion.display
 			if ( !this.stage )
 			{
 				destroy();
+			}
+			else
+			{
+				stopEventInterest( this, Event.ENTER_FRAME, enterFrameHandler );
 			}
 		}
 		

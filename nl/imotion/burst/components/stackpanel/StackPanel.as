@@ -10,44 +10,47 @@ package nl.imotion.burst.components.stackpanel
 	{
 		
 		private var _orientation		:String;
-		private var _autoDistribute		:Boolean;
+		private var _autoUpdate			:Boolean;
 		private var _margin				:uint;
 		
 		
-		public function StackPanel( orientation:String = StackPanelOrientation.VERTICAL, autoDistribute:Boolean = false, margin:uint = 0 ) 
+		public function StackPanel( orientation:String = StackPanelOrientation.VERTICAL, autoUpdate:Boolean = false, margin:uint = 0 ) 
 		{
 			_orientation 	= ( orientation == StackPanelOrientation.HORIZONAL || orientation == StackPanelOrientation.VERTICAL ) ? orientation : StackPanelOrientation.VERTICAL;
-			_autoDistribute	= autoDistribute;
+			_autoUpdate		= autoUpdate;
 			_margin			= margin;
 		}
 		
 		
 		public function get orientation():String { return _orientation; }
 		
-		public function get autoDistribute():Boolean { return _autoDistribute; }
+		public function get autoUpdate():Boolean { return _autoUpdate; }
 		
 		public function get margin():uint { return _margin; }
 		
 		
 		override public function addChild( child:DisplayObject ):DisplayObject 
 		{
-			if ( _autoDistribute && child is IBurstComponent )
+			try 
 			{
-				startEventInterest( child, BurstComponentEvent.SIZE_CHANGED, childSizeChangedHandler );
-				
-				switch ( _orientation )
-				{
-					case StackPanelOrientation.HORIZONAL:
-						startEventInterest( child, BurstComponentEvent.WIDTH_CHANGED, childSizeChangedHandler );
-					break;
-					
-					case StackPanelOrientation.VERTICAL:
-						startEventInterest( child, BurstComponentEvent.HEIGHT_CHANGED, childSizeChangedHandler );
-					break;
-				}
+				var child:DisplayObject = addChildAt( child, numChildren );
+			}
+			catch ( e:Error )
+			{
+				//Catch any error, and then throw it ourselves.
+				//In this way the error will seem to come from addChild rather than addChildAt
+				throw new Error( e );
 			}
 			
-			super.addChild( child );
+			return child;
+		}
+		
+		
+		override public function addChildAt( child:DisplayObject, index:int ):DisplayObject 
+		{
+			super.addChildAt( child, index );
+			
+			registerChildListeners( child );
 			
 			const prevWidth		:Number = width;
 			const prevHeight	:Number = height;
@@ -62,37 +65,85 @@ package nl.imotion.burst.components.stackpanel
 		
 		override public function removeChild( child:DisplayObject ):DisplayObject 
 		{
-			stopEventInterest( child, BurstComponentEvent.WIDTH_CHANGED, 	childSizeChangedHandler );
-			stopEventInterest( child, BurstComponentEvent.HEIGHT_CHANGED, 	childSizeChangedHandler );
-			stopEventInterest( child, BurstComponentEvent.SIZE_CHANGED, 	childSizeChangedHandler );
-			
 			super.removeChild( child );
+			
+			removeChildListeners( child );
 			
 			const prevWidth		:Number = width;
 			const prevHeight	:Number = height;
 			
 			distributeChildren();
 			
+			broadcastSizeChange( prevWidth, prevHeight );
+			
 			return child;
+		}
+		
+		
+		override public function removeChildAt( index:int ):DisplayObject 
+		{
+			try 
+			{
+				var child:DisplayObject = getChildAt( index );
+				removeChild( child );
+			} 
+			catch ( e:Error )
+			{
+				//Catch any error, and then throw it ourselves.
+				//In this way the error will seem to come from removeChildAt rather than removeChild or getChildAt
+				throw new Error( e );
+			}			
+			
+			return child;
+		}
+		
+		
+		private function registerChildListeners( child:DisplayObject ):void
+		{
+			if ( _autoUpdate && child is IBurstComponent )
+			{
+				startEventInterest( child, BurstComponentEvent.SIZE_CHANGED, childSizeChangedHandler );
+				
+				switch ( _orientation )
+				{
+					case StackPanelOrientation.HORIZONAL:
+						startEventInterest( child, BurstComponentEvent.WIDTH_CHANGED, childSizeChangedHandler );
+					break;
+					
+					case StackPanelOrientation.VERTICAL:
+						startEventInterest( child, BurstComponentEvent.HEIGHT_CHANGED, childSizeChangedHandler );
+					break;
+				}
+			}
+		}
+		
+		
+		private function removeChildListeners( child:DisplayObject ):void
+		{
+			if ( child is IBurstComponent )
+			{
+				stopEventInterest( child, BurstComponentEvent.WIDTH_CHANGED, 	childSizeChangedHandler );
+				stopEventInterest( child, BurstComponentEvent.HEIGHT_CHANGED, 	childSizeChangedHandler );
+				stopEventInterest( child, BurstComponentEvent.SIZE_CHANGED, 	childSizeChangedHandler );
+			}
 		}
 		
 		
 		private function distributeChildren( startChild:DisplayObject = null ):void
 		{
-			if ( numChildren > 1 )
+			if ( numChildren > 0 )
 			{
 				const prevWidth		:Number = width;
 				const prevHeight	:Number = height;
 				
-				var startChildIndex:uint = ( startChild != null ) ? getChildIndex( startChild ) : 1;
+				var startChildIndex:uint = ( startChild != null ) ? getChildIndex( startChild ) : 0;
 				
-				if ( startChildIndex == 0 ) startChildIndex = 1;
 				var i:int = startChildIndex;
 				
 				switch ( _orientation )
 				{
 					case StackPanelOrientation.HORIZONAL:
-						var xPos:Number = getChildAt( startChildIndex - 1 ).getBounds( this ).right + margin;
+						var xPos:Number = ( startChildIndex == 0 ) ? 0 : getChildAt( startChildIndex - 1 ).getBounds( this ).right + margin;
 						
 						for ( i; i < numChildren; i++ ) 
 						{
@@ -106,7 +157,7 @@ package nl.imotion.burst.components.stackpanel
 						break;
 						
 					case StackPanelOrientation.VERTICAL:
-						var yPos:Number = getChildAt( startChildIndex - 1 ).getBounds( this ).bottom + margin;
+						var yPos:Number = ( startChildIndex == 0 ) ? 0 : getChildAt( startChildIndex - 1 ).getBounds( this ).bottom + margin;
 						
 						for ( i; i < numChildren; i++ ) 
 						{

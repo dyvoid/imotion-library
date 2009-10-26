@@ -18,7 +18,7 @@ package nl.imotion.bindmvc.core
 		
 		private var _isStarted	:Boolean = false;
 		
-		protected var bindMap		:Dictionary = new Dictionary();
+		protected var bindMap	:Dictionary = new Dictionary();
 		protected var boundMap	:Dictionary = new Dictionary();
 		
 		protected var modelMap	:Dictionary = new Dictionary();
@@ -103,35 +103,44 @@ package nl.imotion.bindmvc.core
 		}
 		
 		
-		protected function addedToStageHandler( e:Event ):void
+		private function addedToStageHandler( e:Event ):void
 		{
-			const view:DisplayObject = e.target as DisplayObject;
-			
-			if ( boundMap[ view ] == null )
+			onChildAddedToStage( e.target as DisplayObject );
+		}
+		
+		
+		protected function onChildAddedToStage( child:DisplayObject ):void
+		{
+			if ( boundMap[ child ] == null )
 			{
-				const viewClass:Class = getDefinitionByName( getQualifiedClassName( view ) ) as Class;
+				const viewClass:Class = getDefinitionByName( getQualifiedClassName( child ) ) as Class;
 				
 				if ( bindMap[ viewClass ] )
 				{
 					const controllerClass:Class = bindMap[ viewClass ];
-					const controller:IBindController = new controllerClass( view );
+					const controller:IBindController = new controllerClass( child );
 					
-					boundMap[ view ] = controller;
+					boundMap[ child ] = controller;
 				}
 			}
 		}
 		
 		
-		protected function removedFromStageHandler( e:Event ):void
+		private function removedFromStageHandler( e:Event ):void
 		{
-			const view:DisplayObject = e.target as DisplayObject;
-			const controller:IBindController = boundMap[ view ];
+			onChildRemovedFromStage( e.target as DisplayObject );
+		}
+		
+		
+		protected function onChildRemovedFromStage( child:DisplayObject ):void
+		{
+			const controller:IBindController = boundMap[ child ];
 			
 			if ( controller )
 			{
 				controller.destroy();
 				
-				delete boundMap[ view ];
+				delete boundMap[ child ];
 			}
 		}
 		
