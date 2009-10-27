@@ -107,11 +107,14 @@
 		}
 		
 		
-		protected function applyMappings( target:DisplayObject, xml:XML ):void
+		protected function applyMappings( target:DisplayObject, xml:XML, ignoreList:/*String*/Array = null ):void
 		{
 			for each ( var mapping:BurstXMLMapping in xmlMappings ) 
 			{
-				applyMapping( target, xml, mapping );
+				if ( ignoreList == null || ignoreList.indexOf( mapping.itemName ) == -1 )
+				{
+					applyMapping( target, xml, mapping );
+				}
 			}
 		}
 		
