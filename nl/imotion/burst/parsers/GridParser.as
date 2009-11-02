@@ -1,18 +1,19 @@
-﻿package nl.imotion.burst.components.grid 
+﻿package nl.imotion.burst.parsers 
 {
 	import flash.display.Sprite;
 	import nl.imotion.burst.Burst;
 	import flash.display.DisplayObject;
 	import nl.imotion.burst.components.core.BurstSprite;
-	import nl.imotion.burst.parsers.BurstDisplayObjectParser;
 	import nl.imotion.utils.grid.GridCalculator;
 	
 	/**
 	 * ...
 	 * @author Pieter van de Sluis
 	 */
-	public class GridParser extends BurstDisplayObjectParser
+	public class GridParser extends DisplayObjectParser
 	{
+		private const DEFAULT_TARGET_CLASS:Class = BurstSprite;
+		
 		
 		public function GridParser() 
 		{
@@ -23,9 +24,11 @@
 		}
 		
 		
-		override public function create( xml:XML, burst:Burst = null ):DisplayObject 
+		override public function create( xml:XML, burst:Burst = null, targetClass:Class = null ):DisplayObject 
 		{
-			var grid:BurstSprite = new BurstSprite();
+			targetClass = targetClass || DEFAULT_TARGET_CLASS;
+			
+			var grid:BurstSprite = new targetClass();
 			
 			var gridCalc:GridCalculator = new GridCalculator( getMappedValue( "maxWidth", xml ), getMappedValue( "cellWidth", xml ), getMappedValue( "cellHeight", xml ), getMappedValue( "margin", xml ) );
 			

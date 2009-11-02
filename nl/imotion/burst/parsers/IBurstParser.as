@@ -7,7 +7,7 @@ package nl.imotion.burst.parsers
 	public interface IBurstParser 
 	{
 		
-		function create( xml:XML, burst:Burst = null ):DisplayObject;
+		function create( xml:XML, burst:Burst = null, targetClass:Class = null ):DisplayObject;
 		
 	}
 	

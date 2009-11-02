@@ -123,6 +123,13 @@
 			return childContainer.contains(child);
 		}
 		
+		override public function get numChildren():int { return childContainer.numChildren; }
+		
+		override public function getChildIndex(child:DisplayObject):int 
+		{
+			return childContainer.getChildIndex(child);
+		}
+		
 		
 		override public function get width():Number
 		{

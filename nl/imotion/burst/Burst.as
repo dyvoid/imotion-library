@@ -5,12 +5,15 @@ package nl.imotion.burst
 	import flash.utils.Dictionary;
 	import flash.display.DisplayObject;
 	import nl.imotion.burst.parsers.IBurstParser;
+	import nl.imotion.burst.parsers.ParserPool;
 	
 
 	public class Burst 
 	{
 		
-		protected var bindMap:Dictionary = new Dictionary();
+		protected var bindMap:Dictionary 	= new Dictionary();
+		
+		protected var parserPool:ParserPool	= new ParserPool();
 		
 		
 		public function Burst() 
@@ -21,36 +24,22 @@ package nl.imotion.burst
 		
 		public function parse( xml:XML ):DisplayObject 
 		{
-			if ( hasBinding( xml.name() ) )
+			var binding:BurstBinding = bindMap[ xml.name() ];
+			
+			if ( binding )
 			{
-				var instance:* = new bindMap[ xml.name() ]();
+				var parser:IBurstParser = parserPool.getParser( binding.parserClass );
 				
-				switch( true )
-				{
-					case ( instance is IBurstParser ):
-						return IBurstParser( instance ).create( xml, this );
-					
-					case ( instance is DisplayObject ):
-						return instance as DisplayObject;
-						
-					default:
-						return null;
-				}
+				return parser.create( xml, this, binding.targetClass );
 			}
 			
 			return null;
 		}
 		
 		
-		public function bindParser( nodeName:String, parserClass:Class ):void 
+		public function bindParser( nodeName:String, parserClass:Class, targetClass:Class = null ):void 
 		{
-			bindMap[ nodeName ] = parserClass;
-		}
-		
-		
-		public function bindDisplayObject( nodeName:String, displayObjectClass:Class ):void
-		{
-			bindMap[ nodeName ] = displayObjectClass;
+			bindMap[ nodeName ] = new BurstBinding( parserClass, targetClass );
 		}
 		
 		
@@ -68,6 +57,13 @@ package nl.imotion.burst
 				return true;
 			}
 			return false;
+		}
+		
+		
+		public function purge():void
+		{
+			bindMap = new Dictionary();
+			parserPool.purge();
 		}
 		
 	}

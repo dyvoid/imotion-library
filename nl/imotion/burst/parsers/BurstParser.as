@@ -15,7 +15,7 @@
 		private var xmlMappings:Dictionary 	= new Dictionary();
 		
 		
-		public function create( xml:XML, burst:Burst = null ):DisplayObject
+		public function create( xml:XML, burst:Burst = null, targetClass:Class = null ):DisplayObject
 		{
 			throw new Error( "create method should be overridden in subclass." );
 		}
@@ -32,7 +32,7 @@
 			{
 				if ( burst.hasBinding( node.name() ) )
 				{
-					const parsedChild:DisplayObject = burst.parse( node );
+					var parsedChild:DisplayObject = burst.parse( node );
 					
 					if ( parsedChild )
 					{
@@ -45,7 +45,7 @@
 		
 		protected function addAttributeMapping( attributeName:String, targetClass:Class, defaultValue:String = null, allowedValues:/*String*/Array = null ):void
 		{
-			const mapping:BurstXMLMapping = xmlMappings [ attributeName ];
+			var mapping:BurstXMLMapping = xmlMappings [ attributeName ];
 			
 			if ( defaultValue && allowedValues )
 			{
@@ -77,7 +77,7 @@
 		
 		protected function addNodeMapping( nodeName:String, targetClass:Class, defaultValue:String = null, allowedValues:/*String*/Array = null ):void
 		{
-			const mapping:BurstXMLMapping = xmlMappings [ nodeName ];
+			var mapping:BurstXMLMapping = xmlMappings [ nodeName ];
 			
 			if ( defaultValue && allowedValues )
 			{
@@ -195,9 +195,9 @@
 		
 		private function getValue( value:String, mapping:BurstXMLMapping ):String
 		{
-			if ( !value )
+			if ( !value || !checkAllowedValue( value, mapping ) )
 			{ 
-				if ( mapping.defaultValue )
+				if ( mapping.defaultValue && checkAllowedValue( mapping.defaultValue, mapping ) )
 				{
 					return mapping.defaultValue;
 				}
@@ -207,14 +207,19 @@
 				}
 			}
 			
-			if ( mapping.allowedValues && mapping.allowedValues.indexOf( value ) == -1 )
-			{
-				return mapping.defaultValue;
-			}
-			
 			return value;
 		}
-
+		
+		
+		private function checkAllowedValue( value:String, mapping:BurstXMLMapping ):Boolean
+		{
+			if ( mapping.allowedValues )
+			{
+				return ( mapping.allowedValues.indexOf( value ) != -1 )
+			}
+			
+			return true;			
+		}
 		
 		
 		private function applyValue( target:DisplayObject, propertyName:String, value:* ):void

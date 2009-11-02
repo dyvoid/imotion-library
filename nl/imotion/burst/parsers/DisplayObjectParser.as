@@ -9,10 +9,11 @@
 	/**
 	 * @author Pieter van de Sluis
 	 */
-	public class BurstDisplayObjectParser extends BurstParser implements IBurstParser
+	public class DisplayObjectParser extends BurstParser implements IBurstParser
 	{
+		private const DEFAULT_TARGET_CLASS:Class = DisplayObject; 
 		
-		public function BurstDisplayObjectParser() 
+		public function DisplayObjectParser() 
 		{
 			initMappings();
 		}
@@ -34,9 +35,15 @@
 		}
 		
 		
-		override public function create( xml:XML, burst:Burst = null ):DisplayObject
+		override public function create( xml:XML, burst:Burst = null, targetClass:Class = null ):DisplayObject
 		{
-			throw new Error( "create method should be overridden in subclass." );
+			targetClass = targetClass || DEFAULT_TARGET_CLASS;
+			
+			const d:DisplayObject = new targetClass();
+			
+			applyMappings( d, xml );
+			
+			return d;
 		}
 		
 	}

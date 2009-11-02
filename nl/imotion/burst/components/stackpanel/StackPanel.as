@@ -2,12 +2,14 @@ package nl.imotion.burst.components.stackpanel
 {
 
 	import flash.display.DisplayObject;
+	import flash.events.Event;
 	import nl.imotion.burst.components.core.BurstSprite;
 	import nl.imotion.burst.components.events.BurstComponentEvent;
 	import nl.imotion.burst.components.core.IBurstComponent;
 
 	public class StackPanel extends BurstSprite 
 	{
+		private var hasChangedSize		:Boolean = false;
 		
 		private var _orientation		:String;
 		private var _autoUpdate			:Boolean;
@@ -19,6 +21,25 @@ package nl.imotion.burst.components.stackpanel
 			_orientation 	= ( orientation == StackPanelOrientation.HORIZONAL || orientation == StackPanelOrientation.VERTICAL ) ? orientation : StackPanelOrientation.VERTICAL;
 			_autoUpdate		= autoUpdate;
 			_margin			= margin;
+			
+			startEventInterest( this, Event.ADDED_TO_STAGE, addedToStageHandler );
+		}
+		
+		
+		private function addedToStageHandler( e:Event ):void
+		{
+			stopEventInterest( this, Event.ADDED_TO_STAGE, addedToStageHandler );
+			startEventInterest( stage, Event.RENDER, stageRenderHandler );
+		}
+		
+		
+		private function stageRenderHandler():void
+		{
+			if ( hasChangedSize )
+			{
+				hasChangedSize = false;
+				distributeChildren();
+			}
 		}
 		
 		
