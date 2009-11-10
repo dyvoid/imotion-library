@@ -24,9 +24,10 @@
 		{
 			targetClass = targetClass || DEFAULT_TARGET_CLASS;
 			
-			const padding:Number = getMappedValue( "padding", xml );
-			const backgroundColor:Number = getMappedValue( "backgroundColor", xml ) || NaN;
-			const canvas:Canvas = new targetClass( padding, backgroundColor );
+			var padding:Number = getMappedValue( "padding", xml );
+			var backgroundColor:Number = getMappedValue( "backgroundColor", xml ) || NaN;
+			
+			var canvas:Canvas = new targetClass( padding, backgroundColor );
 			
 			parseChildren( canvas, xml.children(), burst );
 			applyMappings( canvas, xml, [ "padding", "backgroundColor" ] );

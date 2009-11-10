@@ -13,6 +13,7 @@
 	{
 		private const DEFAULT_TARGET_CLASS:Class = DisplayObject; 
 		
+		
 		public function DisplayObjectParser() 
 		{
 			initMappings();
@@ -39,7 +40,7 @@
 		{
 			targetClass = targetClass || DEFAULT_TARGET_CLASS;
 			
-			const d:DisplayObject = new targetClass();
+			var d:DisplayObject = new targetClass();
 			
 			applyMappings( d, xml );
 			

@@ -19,10 +19,10 @@ package nl.imotion.events
 		
 		public function EventListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false )
 		{
-            _target 	= target;
-			_type 		= type;
-			_listener	= listener;
-			_useCapture	= useCapture;
+            _target 			= target;
+			_type 				= type;
+			_listener			= listener;
+			_useCapture			= useCapture;
 		}
 		
         //__________________________________________________________________________________________________________________
@@ -38,5 +38,9 @@ package nl.imotion.events
 		
 		public function get useCapture():Boolean { return _useCapture; }
 		
+		public function equals( eventListener:EventListener ):Boolean
+		{
+			return ( eventListener.target == _target && eventListener.type == _type && eventListener.listener == _listener && eventListener.useCapture == _useCapture );
+		}
 	}
 }

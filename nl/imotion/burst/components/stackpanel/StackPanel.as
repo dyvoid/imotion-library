@@ -6,11 +6,10 @@ package nl.imotion.burst.components.stackpanel
 	import nl.imotion.burst.components.core.BurstSprite;
 	import nl.imotion.burst.components.events.BurstComponentEvent;
 	import nl.imotion.burst.components.core.IBurstComponent;
-
-	public class StackPanel extends BurstSprite 
+	
+	
+	public class StackPanel extends BurstSprite implements IBurstComponent
 	{
-		private var hasChangedSize		:Boolean = false;
-		
 		private var _orientation		:String;
 		private var _autoUpdate			:Boolean;
 		private var _margin				:uint;
@@ -21,25 +20,6 @@ package nl.imotion.burst.components.stackpanel
 			_orientation 	= ( orientation == StackPanelOrientation.HORIZONAL || orientation == StackPanelOrientation.VERTICAL ) ? orientation : StackPanelOrientation.VERTICAL;
 			_autoUpdate		= autoUpdate;
 			_margin			= margin;
-			
-			startEventInterest( this, Event.ADDED_TO_STAGE, addedToStageHandler );
-		}
-		
-		
-		private function addedToStageHandler( e:Event ):void
-		{
-			stopEventInterest( this, Event.ADDED_TO_STAGE, addedToStageHandler );
-			startEventInterest( stage, Event.RENDER, stageRenderHandler );
-		}
-		
-		
-		private function stageRenderHandler():void
-		{
-			if ( hasChangedSize )
-			{
-				hasChangedSize = false;
-				distributeChildren();
-			}
 		}
 		
 		
@@ -48,6 +28,13 @@ package nl.imotion.burst.components.stackpanel
 		public function get autoUpdate():Boolean { return _autoUpdate; }
 		
 		public function get margin():uint { return _margin; }
+		
+		
+		override protected function onAddedToStage():void 
+		{
+			if ( numChildren > 0 )
+				hasChangedSize = true;
+		}
 		
 		
 		override public function addChild( child:DisplayObject ):DisplayObject 
@@ -66,19 +53,14 @@ package nl.imotion.burst.components.stackpanel
 			return child;
 		}
 		
+	
 		
 		override public function addChildAt( child:DisplayObject, index:int ):DisplayObject 
 		{
 			super.addChildAt( child, index );
-			
 			registerChildListeners( child );
 			
-			const prevWidth		:Number = width;
-			const prevHeight	:Number = height;
-			
-			distributeChildren( child );
-			
-			broadcastSizeChange( prevWidth, prevHeight );
+			hasChangedSize = true;
 			
 			return child;
 		}
@@ -87,15 +69,9 @@ package nl.imotion.burst.components.stackpanel
 		override public function removeChild( child:DisplayObject ):DisplayObject 
 		{
 			super.removeChild( child );
-			
 			removeChildListeners( child );
 			
-			const prevWidth		:Number = width;
-			const prevHeight	:Number = height;
-			
-			distributeChildren();
-			
-			broadcastSizeChange( prevWidth, prevHeight );
+			hasChangedSize = true;
 			
 			return child;
 		}
@@ -124,17 +100,6 @@ package nl.imotion.burst.components.stackpanel
 			if ( _autoUpdate && child is IBurstComponent )
 			{
 				startEventInterest( child, BurstComponentEvent.SIZE_CHANGED, childSizeChangedHandler );
-				
-				switch ( _orientation )
-				{
-					case StackPanelOrientation.HORIZONAL:
-						startEventInterest( child, BurstComponentEvent.WIDTH_CHANGED, childSizeChangedHandler );
-					break;
-					
-					case StackPanelOrientation.VERTICAL:
-						startEventInterest( child, BurstComponentEvent.HEIGHT_CHANGED, childSizeChangedHandler );
-					break;
-				}
 			}
 		}
 		
@@ -143,8 +108,6 @@ package nl.imotion.burst.components.stackpanel
 		{
 			if ( child is IBurstComponent )
 			{
-				stopEventInterest( child, BurstComponentEvent.WIDTH_CHANGED, 	childSizeChangedHandler );
-				stopEventInterest( child, BurstComponentEvent.HEIGHT_CHANGED, 	childSizeChangedHandler );
 				stopEventInterest( child, BurstComponentEvent.SIZE_CHANGED, 	childSizeChangedHandler );
 			}
 		}
@@ -153,10 +116,7 @@ package nl.imotion.burst.components.stackpanel
 		private function distributeChildren( startChild:DisplayObject = null ):void
 		{
 			if ( numChildren > 0 )
-			{
-				const prevWidth		:Number = width;
-				const prevHeight	:Number = height;
-				
+			{				
 				var startChildIndex:uint = ( startChild != null ) ? getChildIndex( startChild ) : 0;
 				
 				var i:int = startChildIndex;
@@ -190,9 +150,15 @@ package nl.imotion.burst.components.stackpanel
 						}
 						break;
 				}
-				
-				broadcastSizeChange( prevWidth, prevHeight );
 			}
+		}
+		
+		
+		override protected function onSizeChange():void 
+		{
+			distributeChildren();
+			
+			super.onSizeChange();
 		}
 		
 		
@@ -200,18 +166,7 @@ package nl.imotion.burst.components.stackpanel
 		{
 			event.stopPropagation();
 			
-			try
-			{
-				if ( this.contains( event.target as DisplayObject ) )
-				{
-					distributeChildren( event.target as DisplayObject );
-				}
-			} 
-			catch ( e:ArgumentError ) 
-			{ 
-				distributeChildren();
-			}
-			
+			hasChangedSize = true;
 		}
 		
 	}

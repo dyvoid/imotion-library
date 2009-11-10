@@ -2,11 +2,10 @@ package nl.imotion.burst.components.core
 {
 
 	import flash.display.DisplayObject;
+	import flash.events.Event;
 	import nl.imotion.burst.components.events.BurstComponentEvent;
 	import nl.imotion.display.EventManagedSprite;
 
-	[Event(name="widthChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
-	[Event(name="heightChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
 	[Event(name="sizeChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
 	
 	public class BurstSprite extends EventManagedSprite implements IBurstComponent
@@ -14,10 +13,40 @@ package nl.imotion.burst.components.core
 		private var _explicitWidth	:Number;
 		private var _explicitHeight	:Number;
 		
+		private var _prevWidth		:Number;
+		private var _prevHeight		:Number;
+		
+		protected var hasChangedSize		:Boolean = false;
+		
 		
 		public function BurstSprite() 
 		{
+			startEventInterest( this, Event.ADDED_TO_STAGE, addedToStageHandler );
+		}
+		
+		
+		private function addedToStageHandler( e:Event ):void
+		{
+			stopEventInterest( this, Event.ADDED_TO_STAGE, addedToStageHandler );
+			startEventInterest( stage, Event.RENDER, stageRenderHandler );
 			
+			onAddedToStage();
+		}
+		
+		
+		protected function onAddedToStage():void
+		{
+			//override for subclass usage
+		}
+		
+		
+		private function stageRenderHandler( e:Event ):void
+		{
+			if ( hasChangedSize )
+			{
+				hasChangedSize = false;
+				onSizeChange();
+			}
 		}
 		
 		
@@ -26,7 +55,7 @@ package nl.imotion.burst.components.core
 			if ( value != super.width )
 			{
 				super.width = value;
-				dispatchEvent( new BurstComponentEvent( BurstComponentEvent.WIDTH_CHANGED ) );
+				checkSizeChange();
 			}
 			
 		}
@@ -37,7 +66,7 @@ package nl.imotion.burst.components.core
 			if ( value != super.height )
 			{
 				super.height = value;
-				dispatchEvent( new BurstComponentEvent( BurstComponentEvent.HEIGHT_CHANGED ) );
+				checkSizeChange();
 			}
 			
 		}
@@ -46,8 +75,8 @@ package nl.imotion.burst.components.core
 		{
 			if ( value != super.scaleX )
 			{
-				super.scaleX = value;
-				dispatchEvent( new BurstComponentEvent( BurstComponentEvent.WIDTH_CHANGED ) );
+				super.scaleX 	= value;
+				checkSizeChange();
 			}
 			
 		}
@@ -56,57 +85,68 @@ package nl.imotion.burst.components.core
 		{
 			if ( value != super.scaleY )
 			{
-				super.scaleY = value;
-				dispatchEvent( new BurstComponentEvent( BurstComponentEvent.HEIGHT_CHANGED ) );
+				super.scaleY 	= value;
+				checkSizeChange();
 			}
 			
 		}
 		
 		override public function addChild( child:DisplayObject ):DisplayObject 
 		{
-			var prevWidth	:Number = width;
-			var prevHeight	:Number = height;
-			
 			super.addChild( child );
 			
-			broadcastSizeChange( prevWidth, prevHeight );
-
+			checkSizeChange();
+			
+			return child;
+		}
+		
+		
+		override public function addChildAt( child:DisplayObject, index:int ):DisplayObject 
+		{
+			super.addChildAt(child, index);
+			
+			checkSizeChange();
+			
 			return child;
 		}
 		
 		
 		override public function removeChild( child:DisplayObject ):DisplayObject 
 		{
-			var prevWidth	:Number = width;
-			var prevHeight	:Number = height;
-			
 			super.removeChild( child );
 			
-			broadcastSizeChange( prevWidth, prevHeight );
-
+			checkSizeChange();
+			
 			return child;
 		}
 		
 		
-		protected function broadcastSizeChange( prevWidth:Number, prevHeight:Number ):void
+		override public function removeChildAt( index:int ):DisplayObject 
 		{
-			if ( this.stage )
+			var child:DisplayObject = super.removeChildAt(index);
+			
+			checkSizeChange();
+			
+			return child;
+		}
+		
+		
+		protected function checkSizeChange():void
+		{
+			if ( this.stage && ( _prevWidth != width || _prevHeight != height )  )
 			{
-				switch( true )
-				{
-					case ( prevWidth != width && prevHeight != height ):
-						dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
-					break;
-					
-					case ( prevWidth != width ):
-						dispatchEvent( new BurstComponentEvent( BurstComponentEvent.WIDTH_CHANGED ) );
-					break;
-					
-					case ( prevHeight != height ):
-						dispatchEvent( new BurstComponentEvent( BurstComponentEvent.HEIGHT_CHANGED ) );
-					break; 
-				}
+				hasChangedSize = true;
+				stage.invalidate();
+				
+				_prevWidth 	= width;
+				_prevHeight = height;
 			}
+		}
+		
+		
+		protected function onSizeChange():void
+		{
+			dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
 		}
 		
 		

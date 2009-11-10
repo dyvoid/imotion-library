@@ -1,11 +1,13 @@
 package nl.imotion.events
 {
 	import flash.events.IEventDispatcher;
+	import flash.utils.Dictionary;
 	
 	
 	public class EventManager
 	{
-		private var listenerMap:/*EventListenerInfo*/Array = [];
+		private var listenerMap:Array 	= [];
+		private var mapLength:uint		= 0;
 		
         //__________________________________________________________________________________________________________________
         //                                                                                                                  |
@@ -20,7 +22,7 @@ package nl.imotion.events
         //__________________________________________________________________________________________________________________|
 		
         /**
-         * Registers an event listener object.
+         * Registers an event listener object with an EventDispatcher object so that the listener receives notification of an event.
          *
          * @param target            <IEventDispatcher> The target EventDispatcher that the event listener has been added to.
          * @param type              <String> The type of event.
@@ -36,17 +38,21 @@ package nl.imotion.events
 		 *                            addEventListener() twice, once with useCapture set to true,
 		 *                            then again with useCapture set to false.
          */
-		public function registerListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false ):void
+		public function registerListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
 		{
+			var eventListener:EventListener = new EventListener( target, type, listener, useCapture );
+			
 			for each( var l:EventListener in listenerMap )
 			{
-				if ( (target == l.target ) && ( type == l.type ) && ( listener == l.listener ) && ( useCapture == l.useCapture ) )
+				if ( l.equals( eventListener ) )
 				{
 					return;
 				}
 			}
 			
-			listenerMap.push( new EventListener( target, type, listener, useCapture ) );
+			listenerMap.push( eventListener );
+			target.addEventListener( type, listener, useCapture, priority, useWeakReference );
+			mapLength++;
 		}
 		
 		
@@ -61,16 +67,19 @@ package nl.imotion.events
 		 */
 		public function removeListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false ):void
 		{
-            for ( var i:int = 0; i < listenerMap.length; i++ )
+			var eventListener:EventListener = new EventListener( target, type, listener, useCapture );
+			
+            for ( var i:int = 0; i < mapLength; i++ )
             {
                 var l:EventListener = listenerMap[ i ];
-
-                if ( (target == l.target ) && ( type == l.type ) && ( listener == l.listener ) && ( useCapture == l.useCapture ) )
+				
+                if ( l.equals( eventListener ) )
                 {
                     removeListenerByIndex( i );
                 }
             }
 		}
+		
 		
         /**
 		 * Removes a listener from multiple EventDispatcher objects. If there is no matching listener
@@ -88,14 +97,14 @@ package nl.imotion.events
                 this.removeListener( target, type, listener, useCapture );
             }
         }
-
+		
 		
         /**
          * Removes all registered event listeners
          */
 		public function removeAllListeners():void
 		{
-            for ( var i:int = listenerMap.length - 1; i >= 0; i-- )
+            for ( var i:int = mapLength - 1; i >= 0; i-- )
             {
                 removeListenerByIndex( i );
             }
@@ -118,7 +127,10 @@ package nl.imotion.events
 				}
 				
                 listenerMap.splice( index, 1 );
+				mapLength--;
             }
         }
+		
 	}
+	
 }

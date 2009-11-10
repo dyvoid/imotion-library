@@ -41,7 +41,7 @@ package nl.imotion.bindmvc.core
 				instance = new BindMVCCore();
 				allowInstantiation = false;
 			}
-			return instance as BindMVCCore;
+			return instance;
 		}
 		
 		

@@ -33,15 +33,17 @@
 			if ( !isNaN( backgroundColor ) )
 				this.backgroundColor = backgroundColor;
 			
-			startEventInterest( childContainer, BurstComponentEvent.WIDTH_CHANGED, sizeChangedHandler );
-			startEventInterest( childContainer, BurstComponentEvent.HEIGHT_CHANGED, sizeChangedHandler );
 			startEventInterest( childContainer, BurstComponentEvent.SIZE_CHANGED, sizeChangedHandler );
 		}
 		
 		
 		private function sizeChangedHandler( e:BurstComponentEvent ):void
 		{
+			e.stopPropagation();
+			
 			updateBackgroundSize();
+			
+			checkSizeChange();
 		}
 		
 		

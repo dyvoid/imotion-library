@@ -5,9 +5,7 @@ package nl.imotion.burst.components.events
 
 	public class BurstComponentEvent extends Event 
 	{
-
-		public static const WIDTH_CHANGED:String 	= "widthChanged";
-		public static const HEIGHT_CHANGED:String 	= "heightChanged";
+		
 		public static const SIZE_CHANGED:String 	= "sizeChanged";
 		
 		
@@ -25,7 +23,7 @@ package nl.imotion.burst.components.events
 		
 		public override function toString():String 
 		{
-			return formatToString( "BurstComponentEvent", "type", "bubbles", "cancelable", "eventPhase", "WIDTH_CHANGED", "HEIGHT_CHANGED", "SIZE_CHANGED" );
+			return formatToString( "BurstComponentEvent", "type", "bubbles", "cancelable", "eventPhase" );
 		}
 
 	}

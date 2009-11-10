@@ -1,7 +1,6 @@
 ﻿package nl.imotion.burst.parsers 
 {
 	/**
-	 * ...
 	 * @author Pieter van de Sluis
 	 */
 	public class ParserPool
