@@ -8,55 +8,79 @@
 	public class Reflector
 	{
 		
-		public static function reflectProperties( target:*, accessType:String = null ):Array
+		public static function getProperties( target:*, accessType:String = null ):/*PropertyDefinition*/Array
 		{
-			var xml:XML = describeType( target );
+			var xml:XMLList = getNodes( target, accessType );
 			
-			var result:Array = [];
+			return getPropDefs( xml );
+		}
+		
+		
+		public static function getProperty( target:*, propertyName:String ):PropertyDefinition
+		{
+			var xml:XMLList = getNodes( target );
+			var node:XML = xml.( attribute("name") == propertyName )[0];
 			
-			switch( accessType )
-			{
-				case AccessType.READ: case AccessType.READ_ONLY:
-					result = result.concat( getPropDefs( xml.accessor.( @access == AccessType.READ_ONLY ) ) );
-				break;
+			if ( node )
+				return getPropDef( node );
 				
-				case AccessType.WRITE: case AccessType.WRITE_ONLY:
-					result = result.concat( getPropDefs( xml.accessor.( @access == AccessType.WRITE_ONLY ) ) );
-				break;
-			}
+			return null;
+		}
+		
+		
+		private static function getNodes( target:*, accessType:String = null ):XMLList
+		{
+			var nodes:XMLList = describeType( target ).descendants();
 			
-			switch( accessType )
+			var result:XMLList = nodes.( name() == "variable" );
+			
+			if ( accessType )
 			{
-				case AccessType.READ: case AccessType.WRITE: case AccessType.READ_WRITE:
-					result = result.concat( getPropDefs( xml.accessor.( @access == AccessType.READ_WRITE ) ) );
-				break;
+				result += nodes.( name() == "accessor" && attribute("access") == "readwrite" );
 				
-				case null:
-					result = result.concat( getPropDefs( xml.accessor ) );
-				break;
+				switch( accessType )
+				{
+					case AccessType.READ:
+						result += nodes.( name() == "accessor" && attribute("access") == "readonly" );
+					break;
+					
+					case AccessType.WRITE:
+						result += nodes.( name() == "accessor" && attribute("access") == "writeonly" );
+					break;
+				}
 			}
-			
-			if ( accessType != AccessType.READ_ONLY && accessType != AccessType.WRITE_ONLY )
+			else
 			{
-				result = result.concat( getPropDefs( xml.variable ) );
+				result += nodes.( name() == "accessor" );
 			}
 			
 			return result;
 		}
 		
 		
-		private static function getPropDefs( xmlList:XMLList ):Array
+		private static function getPropDefs( xmlList:XMLList ):/*PropertyDefinition*/Array
 		{
 			var result:Array = [];
 			
 			for each ( var node:XML in xmlList ) 
 			{
-				result[ result.length ] = new PropertyDefinition( node.@name, Class( getDefinitionByName( node.@type ) ), node.@access || AccessType.READ_WRITE );
+				result[ result.length ] = getPropDef( node );
 			}
 			
 			return result;
 		}
 		
+		
+		private static function getPropDef( node:XML ):PropertyDefinition
+		{
+			var name:String 		= node.attribute("name");
+			var classRef:Class 		= Class( getDefinitionByName( node.attribute("type") ) );
+			var isReadWrite:Boolean = node.name() == "variable" ||node.attribute("access") == "readwrite";
+			var isReadable:Boolean 	= isReadWrite || node.attribute("access") == "readonly"; 
+			var isWriteable:Boolean = isReadWrite || node.attribute("access") == "writeonly"; 
+			
+			return new PropertyDefinition( name, classRef, isReadable, isWriteable );
+		}
 		
 	}
 

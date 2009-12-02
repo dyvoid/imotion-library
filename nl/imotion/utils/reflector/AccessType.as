@@ -5,13 +5,9 @@
 	 */
 	public final class AccessType
 	{
-		public static const READ		:String = "read";
-		public static const READ_ONLY	:String = "readonly";
-		
+		public static const READ		:String = "read";		
 		public static const WRITE		:String = "write";
-		public static const WRITE_ONLY	:String = "writeonly";
-		
-		public static const READ_WRITE	:String = "readwrite";
+		public static const READ_WRITE	:String = "readWrite";
 		
 	}
 
