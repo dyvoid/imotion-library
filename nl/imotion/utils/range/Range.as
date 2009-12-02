@@ -117,7 +117,9 @@ package nl.imotion.utils.range
 		 */
 		private function constrainTo( value:Number, lower:Number, upper:Number ):Number
 		{
-			return Math.max( lower, Math.min( value, upper ) );
+			if (value > upper) return upper;
+			if (value < lower) return lower;
+			return value;
 		}
 		
 		
@@ -126,7 +128,8 @@ package nl.imotion.utils.range
 		 */
 		public function get rangeSize():Number
 		{
-			return Math.abs( _boundary2 - _boundary1 );
+			var c:Number = (_boundary2 - _boundary1);
+			return c > 0 ? c : -c;
 		}
 		
 		

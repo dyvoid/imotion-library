@@ -51,8 +51,8 @@ package  nl.imotion.utils.grid
 			var cellPoint:Point = new Point();
 			
 			var nrOfCols:uint = this.nrOfCols;
-			var colPos:Number = index % nrOfCols;
-			var rowPos:Number = Math.floor( index / nrOfCols );
+			var colPos:uint = index % nrOfCols;
+			var rowPos:uint = uint( index / nrOfCols );
 			
 			cellPoint.x = ( colPos == 0 ) ? _x : ( this.cellWidth  + this.margin ) * colPos + _x;
 			cellPoint.y = ( rowPos == 0 ) ? _y : ( this.cellHeight + this.margin ) * rowPos + _y;
@@ -88,7 +88,7 @@ package  nl.imotion.utils.grid
 		 */
 		public function get nrOfCols():uint
 		{
-			return Math.floor( ( this.maxWidth + this.margin ) / ( this.cellWidth + this.margin ) );
+			return uint( ( this.maxWidth + this.margin ) / ( this.cellWidth + this.margin ) );
 		}
 		public function set nrOfCols( value:uint ):void
 		{

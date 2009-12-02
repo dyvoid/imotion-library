@@ -78,9 +78,11 @@ package nl.imotion.bindmvc.core
 		}
 		
 		
-		public function registerModel( model:IBindModel ):void
+		public function registerModel( model:IBindModel ):IBindModel
 		{
 			modelMap[ model.name ] = model;
+            
+            return model;
 		}
 		
 		
