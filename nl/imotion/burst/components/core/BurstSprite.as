@@ -21,22 +21,25 @@ package nl.imotion.burst.components.core
 		
 		public function BurstSprite() 
 		{
-			startEventInterest( this, Event.ADDED_TO_STAGE, addedToStageHandler );
+			if ( stage ) init();
+			else startEventInterest( this, Event.ADDED_TO_STAGE, init );
 		}
 		
 		
-		private function addedToStageHandler( e:Event ):void
+		private function init( e:Event = null ):void
 		{
-			stopEventInterest( this, Event.ADDED_TO_STAGE, addedToStageHandler );
+			stopEventInterest( this, Event.ADDED_TO_STAGE, init );
+			
+			onInit();
+		}
+		
+		
+		protected function onInit():void
+		{
 			startEventInterest( stage, Event.RENDER, stageRenderHandler );
 			
-			onAddedToStage();
-		}
-		
-		
-		protected function onAddedToStage():void
-		{
-			//override for subclass usage
+			_prevWidth 	= this.width;
+			_prevHeight = this.height;
 		}
 		
 		
@@ -135,13 +138,27 @@ package nl.imotion.burst.components.core
 		{
 			if ( this.stage && ( _prevWidth != width || _prevHeight != height )  )
 			{
-				hasChangedSize = true;
-				stage.invalidate();
+				forceRedraw();
 				
 				_prevWidth 	= width;
 				_prevHeight = height;
 			}
 		}
+		
+		
+		protected function forceRedraw():void
+		{
+			if ( stage )
+			{
+				hasChangedSize = true;
+				stage.invalidate();
+			}
+			else
+			{
+				onSizeChange();
+			}
+		}
+		
 		
 		
 		protected function onSizeChange():void

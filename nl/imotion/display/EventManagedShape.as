@@ -8,9 +8,9 @@ package nl.imotion.display
 	
 	
 	public class EventManagedShape extends Shape implements IEventManagedDisplayObject
-	{
+	{	
 		
-		public function EventManagedShape( autoDestroy:Boolean = true ) 
+		public function EventManagedSprite( autoDestroy:Boolean = true ) 
 		{
 			if ( autoDestroy )
 			{
@@ -53,7 +53,7 @@ package nl.imotion.display
 			switch( true )
 			{
 				case ( target is IEventDispatcher ):
-					registerEventListener( target, type, listener, useCapture, priority, useWeakReference );
+					registerListener( target, type, listener, useCapture, priority, useWeakReference );
 				break;
 					
 				case ( target is Array ):
@@ -61,20 +61,17 @@ package nl.imotion.display
 					{
 						if ( currTarget is IEventDispatcher )
 						{
-							registerEventListener( IEventDispatcher( currTarget ), type, listener, useCapture, priority, useWeakReference );
+							registerListener( IEventDispatcher( currTarget ), type, listener, useCapture, priority, useWeakReference );
 						}
 					}
 				break;
-				
 			}
 		}		
 		
 		
-		private function registerEventListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
+		private function registerListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
 		{
-			target.addEventListener( type, listener, useCapture, priority, useWeakReference );
-			
-			eventManager.registerListener( target, type, listener, useCapture );
+			eventManager.registerListener( target, type, listener, useCapture, priority, useWeakReference );
 		}
 		
 		

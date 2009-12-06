@@ -30,10 +30,12 @@ package nl.imotion.burst.components.stackpanel
 		public function get margin():uint { return _margin; }
 		
 		
-		override protected function onAddedToStage():void 
+		override protected function onInit():void 
 		{
+			super.onInit();
+			
 			if ( numChildren > 0 )
-				hasChangedSize = true;
+				onSizeChange();
 		}
 		
 		
@@ -53,14 +55,13 @@ package nl.imotion.burst.components.stackpanel
 			return child;
 		}
 		
-	
 		
 		override public function addChildAt( child:DisplayObject, index:int ):DisplayObject 
 		{
 			super.addChildAt( child, index );
 			registerChildListeners( child );
 			
-			hasChangedSize = true;
+			forceRedraw();
 			
 			return child;
 		}
@@ -71,7 +72,7 @@ package nl.imotion.burst.components.stackpanel
 			super.removeChild( child );
 			removeChildListeners( child );
 			
-			hasChangedSize = true;
+			forceRedraw();
 			
 			return child;
 		}
@@ -144,6 +145,7 @@ package nl.imotion.burst.components.stackpanel
 						{
 							const vertChild:DisplayObject = getChildAt( i );
 							const childHeight:Number = ( ( vertChild is IBurstComponent ) ? IBurstComponent( vertChild ).explicitHeight : vertChild.height ) || 0;
+							
 							vertChild.y = yPos;
 							
 							yPos = vertChild.y + childHeight + margin;
@@ -166,7 +168,7 @@ package nl.imotion.burst.components.stackpanel
 		{
 			event.stopPropagation();
 			
-			hasChangedSize = true;
+			forceRedraw();
 		}
 		
 	}

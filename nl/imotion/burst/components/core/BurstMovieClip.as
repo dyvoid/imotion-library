@@ -1,22 +1,55 @@
 ﻿package nl.imotion.burst.components.core 
 {
+
 	import flash.display.DisplayObject;
+	import flash.events.Event;
 	import nl.imotion.burst.components.events.BurstComponentEvent;
 	import nl.imotion.display.EventManagedMovieClip;
-	
-	[Event(name="widthChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
-	[Event(name="heightChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
-	[Event(name = "sizeChanged", type = "nl.imotion.burst.components.events.BurstComponentEvent")]
+
+	[Event(name="sizeChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
 	
 	public class BurstMovieClip extends EventManagedMovieClip implements IBurstComponent
 	{
 		private var _explicitWidth	:Number;
 		private var _explicitHeight	:Number;
 		
+		private var _prevWidth		:Number;
+		private var _prevHeight		:Number;
+		
+		protected var hasChangedSize		:Boolean = false;
+		
 		
 		public function BurstMovieClip() 
 		{
+			if ( stage ) init();
+			else startEventInterest( this, Event.ADDED_TO_STAGE, init );
+		}
+		
+		
+		private function init( e:Event = null ):void
+		{
+			stopEventInterest( this, Event.ADDED_TO_STAGE, init );
 			
+			onInit();
+		}
+		
+		
+		protected function onInit():void
+		{
+			startEventInterest( stage, Event.RENDER, stageRenderHandler );
+			
+			_prevWidth 	= this.width;
+			_prevHeight = this.height;
+		}
+		
+		
+		private function stageRenderHandler( e:Event ):void
+		{
+			if ( hasChangedSize )
+			{
+				hasChangedSize = false;
+				onSizeChange();
+			}
 		}
 		
 		
@@ -25,7 +58,7 @@
 			if ( value != super.width )
 			{
 				super.width = value;
-				dispatchEvent( new BurstComponentEvent( BurstComponentEvent.WIDTH_CHANGED ) );
+				checkSizeChange();
 			}
 			
 		}
@@ -36,7 +69,7 @@
 			if ( value != super.height )
 			{
 				super.height = value;
-				dispatchEvent( new BurstComponentEvent( BurstComponentEvent.HEIGHT_CHANGED ) );
+				checkSizeChange();
 			}
 			
 		}
@@ -45,8 +78,8 @@
 		{
 			if ( value != super.scaleX )
 			{
-				super.scaleX = value;
-				dispatchEvent( new BurstComponentEvent( BurstComponentEvent.WIDTH_CHANGED ) );
+				super.scaleX 	= value;
+				checkSizeChange();
 			}
 			
 		}
@@ -55,57 +88,82 @@
 		{
 			if ( value != super.scaleY )
 			{
-				super.scaleY = value;
-				dispatchEvent( new BurstComponentEvent( BurstComponentEvent.HEIGHT_CHANGED ) );
+				super.scaleY 	= value;
+				checkSizeChange();
 			}
 			
 		}
 		
 		override public function addChild( child:DisplayObject ):DisplayObject 
 		{
-			var prevWidth	:Number = width;
-			var prevHeight	:Number = height;
-			
 			super.addChild( child );
 			
-			broadcastSizeChange( prevWidth, prevHeight );
-
+			checkSizeChange();
+			
+			return child;
+		}
+		
+		
+		override public function addChildAt( child:DisplayObject, index:int ):DisplayObject 
+		{
+			super.addChildAt(child, index);
+			
+			checkSizeChange();
+			
 			return child;
 		}
 		
 		
 		override public function removeChild( child:DisplayObject ):DisplayObject 
 		{
-			var prevWidth	:Number = width;
-			var prevHeight	:Number = height;
-			
 			super.removeChild( child );
 			
-			broadcastSizeChange( prevWidth, prevHeight );
-
+			checkSizeChange();
+			
 			return child;
 		}
 		
 		
-		protected function broadcastSizeChange( prevWidth:Number, prevHeight:Number ):void
+		override public function removeChildAt( index:int ):DisplayObject 
 		{
-			if ( this.stage )
+			var child:DisplayObject = super.removeChildAt(index);
+			
+			checkSizeChange();
+			
+			return child;
+		}
+		
+		
+		protected function checkSizeChange():void
+		{
+			if ( this.stage && ( _prevWidth != width || _prevHeight != height )  )
 			{
-				switch( true )
-				{
-					case ( prevWidth != width && prevHeight != height ):
-						dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
-					break;
-					
-					case ( prevWidth != width ):
-						dispatchEvent( new BurstComponentEvent( BurstComponentEvent.WIDTH_CHANGED ) );
-					break;
-					
-					case ( prevHeight != height ):
-						dispatchEvent( new BurstComponentEvent( BurstComponentEvent.HEIGHT_CHANGED ) );
-					break; 
-				}
+				forceRedraw();
+				
+				_prevWidth 	= width;
+				_prevHeight = height;
 			}
+		}
+		
+		
+		protected function forceRedraw():void
+		{
+			if ( stage )
+			{
+				hasChangedSize = true;
+				stage.invalidate();
+			}
+			else
+			{
+				onSizeChange();
+			}
+		}
+		
+		
+		
+		protected function onSizeChange():void
+		{
+			dispatchEvent( new BurstComponentEvent( BurstComponentEvent.SIZE_CHANGED ) );
 		}
 		
 		
