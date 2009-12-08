@@ -9,7 +9,7 @@ package nl.imotion.burst.components.events
 		public static const SIZE_CHANGED:String 	= "sizeChanged";
 		
 		
-		public function BurstComponentEvent( type:String, bubbles:Boolean = true, cancelable:Boolean = true ) 
+		public function BurstComponentEvent( type:String, bubbles:Boolean = false, cancelable:Boolean = true ) 
 		{
 			super( type, bubbles, cancelable );
 		}

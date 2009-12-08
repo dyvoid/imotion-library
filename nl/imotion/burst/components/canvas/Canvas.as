@@ -41,11 +41,16 @@
 		{
 			e.stopPropagation();
 			
-			updateBackgroundSize();
-			
 			checkSizeChange();
 		}
 		
+		
+		override protected function onSizeChange():void 
+		{
+			updateBackgroundSize();
+			
+			super.onSizeChange();
+		}
 		
 		
 		protected function updateBackgroundSize():void
@@ -90,13 +95,21 @@
 		override public function addChild( child:DisplayObject ):DisplayObject 
 		{
 			childContainer.addChild(child);
+			
+			if ( child is IBurstComponent )
+				startEventInterest( child, BurstComponentEvent.SIZE_CHANGED, sizeChangedHandler );
+			
 			updateBackgroundSize();
 			return child;
 		}
 		
-		override public function addChildAt(child:DisplayObject, index:int):DisplayObject 
+		override public function addChildAt( child:DisplayObject, index:int ):DisplayObject 
 		{
 			childContainer.addChildAt(child, index);
+			
+			if ( child is IBurstComponent )
+				startEventInterest( child, BurstComponentEvent.SIZE_CHANGED, sizeChangedHandler );
+			
 			updateBackgroundSize();
 			return child;
 		}
@@ -104,13 +117,21 @@
 		override public function removeChild( child:DisplayObject ):DisplayObject 
 		{
 			childContainer.removeChild(child);
+			
+			if ( child is IBurstComponent )
+				stopEventInterest( child, BurstComponentEvent.SIZE_CHANGED, sizeChangedHandler );
+			
 			updateBackgroundSize();
 			return child;
 		}
 		
-		override public function removeChildAt(index:int):DisplayObject 
+		override public function removeChildAt( index:int ):DisplayObject 
 		{
 			var child:DisplayObject = childContainer.removeChildAt(index);
+			
+			if ( child is IBurstComponent )
+				stopEventInterest( child, BurstComponentEvent.SIZE_CHANGED, sizeChangedHandler );
+			
 			updateBackgroundSize();
 			return child;
 		}

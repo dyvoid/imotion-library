@@ -20,7 +20,7 @@
 		}
 		
 		
-		private function initMappings():void
+		protected function initMappings():void
 		{
 			addAttributeMapping( "x", Number );
 			addAttributeMapping( "y", Number );

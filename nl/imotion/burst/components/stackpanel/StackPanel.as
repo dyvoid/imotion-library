@@ -3,19 +3,20 @@ package nl.imotion.burst.components.stackpanel
 
 	import flash.display.DisplayObject;
 	import flash.events.Event;
+	import nl.imotion.burst.components.canvas.Canvas;
 	import nl.imotion.burst.components.core.BurstSprite;
 	import nl.imotion.burst.components.events.BurstComponentEvent;
 	import nl.imotion.burst.components.core.IBurstComponent;
 	
 	
-	public class StackPanel extends BurstSprite implements IBurstComponent
+	public class StackPanel extends Canvas implements IBurstComponent
 	{
 		private var _orientation		:String;
 		private var _autoUpdate			:Boolean;
-		private var _margin				:uint;
+		private var _margin				:Number;
 		
 		
-		public function StackPanel( orientation:String = StackPanelOrientation.VERTICAL, autoUpdate:Boolean = false, margin:uint = 0 ) 
+		public function StackPanel( orientation:String = StackPanelOrientation.VERTICAL, autoUpdate:Boolean = false, margin:Number = 0 ) 
 		{
 			_orientation 	= ( orientation == StackPanelOrientation.HORIZONAL || orientation == StackPanelOrientation.VERTICAL ) ? orientation : StackPanelOrientation.VERTICAL;
 			_autoUpdate		= autoUpdate;
@@ -27,7 +28,7 @@ package nl.imotion.burst.components.stackpanel
 		
 		public function get autoUpdate():Boolean { return _autoUpdate; }
 		
-		public function get margin():uint { return _margin; }
+		public function get margin():Number { return _margin; }
 		
 		
 		override protected function onInit():void 

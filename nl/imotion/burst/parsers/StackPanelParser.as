@@ -10,22 +10,21 @@
 	/**
 	 * @author Pieter van de Sluis
 	 */
-	public class StackPanelParser extends DisplayObjectParser implements IBurstParser
+	public class StackPanelParser extends CanvasParser implements IBurstParser
 	{
 		private const DEFAULT_TARGET_CLASS:Class = StackPanel;
 		
 		
-		public function StackPanelParser()
-		{
-			initMappings();
-		}
+		public function StackPanelParser() { }
 		
 		
-		protected function initMappings():void
+		override protected function initMappings():void
 		{
 			addAttributeMapping( "orientation", String, StackPanelOrientation.VERTICAL, [ StackPanelOrientation.HORIZONAL, StackPanelOrientation.VERTICAL ] );
 			addAttributeMapping( "autoUpdate", Boolean, "true" );
 			addAttributeMapping( "margin", Number, "0" );
+			
+			super.initMappings();
 		}
 		
 		
@@ -35,7 +34,7 @@
 			
 			const orientation:String 		= getMappedValue( "orientation", xml );
 			const autoUpdate:Boolean 		= getMappedValue( "autoUpdate", xml );
-			const margin:uint 				= getMappedValue( "margin", xml );
+			const margin:Number				= getMappedValue( "margin", xml );
 			
 			const s:StackPanel = new targetClass( orientation, autoUpdate, margin );
 			

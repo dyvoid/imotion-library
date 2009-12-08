@@ -13,10 +13,15 @@
 	{
 		private const DEFAULT_TARGET_CLASS:Class = Canvas;
 		
-		public function CanvasParser()
+		public function CanvasParser() { }
+		
+		
+		override protected function initMappings():void
 		{
 			addAttributeMapping( "padding", uint, "0" );
 			addAttributeMapping( "backgroundColor", uint );
+			
+			super.initMappings();
 		}
 		
 		
