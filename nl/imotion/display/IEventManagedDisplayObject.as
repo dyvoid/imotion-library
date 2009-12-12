@@ -6,7 +6,7 @@ package nl.imotion.display
 	 * @author Pieter van de Sluis
 	 */
 	public interface IEventManagedDisplayObject extends IDisplayObject
-	{
+	{		
 		function destroy():void
 	}
 	
