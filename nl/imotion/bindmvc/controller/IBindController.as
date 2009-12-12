@@ -1,9 +1,9 @@
 package nl.imotion.bindmvc.controller
 {
 
-	import nl.imotion.bindmvc.core.IDestroyable;
+	import nl.imotion.bindmvc.core.IBindComponent;
 
-	public interface IBindController extends IDestroyable
+	public interface IBindController extends IBindComponent
 	{
 	}
 	

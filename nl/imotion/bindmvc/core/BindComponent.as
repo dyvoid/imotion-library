@@ -8,7 +8,7 @@ package nl.imotion.bindmvc.core
 	import nl.imotion.notes.NoteDispatcher;
 	
 	
-	public class BindComponent implements IDestroyable
+	public class BindComponent implements IBindComponent
 	{
 		
 		protected function retrieveModel( name:String ):IBindModel

@@ -1,7 +1,7 @@
 package nl.imotion.bindmvc.core 
 {
 
-	public interface IDestroyable 
+	public interface IBindComponent 
 	{
 		function destroy():void;
 	}
