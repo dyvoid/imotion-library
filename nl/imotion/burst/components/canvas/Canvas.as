@@ -116,12 +116,17 @@
 		
 		override public function removeChild( child:DisplayObject ):DisplayObject 
 		{
-			childContainer.removeChild(child);
+			if ( child != childContainer )
+			{
+				childContainer.removeChild(child);
+				
+				if ( child is IBurstComponent )
+					stopEventInterest( child, BurstComponentEvent.SIZE_CHANGED, sizeChangedHandler );
+				
+				updateBackgroundSize();
+				
+			}
 			
-			if ( child is IBurstComponent )
-				stopEventInterest( child, BurstComponentEvent.SIZE_CHANGED, sizeChangedHandler );
-			
-			updateBackgroundSize();
 			return child;
 		}
 		

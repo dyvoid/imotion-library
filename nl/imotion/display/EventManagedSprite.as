@@ -21,21 +21,9 @@ package nl.imotion.display
 		
 		private function removedFromStageHandler( e:Event ):void
 		{
-			//Wait for the next frame before destroying, so that functionality like 
-			//switching to a different parent DisplayObjectContainer does not break
-			startEventInterest( this, Event.ENTER_FRAME, enterFrameHandler );
-		}
-		
-		
-		private function enterFrameHandler( e:Event ):void
-		{
 			if ( !this.stage )
 			{
 				destroy();
-			}
-			else
-			{
-				stopEventInterest( this, Event.ENTER_FRAME, enterFrameHandler );
 			}
 		}
 		

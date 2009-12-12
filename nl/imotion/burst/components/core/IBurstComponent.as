@@ -11,5 +11,7 @@ package nl.imotion.burst.components.core
 		function get explicitHeight():Number;
 		function set explicitHeight( value:Number ):void;
 		
+		function destroy():void
+		
 	}
 }
