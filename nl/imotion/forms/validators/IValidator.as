@@ -6,7 +6,6 @@
 	 */
 	public interface IValidator 
 	{
-		function validate():Boolean;
 		function get isValid():Boolean;
 		function get errors():Array;
 	}

@@ -1,46 +1,41 @@
 ﻿package nl.imotion.forms.validators 
 {
-	import nl.imotion.forms.IFormElement;
 	import nl.imotion.forms.validators.Validator;
 	
 	/**
 	 * @author Pieter van de Sluis
 	 */
-	public class RequiredValidator extends Validator
+	public class RegExpValidator extends Validator
 	{
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
-		
+		private var _regExp		:RegExp;
 		
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
 		
-		public function RequiredValidator() 
+		public function RegExpValidator( regExp:RegExp ) 
 		{
-			
-		}
+			_regExp = regExp;			
+		}		
 		
 		// ____________________________________________________________________________________________________
 		// PUBLIC
 		
-		
+		override public function get isValid():Boolean 
+		{
+			return regExp.test( String( formElement.value ) );
+		}
 		
 		// ____________________________________________________________________________________________________
 		// GETTERS / SETTERS
 		
-		override public function get isValid():Boolean 
+		public function get regExp():RegExp { return _regExp; }
+		
+		public function set regExp(value:RegExp):void 
 		{
-			var value:* = formElement.value;
-			
-			if ( value is String )
-			{
-				return ( value != "" );
-			}
-			else
-			{
-				return ( value != null  ) && ( value != undefined );
-			}
+			_regExp = value;
 		}
 		
 		// ____________________________________________________________________________________________________

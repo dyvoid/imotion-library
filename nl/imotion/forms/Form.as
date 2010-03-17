@@ -3,6 +3,7 @@ package nl.imotion.forms
     import flash.display.InteractiveObject;
     import flash.utils.Dictionary;
 	import nl.imotion.forms.validators.IValidator;
+	import nl.imotion.forms.validators.ValidatorGroup;
     import nl.imotion.utils.reflector.AccessType;
     import nl.imotion.utils.reflector.PropertyDefinition;
     import nl.imotion.utils.reflector.Reflector;
@@ -13,8 +14,8 @@ package nl.imotion.forms
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
-        private var _elements           :Dictionary = new Dictionary();
-		private var _validators			:Array = [];
+        private var _elements           :Dictionary 		= new Dictionary();
+		private var _validators			:ValidatorGroup		= new ValidatorGroup();
         
         private var _numElements        :uint = 0;
         private var _autoTabIndex       :Boolean = true;
@@ -32,7 +33,7 @@ package nl.imotion.forms
         
 		// ____________________________________________________________________________________________________
 		// PUBLIC
-
+		
         public function registerElement( element:IFormElement, elementName:String ):IFormElement
 		{
 			_elements[ elementName ] = element;
@@ -68,23 +69,13 @@ package nl.imotion.forms
 		
 		public function addValidator( validator:IValidator ):IValidator
 		{
-			_validators.push( validator );
-			
-			return validator;
+			return _validators.addValidator( validator );
 		}
 		
 		
 		public function removeValidator( validator:IValidator ):IValidator
 		{
-			for ( var i:int = _validators.length - 1; i >= 0; i-- ) 
-			{
-				if ( _validators[ i ] == validator )
-				{
-					return _validators.splice( i, 1 )[ 0 ];
-				}
-			}
-			
-			return;
+			return _validators.removeValidator( validator );
 		}
 		
 		
@@ -92,23 +83,26 @@ package nl.imotion.forms
         {
             var formIsValid:Boolean = true;
             
-            for each ( var validator:IValidator in _validators ) 
-            {
-                if ( !validator.validate() && formIsValid )
+            for each ( var element:IFormElement in _elements )
+            {				
+                if ( !element.validate() && formIsValid )
                     formIsValid = false;
             }
             
+			if ( formIsValid )
+				formIsValid = _validators.isValid;
+			
             return formIsValid;
         }
 		
         
-        public function getValidElements():Array
+        public function getValidElements():/*IFormElement*/Array
         {
             return getElementsByValidState( true );
         }
         
         
-        public function getInvalidElements():Array
+        public function getInvalidElements():/*IFormElement*/Array
         {
             return getElementsByValidState( false );
         }
@@ -135,9 +129,9 @@ package nl.imotion.forms
         public function destroy():void
         {
             _elements       = new Dictionary();
+			_validators		= new ValidatorGroup();
             _numElements    = 0;
         }
-        
         
         // ____________________________________________________________________________________________________
 		// GETTERS/SETTERS
@@ -175,15 +169,30 @@ package nl.imotion.forms
         
         public function get isValid():Boolean
         {
-            for each ( var validator:IValidator in _validators ) 
-            {
-                if ( ! validator.isValid )
+            for each ( var element:IFormElement in _elements )
+            {				
+                if ( !element.isValid )
                     return false;
             }
-            
-            return true;
+			
+            return _validators.isValid;
         }
         
+		
+		public function get errors():/*String*/Array
+		{
+			var errors:/*String*/Array = [];
+			
+			for each ( var element:IFormElement in _elements )
+			{
+				if ( !element.isValid )
+					errors.concat( element.errors );
+			}
+			
+			errors.concat( _validators.errors );
+			
+			return errors;
+		}
         
         public function get numElements():uint { return _numElements; }
         
@@ -204,9 +213,9 @@ package nl.imotion.forms
         // ____________________________________________________________________________________________________
 		// PROTECTED
 		
-        protected function getElementsByValidState( validState:Boolean ):Array
+        protected function getElementsByValidState( validState:Boolean ):/*IFormElement*/Array
         {
-            var result:Array = [];
+            var result:/*IFormElement*/Array = [];
             
             for each ( var element:IFormElement in _elements ) 
             {
