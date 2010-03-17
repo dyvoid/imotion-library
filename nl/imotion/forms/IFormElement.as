@@ -7,7 +7,7 @@
 	public interface IFormElement extends IValidatable
 	{
 		function get value():*
-		function set value( value:* )
+		function set value( value:* ):void
 	}
 	
 }

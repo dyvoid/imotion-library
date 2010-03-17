@@ -3,6 +3,7 @@ package nl.imotion.forms
     import flash.display.InteractiveObject;
     import flash.utils.Dictionary;
 	import nl.imotion.forms.validators.IValidator;
+	import nl.imotion.forms.validators.Validator;
 	import nl.imotion.forms.validators.ValidatorGroup;
     import nl.imotion.utils.reflector.AccessType;
     import nl.imotion.utils.reflector.PropertyDefinition;
@@ -15,7 +16,7 @@ package nl.imotion.forms
 		// PROPERTIES
 		
         private var _elements           :Dictionary 		= new Dictionary();
-		private var _validators			:ValidatorGroup		= new ValidatorGroup();
+		private var _validatorGroup		:ValidatorGroup		= new ValidatorGroup();
         
         private var _numElements        :uint = 0;
         private var _autoTabIndex       :Boolean = true;
@@ -67,15 +68,15 @@ package nl.imotion.forms
         }
         
 		
-		public function addValidator( validator:IValidator ):IValidator
+		public function addValidator( validator:Validator ):IValidator
 		{
-			return _validators.addValidator( validator );
+			return _validatorGroup.addValidator( validator );
 		}
 		
 		
-		public function removeValidator( validator:IValidator ):IValidator
+		public function removeValidator( validator:Validator ):IValidator
 		{
-			return _validators.removeValidator( validator );
+			return _validatorGroup.removeValidator( validator );
 		}
 		
 		
@@ -90,7 +91,7 @@ package nl.imotion.forms
             }
             
 			if ( formIsValid )
-				formIsValid = _validators.isValid;
+				formIsValid = _validatorGroup.isValid;
 			
             return formIsValid;
         }
@@ -129,16 +130,18 @@ package nl.imotion.forms
         public function destroy():void
         {
             _elements       = new Dictionary();
-			_validators		= new ValidatorGroup();
+			_validatorGroup		= new ValidatorGroup();
             _numElements    = 0;
         }
         
         // ____________________________________________________________________________________________________
 		// GETTERS/SETTERS
 		
+		// public
+		
         public function get value():*
         {
-            var o:Object = populateObject( new _valueObjectClass() );
+            var o:Object = populate( new _valueObjectClass() );
             
             return o;
         }
@@ -175,7 +178,7 @@ package nl.imotion.forms
                     return false;
             }
 			
-            return _validators.isValid;
+            return _validatorGroup.isValid;
         }
         
 		
@@ -186,10 +189,10 @@ package nl.imotion.forms
 			for each ( var element:IFormElement in _elements )
 			{
 				if ( !element.isValid )
-					errors.concat( element.errors );
+					errors = errors.concat( element.errors );
 			}
 			
-			errors.concat( _validators.errors );
+			errors = errors.concat( _validatorGroup.errors );
 			
 			return errors;
 		}
@@ -209,6 +212,23 @@ package nl.imotion.forms
         {
             _valueObjectClass = value;
         }
+		
+		
+		// protected
+		
+		protected function get elements():Dictionary { return _elements; }
+		
+		protected function set elements(value:Dictionary):void 
+		{
+			_elements = value;
+		}
+		
+		protected function get validatorGroup():ValidatorGroup { return _validatorGroup; }
+		
+		protected function set validatorGroup(value:ValidatorGroup):void 
+		{
+			_validatorGroup = value;
+		}
 		
         // ____________________________________________________________________________________________________
 		// PROTECTED

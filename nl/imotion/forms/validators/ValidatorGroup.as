@@ -8,7 +8,7 @@
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
-		private var _validators		:/*IValidator*/Array;
+		private var _validators		:/*IValidator*/Array = [];
 		
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
@@ -21,7 +21,7 @@
 		// ____________________________________________________________________________________________________
 		// PUBLIC
 		
-		public function addValidator( validator:IValidator ):IValidator
+		public function addValidator( validator:Validator ):Validator
 		{
 			_validators.push( validator );
 			
@@ -29,7 +29,7 @@
 		}
 		
 		
-		public function removeValidator( validator:IValidator ):IValidator
+		public function removeValidator( validator:Validator ):Validator
 		{
 			for ( var i:int = _validators.length - 1; i >= 0; i-- ) 
 			{
@@ -39,7 +39,7 @@
 				}
 			}
 			
-			return;
+			return null;
 		}
 		
 		// ____________________________________________________________________________________________________
@@ -47,9 +47,9 @@
 		
 		public function get isValid():Boolean
 		{
-			for ( var i:int = 0; i < _subValidators.length; i++ ) 
+			for ( var i:int = 0; i < _validators.length; i++ ) 
 			{
-				if ( !_subValidators[ i ].isValid )
+				if ( !_validators[ i ].isValid )
 					return false;
 			}
 			
@@ -57,14 +57,14 @@
 		}
 		
 		
-		public function get errors():Array
+		public function get errors():/*String*/Array
 		{
 			var errors:/*String*/Array = [];
 			
-			for ( var i:int = 0; i < _subValidators.length; i++ ) 
+			for ( var i:int = 0; i < _validators.length; i++ ) 
 			{
-				if ( !_subValidators[ i ].isValid )
-					errors.concat( _subValidators[ i ].errors );
+				if ( !_validators[ i ].isValid )
+					errors = errors.concat( _validators[ i ].errors );
 			}
 			
 			return errors;
