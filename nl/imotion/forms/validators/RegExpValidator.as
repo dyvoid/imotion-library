@@ -25,7 +25,7 @@
 		
 		override public function get isValid():Boolean 
 		{
-			return regExp.test( String( formElement.value ) );
+			return regExp.test( String( value ) );
 		}
 		
 		// ____________________________________________________________________________________________________

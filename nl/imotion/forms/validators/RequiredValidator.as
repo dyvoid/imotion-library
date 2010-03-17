@@ -31,8 +31,6 @@
 		
 		override public function get isValid():Boolean 
 		{
-			var value:* = formElement.value;
-			
 			if ( value is String )
 			{
 				return ( value != "" );

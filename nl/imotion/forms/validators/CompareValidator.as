@@ -11,45 +11,47 @@
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
+		private var _compare	:*;
 		private var _compareTo	:*;
 		private var _operator	:String;
 		
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
 		
-		public function CompareValidator( compareTo:*, operator:String = "==" ) 
+		public function CompareValidator( compare:*, compareTo:*, operator:String = "==" ) 
 		{
+			_compare	= compare;
 			_compareTo	= compareTo;
 			_operator 	= operator;
 		}
-
 		
 		// ____________________________________________________________________________________________________
 		// PUBLIC
 		
 		override public function get isValid():Boolean 
 		{
-			var compareValue:* = ( _compareTo is IFormElement ) ? IFormElement( _compareTo ).value : _compareTo;
+			var compareValue:*   = ( _compare   is IFormElement ) ? IFormElement( _compare   ).value : _compare;
+			var compareToValue:* = ( _compareTo is IFormElement ) ? IFormElement( _compareTo ).value : _compareTo;
 			
 			switch( _operator )
 			{
 				case "==":
-					return formElement.value == compareValue;
+					return compareValue == compareToValue;
 					
 				case "!=":
-					return formElement.value != compareValue;
+					return compareValue != compareToValue;
 					
 				case "<":
-					return formElement.value <  compareValue;
+					return compareValue <  compareToValue;
 					
 				case ">":
-					return formElement.value >  compareValue;
+					return compareValue >  compareToValue;
 					
 				case "<=":
-					return formElement.value <= compareValue;
+					return compareValue <= compareToValue;
 					
 				case ">=":
-					return formElement.value >= compareValue;
+					return compareValue >= compareToValue;
 			}
 			
 			return false;
@@ -57,6 +59,13 @@
 		
 		// ____________________________________________________________________________________________________
 		// GETTERS / SETTERS
+		
+		public function get compare():* { return _compare; }
+		
+		public function set compare(value:*):void 
+		{
+			_compare = value;
+		}
 		
 		public function get compareTo():* { return _compareTo; }
 		

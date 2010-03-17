@@ -54,6 +54,19 @@
 		{
 			_defaultErrorMessage = value;
 		}
+		
+		
+		protected function get value():*
+		{
+			if ( _formElement )
+			{
+				return _formElement.value;
+			}
+			else
+			{
+				throw new Error( "formElement has not been set");
+			}
+		}
 	}
 
 }
