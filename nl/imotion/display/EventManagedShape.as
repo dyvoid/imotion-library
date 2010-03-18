@@ -10,7 +10,7 @@ package nl.imotion.display
 	public class EventManagedShape extends Shape implements IEventManagedDisplayObject
 	{	
 		
-		public function EventManagedSprite( autoDestroy:Boolean = true ) 
+		public function EventManagedShape( autoDestroy:Boolean = true ) 
 		{
 			if ( autoDestroy )
 			{
