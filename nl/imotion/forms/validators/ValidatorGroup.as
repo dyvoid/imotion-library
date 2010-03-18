@@ -1,15 +1,16 @@
-﻿package nl.imotion.forms.validators 
+package nl.imotion.forms.validators 
 {
 	/**
 	 * @author Pieter van de Sluis
 	 */
 	public class ValidatorGroup implements IValidator
-	{		
+	{
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
 		private var _validators		:/*IValidator*/Array = [];
-		
+		private var _operatorMethod :String = ValidatorGroupOperator.AND;
+        
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
 		
