@@ -1,4 +1,4 @@
-﻿package nl.imotion.utils.reflector
+package nl.imotion.utils.reflector
 {
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
@@ -19,7 +19,7 @@
 		public static function getProperty( target:*, propertyName:String ):PropertyDefinition
 		{
 			var xml:XMLList = getNodes( target );
-			var node:XML = xml.( attribute("name") == propertyName )[0];
+			var node:XML = xml.( attribute( "name" ) == propertyName )[0];
 			
 			if ( node )
 				return getPropDef( node );
@@ -75,10 +75,10 @@
 		{
 			var name:String 		= node.attribute("name");
 			var classRef:Class 		= Class( getDefinitionByName( node.attribute("type") ) );
-			var isReadWrite:Boolean = node.name() == "variable" ||node.attribute("access") == "readwrite";
+			var isReadWrite:Boolean = node.name() == "variable" || node.attribute("access") == "readwrite";
 			var isReadable:Boolean 	= isReadWrite || node.attribute("access") == "readonly"; 
 			var isWriteable:Boolean = isReadWrite || node.attribute("access") == "writeonly"; 
-			
+			 
 			return new PropertyDefinition( name, classRef, isReadable, isWriteable );
 		}
 		
