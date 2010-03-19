@@ -35,9 +35,16 @@
 		}
 		
 		
-		public function get errors():/*String*/Array
+		public function get errors():/*ValidatorError*/Array
 		{
-			return ( _defaultErrorMessage && !isValid ) ? [ _defaultErrorMessage ] : [];
+			if ( _defaultErrorMessage && !isValid )
+			{
+				return [ new ValidatorError( this, _defaultErrorMessage ) ];
+			}
+			else
+			{
+				return [ ];
+			}
 		}
 		
 		

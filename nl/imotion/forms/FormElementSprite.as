@@ -5,6 +5,7 @@
 	import nl.imotion.forms.validators.RequiredValidator;
 	import nl.imotion.forms.validators.Validator;
 	import nl.imotion.forms.validators.ValidatorGroup;
+	import nl.imotion.forms.validators.ValidatorGroupOperator;
 	
 	/**
 	 * @author Pieter van de Sluis
@@ -16,12 +17,14 @@
 		
 		private var _validatorGroup		:ValidatorGroup		= new ValidatorGroup();
 		
+		private var _value:String = "";
+		
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
 		
 		public function FormElementSprite() 
 		{
-			
+			_validatorGroup.operatorMethod = ValidatorGroupOperator.AND;
 		}
 		
 		// ____________________________________________________________________________________________________
@@ -63,11 +66,11 @@
 		
 		// public
 		
-		public function get value():* { return null; }
+		public function get value():* { return _value; }
 		
 		public function set value( value:* ):void
 		{
-			
+			_value = value;
 		}
 		
 		

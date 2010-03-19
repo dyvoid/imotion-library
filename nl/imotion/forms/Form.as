@@ -4,6 +4,7 @@ package nl.imotion.forms
     import flash.utils.Dictionary;
 	import nl.imotion.forms.validators.IValidator;
 	import nl.imotion.forms.validators.Validator;
+	import nl.imotion.forms.validators.ValidatorError;
 	import nl.imotion.forms.validators.ValidatorGroup;
     import nl.imotion.utils.reflector.AccessType;
     import nl.imotion.utils.reflector.PropertyDefinition;
@@ -182,17 +183,28 @@ package nl.imotion.forms
         }
         
 		
-		public function get errors():/*String*/Array
+		public function get errors():/*ValidatorError*/Array
 		{
-			var errors:/*String*/Array = [];
+			var errors:/*ValidatorError*/Array = [];
 			
 			for each ( var element:IFormElement in _elements )
 			{
-				if ( !element.isValid )
-					errors = errors.concat( element.errors );
+				errors = errors.concat( element.errors );
 			}
 			
 			errors = errors.concat( _validatorGroup.errors );
+			
+			for ( var i:int = errors.length - 1; i > 0; i-- ) 
+			{
+				for (var j:int = 0; j < i; j++) 
+				{
+					if ( errors[ i ].isEqual( errors[ j ] ) )
+					{
+						errors.splice( i, 1 );
+							break;
+					}
+				}
+			}
 			
 			return errors;
 		}

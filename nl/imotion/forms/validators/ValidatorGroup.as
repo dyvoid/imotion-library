@@ -48,27 +48,50 @@ package nl.imotion.forms.validators
 		
 		public function get isValid():Boolean
 		{
+			var __isValid:Boolean = ( _operatorMethod != ValidatorGroupOperator.OR );
+			
 			for ( var i:int = 0; i < _validators.length; i++ ) 
 			{
-				if ( !_validators[ i ].isValid )
-					return false;
+				var validatorIsValid:Boolean = _validators[ i ].isValid;
+				
+				switch( _operatorMethod )
+				{
+					case ValidatorGroupOperator.AND:
+						if ( !validatorIsValid )
+							return false;
+					break;
+					
+					case ValidatorGroupOperator.OR:
+						__isValid = __isValid || validatorIsValid;
+					break;
+				}
 			}
 			
-			return true;
+			return __isValid;
 		}
 		
 		
-		public function get errors():/*String*/Array
+		public function get errors():/*ValidatorError*/Array
 		{
-			var errors:/*String*/Array = [];
+			var errors:/*ValidatorError*/Array = [];
 			
-			for ( var i:int = 0; i < _validators.length; i++ ) 
+			if ( !isValid )
 			{
-				if ( !_validators[ i ].isValid )
+				for ( var i:int = 0; i < _validators.length; i++ ) 
+				{
 					errors = errors.concat( _validators[ i ].errors );
+				}
 			}
 			
 			return errors;
+		}
+		
+		
+		public function get operatorMethod():String { return _operatorMethod; }
+		
+		public function set operatorMethod(value:String):void 
+		{
+			_operatorMethod = value;
 		}
 		
 		// ____________________________________________________________________________________________________
