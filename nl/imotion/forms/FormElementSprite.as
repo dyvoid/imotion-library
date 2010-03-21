@@ -46,7 +46,8 @@
 		
 		public function addValidator( validator:Validator ):IValidator
 		{
-			validator.formElement = this;
+			validator.target = this;
+			
 			return _validatorGroup.addValidator( validator );
 		}
 		
@@ -56,7 +57,7 @@
 			validator = _validatorGroup.removeValidator( validator );
 			
 			if ( validator )
-				validator.formElement = null;
+				validator.target = null;
 			
 			return validator;
 		}

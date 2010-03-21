@@ -1,5 +1,6 @@
 ﻿package nl.imotion.forms.validators 
 {
+	import flash.text.TextField;
 	import nl.imotion.forms.IFormElement;
 	
 	/**
@@ -10,7 +11,7 @@
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
-		private var _formElement			:IFormElement;
+		private var _target					:*;
 		private var _defaultErrorMessage	:String;
 		
 		// ____________________________________________________________________________________________________
@@ -48,12 +49,13 @@
 		}
 		
 		
-		public function get formElement():IFormElement { return _formElement; }
+		public function get target():* { return _target; }
 		
-		public function set formElement( value:IFormElement ):void 
+		public function set target( value:* ):void 
 		{
-			_formElement = value;
+			_target = value;
 		}
+		
 		
 		public function get defaultErrorMessage():String { return _defaultErrorMessage; }
 		
@@ -65,15 +67,26 @@
 		
 		protected function get value():*
 		{
-			if ( _formElement )
+			if ( _target )
 			{
-				return _formElement.value;
+				switch ( true )
+				{
+					case _target is IFormElement:
+						return IFormElement( _target ).value;
+					
+					case _target is TextField:
+						return TextField( _target ).text;
+						
+					default:
+						return _target;
+				}
 			}
 			else
 			{
-				throw new Error( "formElement has not been set");
+				throw new Error( "target has not been set");
 			}
 		}
+		
 	}
 
 }

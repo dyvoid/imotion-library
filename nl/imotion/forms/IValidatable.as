@@ -10,7 +10,7 @@
 		
 		function get isValid():Boolean;
 		
-		function get errors():/*String*/Array;
+		function get errors():Array;
 	}
 	
 }
