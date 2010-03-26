@@ -1,11 +1,10 @@
-﻿package nl.imotion.burst.components.grid 
+package nl.imotion.burst.components.grid 
 {
 	import flash.display.DisplayObject;
 	import flash.geom.Point;
 	import nl.imotion.burst.components.canvas.Canvas;
 	import nl.imotion.burst.components.core.BurstSprite;
 	import nl.imotion.burst.components.core.IBurstComponent;
-	import nl.imotion.test.burst.components.Box;
 	
 	/**
 	 * @author Pieter van de Sluis
