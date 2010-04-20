@@ -89,7 +89,7 @@ package nl.imotion.forms.validators
 		
 		public function get operatorMethod():String { return _operatorMethod; }
 		
-		public function set operatorMethod(value:String):void 
+		public function set operatorMethod( value:String ):void 
 		{
 			_operatorMethod = value;
 		}

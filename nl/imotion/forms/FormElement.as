@@ -1,6 +1,5 @@
 package nl.imotion.forms 
 {
-	import nl.imotion.display.EventManagedSprite;
 	import nl.imotion.forms.validators.IValidator;
 	import nl.imotion.forms.validators.RequiredValidator;
 	import nl.imotion.forms.validators.Validator;
@@ -10,7 +9,7 @@ package nl.imotion.forms
 	/**
 	 * @author Pieter van de Sluis
 	 */
-	public class FormElementSprite extends EventManagedSprite implements IFormElement
+	public class FormElement implements IFormElement
 	{
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
@@ -22,7 +21,7 @@ package nl.imotion.forms
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
 		
-		public function FormElementSprite() 
+		public function FormElement() 
 		{
 			_validatorGroup.operatorMethod = ValidatorGroupOperator.AND;
 		}

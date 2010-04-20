@@ -1,4 +1,4 @@
-﻿package nl.imotion.forms 
+package nl.imotion.forms 
 {
 	
 	/**
@@ -10,6 +10,8 @@
 		
 		function get isValid():Boolean;
 		
+        function changeValidState( isValid:Boolean ):Boolean
+        
 		function get errors():Array;
 	}
 	

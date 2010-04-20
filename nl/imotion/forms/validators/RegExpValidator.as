@@ -1,4 +1,4 @@
-﻿package nl.imotion.forms.validators 
+package nl.imotion.forms.validators 
 {
 	import nl.imotion.forms.validators.Validator;
 	
@@ -25,7 +25,8 @@
 		
 		override public function get isValid():Boolean 
 		{
-			return regExp.test( String( value ) );
+			return _regExp.test( String( value ) );
+            
 		}
 		
 		// ____________________________________________________________________________________________________

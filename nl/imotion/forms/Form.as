@@ -86,7 +86,7 @@ package nl.imotion.forms
             var formIsValid:Boolean = true;
             
             for each ( var element:IFormElement in _elements )
-            {				
+            {
                 if ( !element.validate() && formIsValid )
                     formIsValid = false;
             }
@@ -120,7 +120,7 @@ package nl.imotion.forms
                 }
                 catch ( e:Error )
                 {
-                    throw new Error( "Object property is incompatible with IFormElement value" ); 
+                    //throw new Error( "Object property is incompatible with IFormElement value" ); 
                 }
             }
             
@@ -133,6 +133,12 @@ package nl.imotion.forms
             _elements       = new Dictionary();
 			_validatorGroup		= new ValidatorGroup();
             _numElements    = 0;
+        }
+        
+        
+        public function changeValidState( isValid:Boolean ):Boolean
+        {
+            return isValid;
         }
         
         // ____________________________________________________________________________________________________
@@ -257,6 +263,7 @@ package nl.imotion.forms
             
             return result;
         }
+        
         
     }
 	

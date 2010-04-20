@@ -1,4 +1,4 @@
-﻿package nl.imotion.forms.validators 
+package nl.imotion.forms.validators 
 {
 	import nl.imotion.forms.IFormElement;
 	import nl.imotion.forms.validators.Validator;
