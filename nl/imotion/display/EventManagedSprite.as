@@ -21,10 +21,7 @@ package nl.imotion.display
 		
 		private function removedFromStageHandler( e:Event ):void
 		{
-			if ( !this.stage )
-			{
-				destroy();
-			}
+			destroy();
 		}
 		
 		
@@ -96,11 +93,6 @@ package nl.imotion.display
 			{
 				_eventManager.removeAllListeners();
 				_eventManager = null;
-			}
-			
-			if ( this.parent != null )
-			{
-				this.parent.removeChild( this );
 			}
 		}
 		
