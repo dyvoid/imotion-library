@@ -9,7 +9,7 @@ package  nl.imotion.utils.grid
 	*/
 	public class GridCalculator
 	{
-		private var _maxWidth:Number = 0;
+		private var _nrOfCols:Number = 0;
 		private var _cellWidth:Number = 0;
 		private var _cellHeight:Number = 0;
 		private var _margin:Number = 0;
@@ -20,15 +20,15 @@ package  nl.imotion.utils.grid
 		
 		/**
 		 * Constructs a new <code>GridCalculator</code> 
-		 * @param	maxWidth The maximum width of the grid. The <code>GridCalculator</code> will build a row of cells, until this value is reached
+		 * @param	maxWidth The number of columns in the grid
 		 * @param	cellWidth The width of a cell in the grid
 		 * @param	cellHeight The height of a cell in the grid
 		 * @param	margin The margin between cells, in pixels
 		 * @param	nrOfCells The total number of cells in the grid. Optional, it is only necessary if the <code>height</code> and <code>nrOfRows</code> properties are to be used.
 		 */
-		public function GridCalculator( maxWidth:Number, cellWidth:Number, cellHeight:Number, margin:Number, nrOfCells:int = -1 )
+		public function GridCalculator( nrOfCols:uint, cellWidth:Number, cellHeight:Number, margin:Number = 0, nrOfCells:int = -1 )
 		{
-			_maxWidth = maxWidth;
+			_nrOfCols = nrOfCols;
 			_cellWidth = cellWidth;
 			_cellHeight = cellHeight;
 			_margin = margin;
@@ -45,14 +45,13 @@ package  nl.imotion.utils.grid
 		{
 			if ( index < 0 || ( nrOfCells != -1 && index >= nrOfCells ) )
 			{
-				return null;
+				throw new Error( "Index is out of bounds" );
 			}
 			
 			var cellPoint:Point = new Point();
 			
-			var nrOfCols:uint = this.nrOfCols;
-			var colPos:uint = index % nrOfCols;
-			var rowPos:uint = uint( index / nrOfCols );
+			var colPos:uint = index % _nrOfCols;
+			var rowPos:uint = uint( index / _nrOfCols );
 			
 			cellPoint.x = ( colPos == 0 ) ? _offsetX : ( this.cellWidth  + this.margin ) * colPos + _offsetX;
 			cellPoint.y = ( rowPos == 0 ) ? _offsetY : ( this.cellHeight + this.margin ) * rowPos + _offsetY;
@@ -86,13 +85,10 @@ package  nl.imotion.utils.grid
 		/**
 		 * The number of columns in the grid
 		 */
-		public function get nrOfCols():uint
+		public function get nrOfCols():Number { return _nrOfCols; }
+		public function set nrOfCols(value:Number):void 
 		{
-			return uint( ( this.maxWidth + this.margin ) / ( this.cellWidth + this.margin ) );
-		}
-		public function set nrOfCols( value:uint ):void
-		{
-			this.maxWidth = ( this.cellWidth + this.margin ) * value + this.margin;
+			_nrOfCols = value;
 		}
 		
 		
