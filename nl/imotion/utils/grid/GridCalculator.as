@@ -14,8 +14,8 @@ package  nl.imotion.utils.grid
 		private var _cellHeight:Number = 0;
 		private var _margin:Number = 0;
 		private var _nrOfCells:int = -1;
-		private var _x:Number = 0;
-		private var _y:Number = 0;
+		private var _offsetX:Number = 0;
+		private var _offsetY:Number = 0;
 		
 		
 		/**
@@ -54,8 +54,8 @@ package  nl.imotion.utils.grid
 			var colPos:uint = index % nrOfCols;
 			var rowPos:uint = uint( index / nrOfCols );
 			
-			cellPoint.x = ( colPos == 0 ) ? _x : ( this.cellWidth  + this.margin ) * colPos + _x;
-			cellPoint.y = ( rowPos == 0 ) ? _y : ( this.cellHeight + this.margin ) * rowPos + _y;
+			cellPoint.x = ( colPos == 0 ) ? _offsetX : ( this.cellWidth  + this.margin ) * colPos + _offsetX;
+			cellPoint.y = ( rowPos == 0 ) ? _offsetY : ( this.cellHeight + this.margin ) * rowPos + _offsetY;
 			
 			return cellPoint;
 		}
@@ -187,22 +187,22 @@ package  nl.imotion.utils.grid
 		
 		
 		/**
-		 * The x position of the grid
+		 * The x offset of the grid
 		 */
-		public function get x():Number { return _x; }
-		public function set x( value:Number ):void 
+		public function get offsetX():Number { return _offsetX; }
+		public function set offsetX( value:Number ):void 
 		{
-			_x = value;
+			_offsetX = value;
 		}
 		
 		
 		/**
-		 * The y position of the grid
+		 * The y offset of the grid
 		 */
-		public function get y():Number { return _y; }
-		public function set y( value:Number ):void 
+		public function get offsetY():Number { return _offsetY; }
+		public function set offsetY( value:Number ):void 
 		{
-			_y = value;
+			_offsetY = value;
 		}
 		
 	}
