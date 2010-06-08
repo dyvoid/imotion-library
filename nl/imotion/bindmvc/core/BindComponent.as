@@ -24,58 +24,44 @@ package nl.imotion.bindmvc.core
 			return _eventManager;
 		}
 		
-		protected function startEventInterest( target:*, type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
+		
+		protected function startEventInterest( target:*, type:*, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
 		{
-			switch( true )
+			var targets	:Array = new Array().concat( target );
+			var types	:Array = new Array().concat( type );
+			
+			for each ( var currTarget:IEventDispatcher in targets ) 
 			{
-				case ( target is IEventDispatcher ):
-					registerEventListener( target, type, listener, useCapture, priority, useWeakReference );
-				break;
-					
-				case ( target is Array ):
-					for each( var currTarget:* in target )
-					{
-						if ( currTarget is IEventDispatcher )
-						{
-							registerEventListener( IEventDispatcher( currTarget ), type, listener, useCapture, priority, useWeakReference );
-						}
-					}
-				break;
-				
+				for each ( var currType:String in types ) 
+				{
+					registerListener( currTarget, currType, listener, useCapture, priority, useWeakReference );
+				}
 			}
 		}		
 		
 		
-		private function registerEventListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
+		private function registerListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
 		{
-			target.addEventListener( type, listener, useCapture, priority, useWeakReference );
-			
-			eventManager.registerListener( target, type, listener, useCapture );
+			eventManager.registerListener( target, type, listener, useCapture, priority, useWeakReference );
 		}
 		
 		
-		protected function stopEventInterest( target:*, type:String, listener:Function, useCapture:Boolean = false ):void
+		protected function stopEventInterest( target:*, type:*, listener:Function, useCapture:Boolean = false ):void
 		{
-			switch( true )
+			var targets	:Array = new Array().concat( target );
+			var types	:Array = new Array().concat( type );
+			
+			for each ( var currTarget:IEventDispatcher in targets ) 
 			{
-				case ( target is IEventDispatcher ):
-					unregisterEventListener( target, type, listener, useCapture );
-				break;
-					
-				case ( target is Array ):
-					for each( var currTarget:* in target )
-					{
-						if ( currTarget is IEventDispatcher )
-						{
-							unregisterEventListener( IEventDispatcher( currTarget ), type, listener, useCapture );
-						}
-					}
-				break;
+				for each ( var currType:String in types ) 
+				{
+					unregisterListener( currTarget, currType, listener, useCapture );
+				}
 			}
 		}
 		
 		
-		private function unregisterEventListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false ):void
+		private function unregisterListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false ):void
 		{
 			eventManager.removeListener( target, type, listener, useCapture );
 		}

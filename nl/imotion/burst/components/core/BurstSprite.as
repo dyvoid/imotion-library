@@ -148,15 +148,17 @@ package nl.imotion.burst.components.core
 		
 		protected function forceRedraw():void
 		{
-			if ( stage )
+			//TODO Create an alternative for stage.invalidate(), since it doesn't work properly on Mac
+			
+			/*if ( stage )
 			{
 				hasChangedSize = true;
 				stage.invalidate();
 			}
 			else
-			{
+			{*/
 				onSizeChange();
-			}
+			//}
 		}
 		
 		

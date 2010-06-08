@@ -1,11 +1,11 @@
 ﻿package nl.imotion.burst.components.core 
 {
-
+	
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import nl.imotion.burst.components.events.BurstComponentEvent;
 	import nl.imotion.display.EventManagedMovieClip;
-
+	
 	[Event(name="sizeChanged", type="nl.imotion.burst.components.events.BurstComponentEvent")]
 	
 	public class BurstMovieClip extends EventManagedMovieClip implements IBurstComponent
@@ -73,7 +73,8 @@
 			}
 			
 		}
-
+		
+		
 		override public function set scaleX( value:Number ):void 
 		{
 			if ( value != super.scaleX )
@@ -84,6 +85,7 @@
 			
 		}
 		
+		
 		override public function set scaleY( value:Number ):void 
 		{
 			if ( value != super.scaleY )
@@ -93,6 +95,7 @@
 			}
 			
 		}
+		
 		
 		override public function addChild( child:DisplayObject ):DisplayObject 
 		{
@@ -148,17 +151,18 @@
 		
 		protected function forceRedraw():void
 		{
-			if ( stage )
+			//TODO Create an alternative for stage.invalidate(), since it doesn't work properly on Mac
+			
+			/*if ( stage )
 			{
 				hasChangedSize = true;
 				stage.invalidate();
 			}
 			else
-			{
+			{*/
 				onSizeChange();
-			}
+			//}
 		}
-		
 		
 		
 		protected function onSizeChange():void
