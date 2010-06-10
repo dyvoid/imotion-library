@@ -20,7 +20,7 @@ package  nl.imotion.utils.grid
 		
 		/**
 		 * Constructs a new <code>GridCalculator</code> 
-		 * @param	maxWidth The number of columns in the grid
+		 * @param	nrOfCols The number of columns in the grid
 		 * @param	cellWidth The width of a cell in the grid
 		 * @param	cellHeight The height of a cell in the grid
 		 * @param	margin The margin between cells, in pixels
@@ -129,16 +129,6 @@ package  nl.imotion.utils.grid
 			{
 				return 0;
 			}
-		}
-		
-		
-		/**
-		 * The maximum width of the grid. The <code>GridCalculator</code> will build a row of cells, until this value is reached
-		 */
-		public function get maxWidth():Number { return _maxWidth; }
-		public function set maxWidth( value:Number ):void 
-		{
-			_maxWidth = value;
 		}
 		
 		
