@@ -13,6 +13,8 @@ package nl.imotion.neuralnetwork
 		
 		private var _weight					:Number;
 		
+		private var _momentum				:Number = 0;
+		
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
 		
@@ -50,6 +52,13 @@ package nl.imotion.neuralnetwork
 		public function get startNeuron():Neuron { return _startNeuron; }
 		
 		public function get endNeuron():Neuron { return _endNeuron; }
+		
+		public function get momentum():Number { return _momentum; }
+		
+		public function set momentum(value:Number):void 
+		{
+			_momentum = value;
+		}
 		
 		// ____________________________________________________________________________________________________
 		// PROTECTED

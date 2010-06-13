@@ -17,10 +17,13 @@ package nl.imotion.neuralnetwork
 		public var layerMap				:/*Layer*/Array = [];
 		
 		private var _currExercise		:Exercise;
-		private var _error  			:Number;
+		private var _error  			:Number = 1;
 		private var _nrOfTrainingCycles	:uint;
 		
 		private var _trainingFinished	:Boolean = false;
+		
+		private var _learningRate		:Number = 0.25;
+		private var _momentum			:Number = 0.5; 
 		
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
@@ -157,13 +160,24 @@ package nl.imotion.neuralnetwork
 		
 		public function get nrOfTrainingCycles():uint { return _nrOfTrainingCycles; }
 		
+		public function get learningRate():Number { return _learningRate; }
+		public function set learningRate(value:Number):void 
+		{
+			_learningRate = value;
+		}
+		
+		public function get momentum():Number { return _momentum; }
+		public function set momentum(value:Number):void 
+		{
+			_momentum = value;
+		}
+		
 		// ____________________________________________________________________________________________________
 		// PROTECTED
 		
 		protected function doTrainingCycle( exercise:Exercise ):void
 		{
 			_nrOfTrainingCycles++;
-			_error = 0;
 			
 			while ( exercise.hasNext() )
 			{
@@ -192,10 +206,10 @@ package nl.imotion.neuralnetwork
 						{
 							var resultVal:Number = result[ j ];
 							var targetVal:Number = e.targetPattern[ j ];
+							var delta:Number = ( targetVal - resultVal );
 							
-							var neuronError:Number = ( targetVal - resultVal ) * resultVal * ( 1 - resultVal );
-							layer.neuronMap[ j ].error = neuronError;
-							netError += ( neuronError * neuronError );
+							layer.neuronMap[ j ].error = delta * resultVal * ( 1 - resultVal );
+							netError += delta * delta;
 						}
 					}
 					else
@@ -215,13 +229,13 @@ package nl.imotion.neuralnetwork
 								sum += nextLayer.neuronMap[ k ].error * nextLayer.neuronMap[ k ].synapseMap[ j ].weight;
 							}
 							var neuronValue:Number = layer.neuronMap[ j ].value;
-							layer.neuronMap[ j ].error = neuronValue * ( 1 - neuronValue ) * sum;;
+							layer.neuronMap[ j ].error = neuronValue * ( 1 - neuronValue ) * sum;
 						}
 					}
 				}
 				
 				
-				//Update weights
+				//Update all weights
 				i = 1;
 				for ( ; i < layerMap.length; i++ ) 
 				{
@@ -235,7 +249,9 @@ package nl.imotion.neuralnetwork
 						{
 							var synapse:Synapse = layer.neuronMap[ j ].synapseMap[ k ];
 							
-							synapse.weight += ( 0.25 * synapse.endNeuron.error * synapse.startNeuron.value );
+							var weightChange:Number = ( _learningRate * synapse.endNeuron.error * synapse.startNeuron.value ) + ( synapse.momentum * _momentum );
+							synapse.momentum = weightChange;
+							synapse.weight += weightChange;
 						}
 					}
 				}				
