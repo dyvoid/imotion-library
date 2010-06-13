@@ -8,26 +8,47 @@ package nl.imotion.neuralnetwork
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
-		private var _inputPattern		:Array;
-		private var _outputPattern		:Array;
+		private var _patterns			:Array = [];
 		
 		private var _maxCycles			:uint;
-		private var _fitnessGoal		:uint;
+		private var _maxError   		:uint;
+		
+		private var _index				:uint = 0;
 		
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
 		
-		public function Exercise( inputPattern:Array, outputPattern:Array, maxCycles:uint = 0, fitnessGoal:uint = 0 ) 
+		public function Exercise( maxCycles:uint = 0, maxError:uint = 0 ) 
 		{
-			_inputPattern	= inputPattern;
-			_outputPattern	= outputPattern;
 			_maxCycles		= maxCycles;
-			_fitnessGoal	= fitnessGoal;
+			_maxError		= maxError;
 		}
 		
 		// ____________________________________________________________________________________________________
 		// PUBLIC
 		
+		public function addPatterns( inputPattern:Array, targetPattern:Array ):void
+		{
+			_patterns.push( new ExercisePatterns( inputPattern, targetPattern ) );
+		}
+		
+		
+		public function next():ExercisePatterns
+		{
+			return _patterns[ _index++ ];
+		}
+		
+		
+		public function reset():void
+		{
+			_index = 0;
+		}
+		
+		
+		public function hasNext():Boolean
+		{
+			return ( _index < _patterns.length );
+		}
 		
 		
 		// ____________________________________________________________________________________________________
@@ -43,22 +64,16 @@ package nl.imotion.neuralnetwork
 		// ____________________________________________________________________________________________________
 		// GETTERS / SETTERS
 		
-		public function get inputPattern():Array { return _inputPattern; }
-		
-		public function get outputPattern():Array { return _outputPattern; }
-		
 		public function get maxCycles():uint { return _maxCycles; }
-		
 		public function set maxCycles(value:uint):void 
 		{
 			_maxCycles = value;
 		}
 		
-		public function get fitnessGoal():uint { return _fitnessGoal; }
-		
-		public function set fitnessGoal(value:uint):void 
+		public function get maxError():uint { return _maxError; }
+		public function set maxError(value:uint):void 
 		{
-			_fitnessGoal = value;
+			_maxError = value;
 		}
 		
 		// ____________________________________________________________________________________________________

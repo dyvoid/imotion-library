@@ -9,6 +9,7 @@ package nl.imotion.neuralnetwork
 		// PROPERTIES
 		
 		private var _value			:Number;
+		private var _error			:Number;
 		
 		private var _synapseMap		:/*Synapse*/Array = [];
 		
@@ -65,12 +66,14 @@ package nl.imotion.neuralnetwork
 			_value = value;
 		}
 		
-		public function get synapseMap():/*Synapse*/Array { return _synapseMap; }		
+		public function get error():Number { return _error; }
 		
-		/*public function set synapses(value:Array):void 
+		public function set error(value:Number):void 
 		{
-			_synapses = value;
-		}*/
+			_error = value;
+		}
+		
+		public function get synapseMap():/*Synapse*/Array { return _synapseMap; }	
 		
 		// ____________________________________________________________________________________________________
 		// PROTECTED

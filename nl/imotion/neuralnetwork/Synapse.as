@@ -13,8 +13,6 @@ package nl.imotion.neuralnetwork
 		
 		private var _weight					:Number;
 		
-		private var _learningRate			:Number = 0.25;
-		
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
 		
@@ -35,9 +33,9 @@ package nl.imotion.neuralnetwork
 		}
 		
 		
-		public function updateWeight( error:Number ):void
+		public function updateWeight( error:Number, learningRate:Number = 0.25 ):void
 		{
-			_weight += _learningRate * error * startNeuron.value * endNeuron.value * ( 1 - endNeuron.value );
+			_weight += learningRate * error * startNeuron.value * endNeuron.value * ( 1 - endNeuron.value );
 		}
 		
 		// ____________________________________________________________________________________________________

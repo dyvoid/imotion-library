@@ -65,9 +65,12 @@ package nl.imotion.neuralnetwork
 		}
 		
 		
-		public function updateWeights( delta:Number, learningRate:Number ):void 
+		public function updateWeights( error:Number, learningRate:Number = NaN ):void 
 		{
-			
+			for ( var i:int = 0; i < neuronMap.length; i++ ) 
+			{
+				neuronMap[ i ].updateWeights( error );
+			}
 		}
 		
 		// ____________________________________________________________________________________________________
