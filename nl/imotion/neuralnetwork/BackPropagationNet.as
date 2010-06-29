@@ -82,12 +82,13 @@ package nl.imotion.neuralnetwork
 			try
 			{
 				var netXML:XML = xml.net[ 0 ];
+				var layers:XMLList = netXML.layer;
 				
 				//Gather the base properties from the XML
-				var nrOfInputNeurons:uint = netXML.layer[0].neuron.length();
-				var nrOfOutputNeurons:uint = netXML.layer[ netXML.layer.length() - 1 ].neuron.length();
-				var nrOfHiddenLayers:uint = netXML.layer.length() - 2;
-				var nrOfNeuronsPerHiddenLayer:uint = ( nrOfHiddenLayers > 0 ) ? netXML.layer[1].neuron.length() : 0;
+				var nrOfInputNeurons:uint = layers[0].neuron.length();
+				var nrOfOutputNeurons:uint = layers[ layers.length() - 1 ].neuron.length();
+				var nrOfHiddenLayers:uint = layers.length() - 2;
+				var nrOfNeuronsPerHiddenLayer:uint = ( nrOfHiddenLayers > 0 ) ? layers[1].neuron.length() : 0;
 				
 				//Create a Net based on these properties
 				create( nrOfInputNeurons, nrOfOutputNeurons, nrOfHiddenLayers, nrOfNeuronsPerHiddenLayer );
@@ -100,7 +101,7 @@ package nl.imotion.neuralnetwork
 				for ( var i:int = 1; i < _layerMap.length; i++ ) 
 				{
 					var layer:Layer = _layerMap[ i ];
-					var layerXML:XML = netXML.layer[ i ];
+					var layerXML:XML = layers[ i ];
 					
 					for ( var j:int = 0; j < layer.neuronMap.length ; j++ ) 
 					{
