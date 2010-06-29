@@ -311,11 +311,6 @@ package nl.imotion.neuralnetwork
 				_currTrainingResult.epochs++;
 				_currTrainingResult.endError = _error;
 				
-				/*if ( _currTrainingResult.epochs == 1 )
-				{
-					_currTrainingResult.startError = _error;
-				}*/
-				
 				if ( ( exercise.maxEpochs > 0 && _currTrainingResult.epochs >= exercise.maxEpochs ) || _error <= exercise.maxError )
 				{
 					var trainingResult:TrainingResult = stopTraining();
