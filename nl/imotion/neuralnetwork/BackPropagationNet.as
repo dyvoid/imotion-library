@@ -1,11 +1,13 @@
 package nl.imotion.neuralnetwork 
 {
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.events.TimerEvent;
 	import flash.utils.getTimer;
 	import flash.utils.Timer;
 	import nl.imotion.neuralnetwork.events.NeuralNetworkEvent;
+	
 	/**
 	 * @author Pieter van de Sluis
 	 */	 
@@ -17,45 +19,27 @@ package nl.imotion.neuralnetwork
 		public var layerMap				:/*Layer*/Array = [];
 		
 		private var _currExercise		:Exercise;
-		private var _error  			:Number = 1;
-		private var _nrOfTrainingCycles	:uint;
+		private var _currTrainingResult	:TrainingResult;
 		
-		private var _trainingFinished	:Boolean = false;
+		private var _error  			:Number = 1;
 		
 		private var _learningRate		:Number = 0.25;
-		private var _momentum			:Number = 0.5; 
+		private var _momentum			:Number = 0.5;
+		
+		private var _trainingPriority	:Number;
+		private var _trainingCycleTime	:uint;
+		private var _trainingCycleDelay	:uint;
 		
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
 		
 		public function BackPropagationNet( nrOfInputNeurons:uint, nrOfOutputNeurons:uint, nrOfHiddenLayers:uint = 0, nrOfNeuronsPerHiddenLayer:uint = 0 ) 
 		{
-			//Build input layer
-			layerMap[ 0 ] = new Layer( nrOfInputNeurons );
-			
-			//Build hidden layers
-			var layerNr:uint = 1;
-			for ( var i:int = 0; i < nrOfHiddenLayers; i++ ) 
-			{
-				layerMap[ layerNr ] = new Layer( nrOfNeuronsPerHiddenLayer, layerMap[ i ] );
-				layerNr++;
-			}
-			
-			//Build output layer
-			layerMap[ layerNr ] = new Layer( nrOfOutputNeurons, layerMap[ layerNr - 1 ] );
+			init( nrOfInputNeurons, nrOfOutputNeurons, nrOfHiddenLayers, nrOfNeuronsPerHiddenLayer );
 		}
 		
 		// ____________________________________________________________________________________________________
 		// PUBLIC
-		
-		/*public function addHiddenLayer( nrOfNeurons:uint ):Layer 
-		{
-			var layer = new Layer( nrOfOutputNeurons, layer );
-			layerMap.push( layer );
-			
-			return null;
-		}*/
-		
 		
 		public function run( pattern:Array ):Array 
 		{
@@ -80,48 +64,38 @@ package nl.imotion.neuralnetwork
 		public function startTraining( exercise:Exercise ):void 
 		{
 			_currExercise = exercise;
-			_nrOfTrainingCycles = 0;
+			_currTrainingResult = new TrainingResult();
 			
-			resumeTraining();
+			doExercise( _currExercise );
 		}
 		
 		
-		public function stopTraining():void 
+		public function stopTraining():TrainingResult 
 		{
-			timer.removeEventListener( TimerEvent.TIMER, timerTickHandler );
 			timer.reset();
-		}
-		
-		
-		public function resumeTraining():void
-		{
-			if ( _currExercise )
-			{
-				_trainingFinished = false;
-				
-				stopTraining();
-				
-				timer.addEventListener( TimerEvent.TIMER, timerTickHandler );
-				timer.start();
-				
-				/*var time:Number = getTimer();
-				
-				while ( getTimer() - time < 900 || _trainingFinished )
-				{
-					doTrainingCycle( _currExercise );
-					trace( _nrOfTrainingCycles);
-				}*/
-			}
-			else
-			{
-				throw new Error( "No exercise has been defined yet." );
-			}
+			
+			var finalTrainingResult:TrainingResult = _currTrainingResult;
+			_currTrainingResult = null;
+			
+			return finalTrainingResult;
 		}
 		
 		
 		public function toXML():XML
 		{
-			return null;
+			var xml:XML = new XML();
+			
+			for ( var i:int = 0; i < layerMap.length; i++ ) 
+			{
+				var currXML:XML = xml.appendChild( <layer /> );
+				
+				for ( var j:int = 0; j <  layerMap[ i ].neuronMap.length ; j++ ) 
+				{
+					currXML.appendChild( <neuron /> );
+				}
+			}
+			
+			return xml;
 		}
 		
 		
@@ -149,7 +123,8 @@ package nl.imotion.neuralnetwork
 		private function get timer():Timer
 		{
 			if ( !_timer )
-				_timer = new Timer( 0 );
+				_timer = new Timer( 1, 1 );
+				_timer.addEventListener( TimerEvent.TIMER, timerTickHandler, false, 0, true );
 				
 			return _timer;
 		}
@@ -157,8 +132,6 @@ package nl.imotion.neuralnetwork
 		public function get nrOfLayers():uint { return layerMap.length; }
 		
 		public function get error():Number { return _error; }
-		
-		public function get nrOfTrainingCycles():uint { return _nrOfTrainingCycles; }
 		
 		public function get learningRate():Number { return _learningRate; }
 		public function set learningRate(value:Number):void 
@@ -172,114 +145,158 @@ package nl.imotion.neuralnetwork
 			_momentum = value;
 		}
 		
+		public function get trainingPriority():Number { return _trainingPriority; }
+		public function set trainingPriority(value:Number):void 
+		{
+			_trainingPriority   = Math.max( 0, Math.min( 1, value ) );
+			_trainingCycleTime  = Math.round( 1000 * _trainingPriority );
+			_trainingCycleDelay = 1000 - _trainingCycleTime + 1;
+		}
+		
 		// ____________________________________________________________________________________________________
 		// PROTECTED
 		
-		protected function doTrainingCycle( exercise:Exercise ):void
+		protected function doExercise( exercise:Exercise ):void
 		{
-			_nrOfTrainingCycles++;
+			var startTime:uint = getTimer();
+			var timeSpend:uint;
 			
-			while ( exercise.hasNext() )
+			do
 			{
-				var i:int = 0;
-				var j:int = 0;
-				var k:int = 0;
-				
-				var e:ExercisePatterns = exercise.next();
-				
-				var result:Array = run( e.inputPattern );
-				var netError:Number = 0;
-				
-				var layer:Layer;
-				
-				//Calculate errors
-				i = layerMap.length - 1;
-				for ( ; i > 0; i-- )
+				while ( exercise.hasNext() )
 				{
-					layer = layerMap[ i ];
+					var i:int = 0;
+					var j:int = 0;
+					var k:int = 0;
 					
-					if ( i == layerMap.length - 1 )
+					var e:ExercisePatterns = exercise.next();
+					
+					var result:Array = run( e.inputPattern );
+					_error = 0;
+					
+					var layer:Layer;
+					
+					//Calculate errors
+					i = layerMap.length - 1;
+					for ( ; i > 0; i-- )
 					{
-						//First calculate errors for output layers
-						j = 0;
-						for ( ; j < layer.neuronMap.length; j++ ) 
-						{
-							var resultVal:Number = result[ j ];
-							var targetVal:Number = e.targetPattern[ j ];
-							var delta:Number = ( targetVal - resultVal );
-							
-							layer.neuronMap[ j ].error = delta * resultVal * ( 1 - resultVal );
-							netError += delta * delta;
-						}
-					}
-					else
-					{
-						//Calculate errors for hidden layers
+						layer = layerMap[ i ];
 						
-						var nextLayer:Layer = layerMap[ i + 1 ];
-						
-						j = 0;
-						for ( ; j < layer.neuronMap.length; j++ ) 
+						if ( i == layerMap.length - 1 )
 						{
-							var sum:Number = 0;
+							//First calculate errors for output layers
 							
-							k = 0;
-							for ( ; k < nextLayer.neuronMap.length; k++ ) 
+							j = 0;
+							for ( ; j < layer.neuronMap.length; j++ ) 
 							{
-								sum += nextLayer.neuronMap[ k ].error * nextLayer.neuronMap[ k ].synapseMap[ j ].weight;
+								var resultVal:Number = result[ j ];
+								var targetVal:Number = e.targetPattern[ j ];
+								var delta:Number = ( targetVal - resultVal );
+								
+								layer.neuronMap[ j ].error = delta * resultVal * ( 1 - resultVal );
+								_error += delta * delta;
 							}
-							var neuronValue:Number = layer.neuronMap[ j ].value;
-							layer.neuronMap[ j ].error = neuronValue * ( 1 - neuronValue ) * sum;
+						}
+						else
+						{
+							//Calculate errors for hidden layers
+							
+							var nextLayer:Layer = layerMap[ i + 1 ];
+							
+							j = 0;
+							for ( ; j < layer.neuronMap.length; j++ ) 
+							{
+								var sum:Number = 0;
+								
+								k = 0;
+								for ( ; k < nextLayer.neuronMap.length; k++ ) 
+								{
+									sum += nextLayer.neuronMap[ k ].error * nextLayer.neuronMap[ k ].synapseMap[ j ].weight;
+								}
+								var neuronValue:Number = layer.neuronMap[ j ].value;
+								layer.neuronMap[ j ].error = neuronValue * ( 1 - neuronValue ) * sum;
+							}
 						}
 					}
+					
+					//Update all weights
+					
+					i = 1;
+					for ( ; i < layerMap.length; i++ ) 
+					{
+						layer = layerMap[ i ];
+						
+						j = 0;
+						for ( ; j < layer.neuronMap.length; j++ )
+						{
+							k = 0;
+							for ( ; k < layer.neuronMap[ j ].synapseMap.length; k++ )
+							{
+								var synapse:Synapse = layer.neuronMap[ j ].synapseMap[ k ];
+								
+								var weightChange:Number = ( _learningRate * synapse.endNeuron.error * synapse.startNeuron.value ) + ( synapse.momentum * _momentum );
+								synapse.momentum = weightChange;
+								synapse.weight += weightChange;
+							}
+						}
+					}				
 				}
 				
+				exercise.reset();
 				
-				//Update all weights
-				i = 1;
-				for ( ; i < layerMap.length; i++ ) 
+				_currTrainingResult.epochs++;
+				_currTrainingResult.endError = _error;
+				
+				if ( _currTrainingResult.epochs == 1 )
 				{
-					layer = layerMap[ i ];
-					
-					j = 0;
-					for ( ; j < layer.neuronMap.length; j++ )
-					{
-						k = 0;
-						for ( ; k < layer.neuronMap[ j ].synapseMap.length; k++ )
-						{
-							var synapse:Synapse = layer.neuronMap[ j ].synapseMap[ k ];
-							
-							var weightChange:Number = ( _learningRate * synapse.endNeuron.error * synapse.startNeuron.value ) + ( synapse.momentum * _momentum );
-							synapse.momentum = weightChange;
-							synapse.weight += weightChange;
-						}
-					}
-				}				
-			}
+					_currTrainingResult.startError = _error;
+				}
+				
+				if ( ( exercise.maxEpochs > 0 && _currTrainingResult.epochs >= exercise.maxEpochs ) || _error <= exercise.maxError )
+				{
+					this.dispatchEvent( new NeuralNetworkEvent( NeuralNetworkEvent.TRAINING_COMPLETE, _currTrainingResult ) );
+					stopTraining();
+					return;
+				}
+				else
+				{
+					this.dispatchEvent( new NeuralNetworkEvent( NeuralNetworkEvent.TRAINING_EPOCH_COMPLETE, _currTrainingResult ) );
+				}
 			
-			_error = netError;
-			exercise.reset();
+			} while ( ( getTimer() - startTime ) < _trainingCycleTime );
 			
-			if ( ( exercise.maxCycles > 0 && _nrOfTrainingCycles >= exercise.maxCycles ) || _error <= exercise.maxError )
-			{
-				_trainingFinished = true
-				stopTraining();
-				this.dispatchEvent( new NeuralNetworkEvent( NeuralNetworkEvent.TRAINING_COMPLETE ) );
-			}
+			timer.delay = _trainingCycleDelay;
+			timer.reset();
+			timer.start();
 		}
 		
 		// ____________________________________________________________________________________________________
 		// PRIVATE
 		
-		
+		public function init( nrOfInputNeurons:uint, nrOfOutputNeurons:uint, nrOfHiddenLayers:uint, nrOfNeuronsPerHiddenLayer:uint ):void
+		{
+			//Build input layer
+			layerMap[ 0 ] = new Layer( nrOfInputNeurons );
+			
+			//Build hidden layers
+			var layerNr:uint = 1;
+			for ( var i:int = 0; i < nrOfHiddenLayers; i++ ) 
+			{
+				layerMap[ layerNr++ ] = new Layer( nrOfNeuronsPerHiddenLayer, layerMap[ i ] );
+			}
+			
+			//Build output layer
+			layerMap[ layerNr ] = new Layer( nrOfOutputNeurons, layerMap[ layerNr - 1 ] );
+			
+			trainingPriority = 0.8;
+		}
 		
 		// ____________________________________________________________________________________________________
 		// EVENT HANDLERS
 		
-		private function timerTickHandler(e:TimerEvent):void 
+		private function timerTickHandler( e:TimerEvent ):void 
 		{
-			//trace( "timerTickHandler : " + nrOfTrainingCycles );
-			doTrainingCycle( _currExercise );
+			doExercise( _currExercise );
 		}
 		
 	}

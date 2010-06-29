@@ -10,7 +10,7 @@ package nl.imotion.neuralnetwork
 		
 		private var _patterns			:Array = [];
 		
-		private var _maxCycles			:uint;
+		private var _maxEpochs			:uint;
 		private var _maxError   		:Number;
 		
 		private var _index				:uint = 0;
@@ -18,9 +18,9 @@ package nl.imotion.neuralnetwork
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
 		
-		public function Exercise( maxCycles:uint = 0, maxError:Number = 0 ) 
+		public function Exercise( maxEpochs:uint = 0, maxError:Number = 0 ) 
 		{
-			_maxCycles		= maxCycles;
+			_maxEpochs		= maxEpochs;
 			_maxError		= maxError;
 		}
 		
@@ -64,10 +64,10 @@ package nl.imotion.neuralnetwork
 		// ____________________________________________________________________________________________________
 		// GETTERS / SETTERS
 		
-		public function get maxCycles():uint { return _maxCycles; }
-		public function set maxCycles(value:uint):void 
+		public function get maxEpochs():uint { return _maxEpochs; }
+		public function set maxEpochs(value:uint):void 
 		{
-			_maxCycles = value;
+			_maxEpochs = value;
 		}
 		
 		public function get maxError():Number { return _maxError; }
