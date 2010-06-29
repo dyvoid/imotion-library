@@ -1,4 +1,4 @@
-package nl.imotion.neuralnetwork 
+package nl.imotion.neuralnetwork.training
 {
 	/**
 	 * @author Pieter van de Sluis

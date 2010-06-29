@@ -5,7 +5,9 @@ package nl.imotion.neuralnetwork
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.utils.getTimer;
+	import nl.imotion.neuralnetwork.components.*;
 	import nl.imotion.neuralnetwork.events.NeuralNetworkEvent;
+	import nl.imotion.neuralnetwork.training.*;
 	import nl.imotion.utils.fpsmeter.FPSMeter;
 	
 	/**

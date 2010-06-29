@@ -1,7 +1,7 @@
 package nl.imotion.neuralnetwork.events
 {
 	import flash.events.Event;
-	import nl.imotion.neuralnetwork.TrainingResult;
+	import nl.imotion.neuralnetwork.training.TrainingResult;
 	
 	/**
 	 * @author Pieter van de Sluis
