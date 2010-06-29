@@ -22,6 +22,11 @@ package nl.imotion.neuralnetwork
 		
 		private var _layerMap			:/*Layer*/Array;
 		
+		private var _nrOfInputNeurons	:uint;
+		private var _nrOfOutputNeurons	:uint;
+		private var _nrOfHiddenLayers	:uint; 
+		private var _nrOfNeuronsPerHiddenLayer	:uint;
+		
 		private var _currExercise		:Exercise;
 		private var _currTrainingResult	:TrainingResult;
 		
@@ -50,6 +55,11 @@ package nl.imotion.neuralnetwork
 		
 		public function create( nrOfInputNeurons:uint, nrOfOutputNeurons:uint, nrOfHiddenLayers:uint = 0, nrOfNeuronsPerHiddenLayer:uint = 0 ):void
 		{
+			_nrOfInputNeurons = Math.max( 1, nrOfInputNeurons );
+			_nrOfOutputNeurons = Math.max( 1, nrOfOutputNeurons );
+			_nrOfHiddenLayers = nrOfHiddenLayers;
+			_nrOfNeuronsPerHiddenLayer = nrOfNeuronsPerHiddenLayer;
+			
 			_layerMap = [];
 			
 			//Build input layer
@@ -181,19 +191,25 @@ package nl.imotion.neuralnetwork
 		
 		public function getLayer( layerIndex:uint ):Layer
 		{
-			return _layerMap[ layerIndex ];
-		}
-		
-		
-		public function getLayerValues( layerIndex:uint ):Array
-		{
-			return _layerMap[ layerIndex ].getValues();
+			if ( layerIndex <= _layerMap.length - 1 )
+			{
+				return _layerMap[ layerIndex ];
+			}
+			return null;
 		}
 		
 		// ____________________________________________________________________________________________________
 		// GETTERS / SETTERS
 		
 		public function get layerMap():/*Layer*/Array { return _layerMap; }
+		
+		public function get nrOfNeuronsPerHiddenLayer():uint { return _nrOfNeuronsPerHiddenLayer; }
+		
+		public function get nrOfHiddenLayers():uint { return _nrOfHiddenLayers; }
+		
+		public function get nrOfOutputNeurons():uint { return _nrOfOutputNeurons; }
+		
+		public function get nrOfInputNeurons():uint { return _nrOfInputNeurons; }
 		
 		public function get nrOfLayers():uint { return _layerMap.length; }
 		
