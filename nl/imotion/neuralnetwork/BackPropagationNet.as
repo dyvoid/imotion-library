@@ -1,9 +1,7 @@
 package nl.imotion.neuralnetwork 
 {
 	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
+	import flash.events.*;
 	import flash.utils.getTimer;
 	import nl.imotion.neuralnetwork.components.*;
 	import nl.imotion.neuralnetwork.events.NeuralNetworkEvent;
