@@ -1,16 +1,18 @@
 package nl.imotion.utils.fpsmeter
 {
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.getTimer;
-	import nl.imotion.display.EventManagedSprite;
 	
 	/**
 	 * @author Pieter van de Sluis
 	 */
-	public class FPSMeter extends EventManagedSprite
+	public class FPSMeter
 	{
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
+		
+		private var _framerateClip		:Sprite;
 		
 		private var _timeList			:Array = [];
 		private var _fpsList			:Array = [];
@@ -30,12 +32,14 @@ package nl.imotion.utils.fpsmeter
 		{
 			_autoStop = autoStop;
 			_numMeasurements = numMeasurements;
+			
+			_framerateClip = new Sprite();
 		}
 		
 		// ____________________________________________________________________________________________________
 		// PUBLIC
 		
-		public function start():void
+		public function startMeasure():void
 		{
 			if ( !_isStarted )
 			{
@@ -43,12 +47,12 @@ package nl.imotion.utils.fpsmeter
 				
 				_lastTime = getTimer();	
 				
-				startEventInterest( this, Event.ENTER_FRAME, enterFrameHandler );
+				_framerateClip.addEventListener( Event.ENTER_FRAME, enterFrameHandler, false, 0, true );
 			}
 		}
 		
 		
-		public function stop():void
+		public function stopMeasure():void
 		{
 			if ( _isStarted )
 			{
@@ -58,7 +62,7 @@ package nl.imotion.utils.fpsmeter
 				_fpsList  = [];
 				_lastTime = NaN;
 				
-				stopEventInterest( this, Event.ENTER_FRAME, enterFrameHandler );
+				_framerateClip.removeEventListener( Event.ENTER_FRAME, enterFrameHandler );
 			}
 		}
 		
@@ -122,7 +126,7 @@ package nl.imotion.utils.fpsmeter
 				}
 				if ( fpsIsStable )
 				{
-					stop();
+					stopMeasure();
 				}
 			}
 		}
@@ -163,7 +167,7 @@ package nl.imotion.utils.fpsmeter
 		{
 			if ( _fps != 0 )
 			{
-				return 1000 / _fps;
+				return int( 1000 / _fps );
 			}
 			
 			return 0;

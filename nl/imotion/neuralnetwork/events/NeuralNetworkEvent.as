@@ -8,8 +8,8 @@ package nl.imotion.neuralnetwork.events
 	 */
 	public class NeuralNetworkEvent extends Event 
 	{
-		public static const TRAINING_EPOCH_COMPLETE:String = "NeuralNetworkEvent::trainingEpochComplete";
-		public static const TRAINING_COMPLETE:String = "NeuralNetworkEvent::trainingComplete";
+		public static const TRAINING_EPOCH_COMPLETE		:String = "NeuralNetworkEvent::trainingEpochComplete";
+		public static const TRAINING_COMPLETE			:String = "NeuralNetworkEvent::trainingComplete";
 		
 		private var _trainingResult		:TrainingResult;
 		

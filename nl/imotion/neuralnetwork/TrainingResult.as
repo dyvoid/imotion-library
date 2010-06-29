@@ -8,10 +8,9 @@ package nl.imotion.neuralnetwork
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
-		private var _startError:Number;
-		private var _endError:Number;
-		private var _errorChange:Number;
-		private var _epochs:uint;
+		private var _startError		:Number;
+		private var _endError		:Number;
+		private var _epochs			:uint;
 		
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
@@ -27,19 +26,17 @@ package nl.imotion.neuralnetwork
 		// GETTERS / SETTERS
 		
 		public function get startError():Number { return _startError; }
-
 		public function set startError( value:Number ):void
 		{
 			_startError = value;
 		}
-
+		
 		public function get endError():Number { return _endError; }
-
 		public function set endError( value:Number ):void
 		{
 			_endError = value;
 		}
-
+		
 		public function get errorChange():Number 
 		{
 			if ( !isNaN( _startError ) && !isNaN( _endError ) )
@@ -48,9 +45,8 @@ package nl.imotion.neuralnetwork
 			}
 			return 0;
 		}
-
+		
 		public function get epochs():uint { return _epochs; }
-
 		public function set epochs( value:uint ):void
 		{
 			_epochs = value;

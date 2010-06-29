@@ -8,10 +8,10 @@ package nl.imotion.neuralnetwork
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
+		private var _synapseMap		:/*Synapse*/Array = [];
+		
 		private var _value			:Number;
 		private var _error			:Number;
-		
-		private var _synapseMap		:/*Synapse*/Array = [];
 		
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
@@ -42,38 +42,34 @@ package nl.imotion.neuralnetwork
 		}
 		
 		
-		public function updateValue():Number
+		public function toXML():XML
 		{
-			return NaN;
-		}
-		
-		
-		public function updateWeights( error:Number ):void
-		{
+			var xml:XML = <neuron />;
+			
 			for ( var i:int = 0; i < _synapseMap.length; i++ ) 
 			{
-				_synapseMap[ i ].updateWeight( error );
+				xml.appendChild( _synapseMap[ i ].toXML() );
 			}
+			
+			return xml;
 		}
 		
 		// ____________________________________________________________________________________________________
 		// GETTERS / SETTERS
 		
-		public function get value():Number { return _value; }
+		public function get synapseMap():/*Synapse*/Array { return _synapseMap; }	
 		
+		public function get value():Number { return _value; }
 		public function set value(value:Number):void 
 		{
 			_value = value;
 		}
 		
 		public function get error():Number { return _error; }
-		
 		public function set error(value:Number):void 
 		{
 			_error = value;
 		}
-		
-		public function get synapseMap():/*Synapse*/Array { return _synapseMap; }	
 		
 		// ____________________________________________________________________________________________________
 		// PROTECTED

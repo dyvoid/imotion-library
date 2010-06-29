@@ -10,11 +10,8 @@ package nl.imotion.neuralnetwork
 		
 		private var _neuronMap			:/*Neuron*/Array = [];
 		
-		/*private var _inputSynapseMap	:Array = [];
-		private var _outputSynapseMap	:Array = [];*/
-		
+		private var _nrOfNeurons		:uint;
 		private var _inputLayer			:Layer;
-		//private var _outputLayer		:Layer;
 		
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
@@ -52,31 +49,26 @@ package nl.imotion.neuralnetwork
 		}
 		
 		
-		public function getValues():Array
+		public function toXML():XML
 		{
-			var result:Array = [];
+			var xml:XML = <layer />;
 			
 			for ( var i:int = 0; i < _neuronMap.length; i++ ) 
 			{
-				result.push( _neuronMap[ i ].value );
+				xml.appendChild( _neuronMap[ i ].toXML() );
 			}
 			
-			return result;
-		}
-		
-		
-		public function updateWeights( error:Number, learningRate:Number = NaN ):void 
-		{
-			for ( var i:int = 0; i < neuronMap.length; i++ ) 
-			{
-				neuronMap[ i ].updateWeights( error );
-			}
+			return xml;
 		}
 		
 		// ____________________________________________________________________________________________________
 		// GETTERS / SETTERS
 		
 		public function get neuronMap():/*Neuron*/Array { return _neuronMap; }
+		
+		public function get nrOfNeurons():uint { return _nrOfNeurons; }
+		
+		public function get inputLayer():Layer { return _inputLayer; }
 		
 		// ____________________________________________________________________________________________________
 		// PROTECTED
@@ -88,9 +80,10 @@ package nl.imotion.neuralnetwork
 		
 		private function init( nrOfNeurons:uint, inputLayer:Layer = null ):void
 		{
-			_inputLayer = inputLayer;
+			_nrOfNeurons = nrOfNeurons;
+			_inputLayer	 = inputLayer;
 			
-			for ( var i:uint = 0; i < nrOfNeurons; i++ ) 
+			for ( var i:uint = 0; i < _nrOfNeurons; i++ ) 
 			{
 				var neuron:Neuron = new Neuron();
 				

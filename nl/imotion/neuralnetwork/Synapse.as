@@ -18,12 +18,12 @@ package nl.imotion.neuralnetwork
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
 		
-		public function Synapse( startNeuron:Neuron, endNeuron:Neuron ) 
+		public function Synapse( startNeuron:Neuron, endNeuron:Neuron, weight:Number = NaN ) 
 		{
 			_startNeuron 	= startNeuron;
 			_endNeuron		= endNeuron
 			
-			_weight			= Math.random() * 2 - 1;
+			_weight			= ( isNaN( weight) ) ? Math.random() * 2 - 1 : weight;
 		}
 		
 		// ____________________________________________________________________________________________________
@@ -35,13 +35,19 @@ package nl.imotion.neuralnetwork
 		}
 		
 		
-		public function updateWeight( error:Number, learningRate:Number = 0.25 ):void
+		public function toXML():XML
 		{
-			_weight += learningRate * error * startNeuron.value * endNeuron.value * ( 1 - endNeuron.value );
+			var xml:XML = <synapse weight={_weight} />;
+			
+			return xml;
 		}
 		
 		// ____________________________________________________________________________________________________
 		// GETTERS / SETTERS
+		
+		public function get startNeuron():Neuron { return _startNeuron; }
+		
+		public function get endNeuron():Neuron { return _endNeuron; }
 		
 		public function get weight():Number { return _weight; }
 		public function set weight(value:Number):void 
@@ -49,12 +55,7 @@ package nl.imotion.neuralnetwork
 			_weight = value;
 		}
 		
-		public function get startNeuron():Neuron { return _startNeuron; }
-		
-		public function get endNeuron():Neuron { return _endNeuron; }
-		
 		public function get momentum():Number { return _momentum; }
-		
 		public function set momentum(value:Number):void 
 		{
 			_momentum = value;
