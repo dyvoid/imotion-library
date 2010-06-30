@@ -31,7 +31,7 @@ package nl.imotion.neuralnetwork
 		private var _momentum			:Number;
 		
 		private var _trainingPriority	:Number;
-		private var _trainingState		:String = TrainingState.STOPPED;
+		private var _trainingState		:String;
 		
 		private var _fpsMeter			:FPSMeter;
 		private var _enterFrameClip		:Sprite;
@@ -44,6 +44,8 @@ package nl.imotion.neuralnetwork
 			this.trainingPriority	= trainingPriority;
 			this.learningRate		= learningRate;
 			this.momentum			= momentum;
+			
+			_trainingState			= TrainingState.STOPPED;
 		}
 		
 		// ____________________________________________________________________________________________________
