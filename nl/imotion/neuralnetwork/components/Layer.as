@@ -8,7 +8,7 @@ package nl.imotion.neuralnetwork.components
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
-		private var _neuronMap			:/*Neuron*/Array = [];
+		private var _neurons			:/*Neuron*/Array = [];
 		
 		private var _nrOfNeurons		:uint;
 		private var _inputLayer			:Layer;
@@ -28,9 +28,9 @@ package nl.imotion.neuralnetwork.components
 		{
 			var result:Array = [];
 			
-			for ( var i:int = 0; i < _neuronMap.length; i++ ) 
+			for ( var i:int = 0; i < _neurons.length; i++ ) 
 			{
-				result.push( _neuronMap[ i ].calcValue() );
+				result.push( _neurons[ i ].calcValue() );
 			}
 			
 			return result;
@@ -39,12 +39,12 @@ package nl.imotion.neuralnetwork.components
 		
 		public function setValues( values:Array ):void
 		{
-			if ( values.length != _neuronMap.length )
+			if ( values.length != _neurons.length )
 				throw new Error( "Number of input values do not match the amount of neurons in the layer" );
 			
-			for ( var i:int = 0; i < _neuronMap.length; i++ ) 
+			for ( var i:int = 0; i < _neurons.length; i++ ) 
 			{
-				_neuronMap[ i ].value = values[ i ];
+				_neurons[ i ].value = values[ i ];
 			}
 		}
 		
@@ -53,9 +53,9 @@ package nl.imotion.neuralnetwork.components
 		{
 			var xml:XML = <layer />;
 			
-			for ( var i:int = 0; i < _neuronMap.length; i++ ) 
+			for ( var i:int = 0; i < _neurons.length; i++ ) 
 			{
-				xml.appendChild( _neuronMap[ i ].toXML() );
+				xml.appendChild( _neurons[ i ].toXML() );
 			}
 			
 			return xml;
@@ -64,7 +64,7 @@ package nl.imotion.neuralnetwork.components
 		// ____________________________________________________________________________________________________
 		// GETTERS / SETTERS
 		
-		public function get neuronMap():/*Neuron*/Array { return _neuronMap; }
+		public function get neurons():/*Neuron*/Array { return _neurons; }
 		
 		public function get nrOfNeurons():uint { return _nrOfNeurons; }
 		
@@ -89,13 +89,13 @@ package nl.imotion.neuralnetwork.components
 				
 				if ( _inputLayer )
 				{
-					for ( var j:uint = 0; j < _inputLayer.neuronMap.length; j++ ) 
+					for ( var j:uint = 0; j < _inputLayer.neurons.length; j++ ) 
 					{
-						neuron.synapseMap[ neuron.synapseMap.length ] = new Synapse( _inputLayer.neuronMap[ j ], neuron );
+						neuron.synapses[ neuron.synapses.length ] = new Synapse( _inputLayer.neurons[ j ], neuron );
 					}
 				}
 				
-				_neuronMap [ _neuronMap.length ] = neuron;
+				_neurons [ _neurons.length ] = neuron;
 			}
 		}
 		

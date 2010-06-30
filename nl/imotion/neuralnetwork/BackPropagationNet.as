@@ -20,7 +20,7 @@ package nl.imotion.neuralnetwork
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
-		private var _layerMap			:/*Layer*/Array = [];
+		private var _layers				:/*Layer*/Array = [];
 		
 		private var _currExercise		:Exercise;
 		private var _currTrainingResult	:TrainingResult;
@@ -56,20 +56,20 @@ package nl.imotion.neuralnetwork
 			nrOfInputNeurons  = Math.max( 1, nrOfInputNeurons );
 			nrOfOutputNeurons = Math.max( 1, nrOfOutputNeurons );
 			
-			_layerMap = [];
+			_layers = [];
 			
 			//Build input layer
-			_layerMap[ 0 ] = new Layer( nrOfInputNeurons );
+			_layers[ 0 ] = new Layer( nrOfInputNeurons );
 			
 			//Build hidden layers
 			var layerNr:uint = 1;
 			for ( var i:int = 0; i < nrOfHiddenLayers; i++ ) 
 			{
-				_layerMap[ layerNr++ ] = new Layer( nrOfNeuronsPerHiddenLayer, _layerMap[ i ] );
+				_layers[ layerNr++ ] = new Layer( nrOfNeuronsPerHiddenLayer, _layers[ i ] );
 			}
 			
 			//Build output layer
-			_layerMap[ layerNr ] = new Layer( nrOfOutputNeurons, _layerMap[ layerNr - 1 ] );
+			_layers[ layerNr ] = new Layer( nrOfOutputNeurons, _layers[ layerNr - 1 ] );
 		}
 		
 		
@@ -86,7 +86,7 @@ package nl.imotion.neuralnetwork
 				var nrOfHiddenLayers:uint = layers.length() - 2;
 				var nrOfNeuronsPerHiddenLayer:uint = ( nrOfHiddenLayers > 0 ) ? layers[1].neuron.length() : 0;
 				
-				//Create a Net based on these properties
+				//Create a Net with random weights based on these properties
 				create( nrOfInputNeurons, nrOfOutputNeurons, nrOfHiddenLayers, nrOfNeuronsPerHiddenLayer );
 				_error = Number( netXML.@error );
 				this.learningRate = Number( netXML.@learningRate );
@@ -94,19 +94,19 @@ package nl.imotion.neuralnetwork
 				this.momentum = Number( netXML.@momentum );
 				
 				//Loop through the XML and set the weights of the synapses
-				for ( var i:int = 1; i < _layerMap.length; i++ ) 
+				for ( var i:int = 1; i < _layers.length; i++ ) 
 				{
-					var layer:Layer = _layerMap[ i ];
+					var layer:Layer = _layers[ i ];
 					var layerXML:XML = layers[ i ];
 					
-					for ( var j:int = 0; j < layer.neuronMap.length ; j++ ) 
+					for ( var j:int = 0; j < layer.neurons.length ; j++ ) 
 					{
-						var neuron:Neuron = layer.neuronMap[ j ];
+						var neuron:Neuron = layer.neurons[ j ];
 						var neuronXML:XML = layerXML.neuron[ j ];
 						
-						for ( var k:int = 0; k < neuron.synapseMap.length; k++ ) 
+						for ( var k:int = 0; k < neuron.synapses.length; k++ ) 
 						{
-							var synapse:Synapse = neuron.synapseMap[ k ];
+							var synapse:Synapse = neuron.synapses[ k ];
 							var synapseXML:XML = neuronXML.synapse[ k ];
 							
 							synapse.weight = Number( synapseXML.@weight );
@@ -124,9 +124,9 @@ package nl.imotion.neuralnetwork
 		
 		public function run( pattern:Array ):Array 
 		{
-			for ( var i:int = 0; i < _layerMap.length; i++ ) 
+			for ( var i:int = 0; i < _layers.length; i++ ) 
 			{
-				var layer:Layer = _layerMap[ i ] as Layer;
+				var layer:Layer = _layers[ i ] as Layer;
 				
 				if ( i == 0 )
 				{
@@ -144,7 +144,7 @@ package nl.imotion.neuralnetwork
 		
 		public function startTraining( exercise:Exercise ):void 
 		{
-			if ( !_layerMap || _layerMap.length == 0 )
+			if ( !_layers || _layers.length == 0 )
 				throw new Error( "Valid neural network for training has not yet been created" );
 			
 			if ( _trainingState == TrainingState.STARTED || _trainingState == TrainingState.PAUSED )
@@ -215,66 +215,56 @@ package nl.imotion.neuralnetwork
 					<net error={_error} learningRate={_learningRate} momentum={_momentum} trainingPriority={trainingPriority} />
 				</root>;
 			
-			for ( var i:int = 0; i < _layerMap.length; i++ ) 
+			for ( var i:int = 0; i < _layers.length; i++ ) 
 			{
-				xml.net.appendChild( _layerMap[ i ].toXML() );
+				xml.net.appendChild( _layers[ i ].toXML() );
 			}
 			
 			return xml;
 		}
 		
-		
-		public function getLayer( layerIndex:uint ):Layer
-		{
-			if ( layerIndex <= _layerMap.length - 1 )
-			{
-				return _layerMap[ layerIndex ];
-			}
-			return null;
-		}
-		
 		// ____________________________________________________________________________________________________
 		// GETTERS / SETTERS
 		
-		public function get layerMap():/*Layer*/Array { return _layerMap; }
+		public function get layers():/*Layer*/Array { return _layers; }
 		
 		public function get nrOfNeuronsPerHiddenLayer():uint
 		{ 
-			if ( _layerMap.length > 2 )
+			if ( _layers.length > 2 )
 			{
-				return _layerMap[ 1 ].neuronMap.length;
+				return _layers[ 1 ].neurons.length;
 			}
 			return 0;
 		}
 		
 		public function get nrOfHiddenLayers():uint
 		{ 
-			if ( _layerMap.length > 2 )
+			if ( _layers.length > 2 )
 			{
-				return _layerMap.length - 2;
+				return _layers.length - 2;
 			}
 			return 0;
 		}
 		
 		public function get nrOfOutputNeurons():uint
 		{ 
-			if ( _layerMap.length > 0 )
+			if ( _layers.length > 0 )
 			{
-				return _layerMap[ _layerMap.length - 1 ].neuronMap.length;
+				return _layers[ _layers.length - 1 ].neurons.length;
 			}
 			return 0;
 		}
 		
 		public function get nrOfInputNeurons():uint
 		{ 
-			if ( _layerMap.length > 0 )
+			if ( _layers.length > 0 )
 			{
-				return _layerMap[ 0 ].neuronMap.length;
+				return _layers[ 0 ].neurons.length;
 			}
 			return 0;
 		}
 		
-		public function get nrOfLayers():uint { return _layerMap.length; }
+		public function get nrOfLayers():uint { return _layers.length; }
 		
 		public function get error():Number { return _error; }
 		
@@ -322,23 +312,23 @@ package nl.imotion.neuralnetwork
 					var layer:Layer;
 					
 					//Calculate errors
-					i = _layerMap.length - 1;
+					i = _layers.length - 1;
 					for ( ; i > 0; i-- )
 					{
-						layer = _layerMap[ i ];
+						layer = _layers[ i ];
 						
-						if ( i == _layerMap.length - 1 )
+						if ( i == _layers.length - 1 )
 						{
 							//First calculate errors for output layers
 							
 							j = 0;
-							for ( ; j < layer.neuronMap.length; j++ ) 
+							for ( ; j < layer.neurons.length; j++ ) 
 							{
 								var resultVal:Number = result[ j ];
 								var targetVal:Number = e.targetPattern[ j ];
 								var delta:Number = ( targetVal - resultVal );
 								
-								layer.neuronMap[ j ].error = delta * resultVal * ( 1 - resultVal );
+								layer.neurons[ j ].error = delta * resultVal * ( 1 - resultVal );
 								_error += delta * delta;
 							}
 						}
@@ -346,20 +336,20 @@ package nl.imotion.neuralnetwork
 						{
 							//Calculate errors for hidden layers
 							
-							var nextLayer:Layer = _layerMap[ i + 1 ];
+							var nextLayer:Layer = _layers[ i + 1 ];
 							
 							j = 0;
-							for ( ; j < layer.neuronMap.length; j++ ) 
+							for ( ; j < layer.neurons.length; j++ ) 
 							{
 								var sum:Number = 0;
 								
 								k = 0;
-								for ( ; k < nextLayer.neuronMap.length; k++ ) 
+								for ( ; k < nextLayer.neurons.length; k++ ) 
 								{
-									sum += nextLayer.neuronMap[ k ].error * nextLayer.neuronMap[ k ].synapseMap[ j ].weight;
+									sum += nextLayer.neurons[ k ].error * nextLayer.neurons[ k ].synapses[ j ].weight;
 								}
-								var neuronValue:Number = layer.neuronMap[ j ].value;
-								layer.neuronMap[ j ].error = neuronValue * ( 1 - neuronValue ) * sum;
+								var neuronValue:Number = layer.neurons[ j ].value;
+								layer.neurons[ j ].error = neuronValue * ( 1 - neuronValue ) * sum;
 							}
 						}
 					}
@@ -367,17 +357,17 @@ package nl.imotion.neuralnetwork
 					//Update all weights
 					
 					i = 1;
-					for ( ; i < _layerMap.length; i++ ) 
+					for ( ; i < _layers.length; i++ ) 
 					{
-						layer = _layerMap[ i ];
+						layer = _layers[ i ];
 						
 						j = 0;
-						for ( ; j < layer.neuronMap.length; j++ )
+						for ( ; j < layer.neurons.length; j++ )
 						{
 							k = 0;
-							for ( ; k < layer.neuronMap[ j ].synapseMap.length; k++ )
+							for ( ; k < layer.neurons[ j ].synapses.length; k++ )
 							{
-								var synapse:Synapse = layer.neuronMap[ j ].synapseMap[ k ];
+								var synapse:Synapse = layer.neurons[ j ].synapses[ k ];
 								
 								var weightChange:Number = ( _learningRate * synapse.endNeuron.error * synapse.startNeuron.value ) + ( synapse.momentum * _momentum );
 								synapse.momentum = weightChange;
@@ -408,8 +398,9 @@ package nl.imotion.neuralnetwork
 		{
 			stopTraining();
 			
-			_layerMap = [];
+			_layers = [];
 			
+			_error				= 1;
 			_trainingPriority 	= 1;
 			_learningRate		= 0.25;
 			_momentum 			= 0.5;

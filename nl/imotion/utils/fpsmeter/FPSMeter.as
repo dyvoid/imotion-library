@@ -40,9 +40,10 @@ package nl.imotion.utils.fpsmeter
 		
 		public function startMeasure( autoStop:Boolean = true ):void
 		{
+			_autoStop  = autoStop;
+			
 			if ( !_isStarted )
 			{
-				_autoStop  = autoStop;
 				_isStarted = true;
 				
 				_lastTime = getTimer();	

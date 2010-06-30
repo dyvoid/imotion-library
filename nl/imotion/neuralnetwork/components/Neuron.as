@@ -8,7 +8,7 @@ package nl.imotion.neuralnetwork.components
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
-		private var _synapseMap		:/*Synapse*/Array = [];
+		private var _synapses		:/*Synapse*/Array = [];
 		
 		private var _value			:Number;
 		private var _error			:Number;
@@ -26,14 +26,14 @@ package nl.imotion.neuralnetwork.components
 		
 		public function calcValue():Number 
 		{
-			if ( _synapseMap.length == 0 )
+			if ( _synapses.length == 0 )
 				throw new Error( "Unable to calculate a value. Neuron has no synapses connected to it" );
 			
 			_value = 0;
 			
-			for ( var i:int = 0; i < _synapseMap.length; i++ ) 
+			for ( var i:int = 0; i < _synapses.length; i++ ) 
 			{
-				_value += _synapseMap[ i ].getOutput();
+				_value += _synapses[ i ].getOutput();
 			}
 			
 			_value = applySigmoid( _value );
@@ -46,9 +46,9 @@ package nl.imotion.neuralnetwork.components
 		{
 			var xml:XML = <neuron />;
 			
-			for ( var i:int = 0; i < _synapseMap.length; i++ ) 
+			for ( var i:int = 0; i < _synapses.length; i++ ) 
 			{
-				xml.appendChild( _synapseMap[ i ].toXML() );
+				xml.appendChild( _synapses[ i ].toXML() );
 			}
 			
 			return xml;
@@ -57,7 +57,7 @@ package nl.imotion.neuralnetwork.components
 		// ____________________________________________________________________________________________________
 		// GETTERS / SETTERS
 		
-		public function get synapseMap():/*Synapse*/Array { return _synapseMap; }	
+		public function get synapses():/*Synapse*/Array { return _synapses; }	
 		
 		public function get value():Number { return _value; }
 		public function set value(value:Number):void 
