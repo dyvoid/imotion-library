@@ -50,7 +50,6 @@ package nl.imotion.neuralnetwork.training
 			return ( _index < _patterns.length );
 		}
 		
-		
 		// ____________________________________________________________________________________________________
 		// PRIVATE
 		

@@ -20,12 +20,7 @@ package nl.imotion.neuralnetwork
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
 		
-		private var _layerMap			:/*Layer*/Array;
-		
-		private var _nrOfInputNeurons	:uint;
-		private var _nrOfOutputNeurons	:uint;
-		private var _nrOfHiddenLayers	:uint; 
-		private var _nrOfNeuronsPerHiddenLayer	:uint;
+		private var _layerMap			:/*Layer*/Array = [];
 		
 		private var _currExercise		:Exercise;
 		private var _currTrainingResult	:TrainingResult;
@@ -36,6 +31,7 @@ package nl.imotion.neuralnetwork
 		private var _momentum			:Number;
 		
 		private var _trainingPriority	:Number;
+		private var _trainingState		:String = TrainingState.STOPPED;
 		
 		private var _fpsMeter			:FPSMeter;
 		private var _enterFrameClip		:Sprite;
@@ -55,10 +51,8 @@ package nl.imotion.neuralnetwork
 		
 		public function create( nrOfInputNeurons:uint, nrOfOutputNeurons:uint, nrOfHiddenLayers:uint = 0, nrOfNeuronsPerHiddenLayer:uint = 0 ):void
 		{
-			_nrOfInputNeurons = Math.max( 1, nrOfInputNeurons );
-			_nrOfOutputNeurons = Math.max( 1, nrOfOutputNeurons );
-			_nrOfHiddenLayers = nrOfHiddenLayers;
-			_nrOfNeuronsPerHiddenLayer = nrOfNeuronsPerHiddenLayer;
+			nrOfInputNeurons  = Math.max( 1, nrOfInputNeurons );
+			nrOfOutputNeurons = Math.max( 1, nrOfOutputNeurons );
 			
 			_layerMap = [];
 			
@@ -148,29 +142,67 @@ package nl.imotion.neuralnetwork
 		
 		public function startTraining( exercise:Exercise ):void 
 		{
+			if ( !_layerMap || _layerMap.length == 0 )
+				throw new Error( "Valid neural network for training has not yet been created" );
+			
+			if ( _trainingState == TrainingState.STARTED || _trainingState == TrainingState.PAUSED )
+			{
+				stopTraining();
+			}
+			
+			_trainingState = TrainingState.STARTED;
+			
 			_currExercise = exercise;
 			_currTrainingResult = new TrainingResult( _error );
 			
 			if ( !_fpsMeter )
-				_fpsMeter = new FPSMeter( false );
-			_fpsMeter.startMeasure();
+				_fpsMeter = new FPSMeter();
 			
 			if ( !_enterFrameClip )
 				_enterFrameClip = new Sprite();
-			_enterFrameClip.addEventListener( Event.ENTER_FRAME, enterFrameHandler, false, 0, true );
+			
+			toggleTraining( true );
+		}
+		
+		
+		public function pauseTraining():void
+		{
+			if ( _trainingState == TrainingState.STARTED )
+			{
+				toggleTraining( false );
+				_trainingState = TrainingState.PAUSED;
+			}
+		}
+		
+		
+		public function resumeTraining():void
+		{
+			if ( _trainingState == TrainingState.PAUSED )
+			{
+				toggleTraining( true );
+				_trainingState = TrainingState.STARTED;
+			}
 		}
 		
 		
 		public function stopTraining():TrainingResult 
 		{
-			_fpsMeter.stopMeasure();
-			
-			_enterFrameClip.removeEventListener( Event.ENTER_FRAME, enterFrameHandler );
-			
-			var finalTrainingResult:TrainingResult = _currTrainingResult;
-			_currTrainingResult = null;			
-			
-			return finalTrainingResult;
+			if ( _trainingState == TrainingState.STARTED || _trainingState == TrainingState.PAUSED )
+			{
+				if ( _trainingState == TrainingState.STARTED )
+				{
+					toggleTraining( false );
+				}
+				
+				var finalTrainingResult:TrainingResult = _currTrainingResult;
+				_currTrainingResult = null;
+				_currExercise = null;
+				
+				_trainingState = TrainingState.STOPPED;
+				
+				return finalTrainingResult;
+			}
+			return null;
 		}
 		
 		
@@ -204,17 +236,47 @@ package nl.imotion.neuralnetwork
 		
 		public function get layerMap():/*Layer*/Array { return _layerMap; }
 		
-		public function get nrOfNeuronsPerHiddenLayer():uint { return _nrOfNeuronsPerHiddenLayer; }
+		public function get nrOfNeuronsPerHiddenLayer():uint
+		{ 
+			if ( _layerMap.length > 2 )
+			{
+				return _layerMap[ 1 ].neuronMap.length;
+			}
+			return 0;
+		}
 		
-		public function get nrOfHiddenLayers():uint { return _nrOfHiddenLayers; }
+		public function get nrOfHiddenLayers():uint
+		{ 
+			if ( _layerMap.length > 2 )
+			{
+				return _layerMap.length - 2;
+			}
+			return 0;
+		}
 		
-		public function get nrOfOutputNeurons():uint { return _nrOfOutputNeurons; }
+		public function get nrOfOutputNeurons():uint
+		{ 
+			if ( _layerMap.length > 0 )
+			{
+				return _layerMap[ _layerMap.length - 1 ].neuronMap.length;
+			}
+			return 0;
+		}
 		
-		public function get nrOfInputNeurons():uint { return _nrOfInputNeurons; }
+		public function get nrOfInputNeurons():uint
+		{ 
+			if ( _layerMap.length > 0 )
+			{
+				return _layerMap[ 0 ].neuronMap.length;
+			}
+			return 0;
+		}
 		
 		public function get nrOfLayers():uint { return _layerMap.length; }
 		
 		public function get error():Number { return _error; }
+		
+		public function get trainingState():String { return _trainingState; }
 		
 		public function get learningRate():Number { return _learningRate; }
 		public function set learningRate(value:Number):void 
@@ -239,8 +301,8 @@ package nl.imotion.neuralnetwork
 		
 		protected function doExercise( exercise:Exercise ):void
 		{
-			var startTime:uint = getTimer();			
 			var trainingCycleTime:uint = int( _fpsMeter.timePerFrame * _trainingPriority );
+			var startTime:uint = getTimer();
 			
 			do
 			{
@@ -328,23 +390,52 @@ package nl.imotion.neuralnetwork
 				_currTrainingResult.epochs++;
 				_currTrainingResult.endError = _error;
 				
+				this.dispatchEvent( new NeuralNetworkEvent( NeuralNetworkEvent.TRAINING_EPOCH_COMPLETE, _currTrainingResult ) );
+				
 				if ( ( exercise.maxEpochs > 0 && _currTrainingResult.epochs >= exercise.maxEpochs ) || _error <= exercise.maxError )
 				{
 					var trainingResult:TrainingResult = stopTraining();
 					this.dispatchEvent( new NeuralNetworkEvent( NeuralNetworkEvent.TRAINING_COMPLETE, trainingResult ) );
 					return;
 				}
-				else
-				{
-					this.dispatchEvent( new NeuralNetworkEvent( NeuralNetworkEvent.TRAINING_EPOCH_COMPLETE, _currTrainingResult ) );
-				}
 			} while ( ( getTimer() - startTime ) < trainingCycleTime );
+		}
+		
+		
+		public function reset():void
+		{
+			stopTraining();
+			
+			_layerMap = [];
+			
+			_trainingPriority 	= 1;
+			_learningRate		= 0.25;
+			_momentum 			= 0.5;
+			
+			_fpsMeter 		= null;
+			_enterFrameClip = null;
 		}
 		
 		// ____________________________________________________________________________________________________
 		// PRIVATE
 		
-		
+		private function toggleTraining( isTraining:Boolean ):void
+		{
+			var hasListener:Boolean = _enterFrameClip.hasEventListener( Event.ENTER_FRAME );
+			
+			if ( isTraining )
+			{
+				_fpsMeter.startMeasure( false );
+				if ( !hasListener )
+					_enterFrameClip.addEventListener( Event.ENTER_FRAME, enterFrameHandler, false, 0, true );
+			}
+			else
+			{
+				_fpsMeter.stopMeasure();
+				if ( hasListener )
+					_enterFrameClip.removeEventListener( Event.ENTER_FRAME, enterFrameHandler );
+			}
+		}
 		
 		// ____________________________________________________________________________________________________
 		// EVENT HANDLERS

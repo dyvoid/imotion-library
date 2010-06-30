@@ -17,9 +17,9 @@ package nl.imotion.neuralnetwork.training
 		
 		public function TrainingResult( startError:Number = NaN, endError:Number = NaN, epochs:uint = 0 ):void 
 		{ 
-			_startError = startError;
-			_endError = endError;
-			_epochs = epochs;
+			_startError 	= startError;
+			_endError		= endError;
+			_epochs 		= epochs;
 		}
 		
 		// ____________________________________________________________________________________________________

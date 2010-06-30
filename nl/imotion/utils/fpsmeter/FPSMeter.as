@@ -28,9 +28,8 @@ package nl.imotion.utils.fpsmeter
 		// ____________________________________________________________________________________________________
 		// CONSTRUCTOR
 		
-		public function FPSMeter( autoStop:Boolean = true, numMeasurements:uint = 15 ) 
+		public function FPSMeter( numMeasurements:uint = 15 ) 
 		{
-			_autoStop = autoStop;
 			_numMeasurements = numMeasurements;
 			
 			_framerateClip = new Sprite();
@@ -39,10 +38,11 @@ package nl.imotion.utils.fpsmeter
 		// ____________________________________________________________________________________________________
 		// PUBLIC
 		
-		public function startMeasure():void
+		public function startMeasure( autoStop:Boolean = true ):void
 		{
 			if ( !_isStarted )
 			{
+				_autoStop  = autoStop;
 				_isStarted = true;
 				
 				_lastTime = getTimer();	
