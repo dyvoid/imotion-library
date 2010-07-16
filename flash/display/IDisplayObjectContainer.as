@@ -1,9 +1,10 @@
 ﻿package flash.display
 {
-	import flash.text.TextSnapshot;
-	import flash.geom.Point;
+import flash.geom.Point;
+import flash.text.TextSnapshot;
 
-	public interface IDisplayObjectContainer extends IInteractiveObject
+
+public interface IDisplayObjectContainer extends IInteractiveObject
 	{
 		/// Determines whether or not the children of the object are mouse enabled.
 		function get mouseChildren () : Boolean;

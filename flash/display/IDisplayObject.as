@@ -1,13 +1,13 @@
 package flash.display
 {
-	import flash.events.IEventDispatcher;
-	import flash.geom.Transform;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.accessibility.AccessibilityProperties;
+import flash.accessibility.AccessibilityProperties;
+import flash.events.IEventDispatcher;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.geom.Transform;
 
 
-	public interface IDisplayObject extends IEventDispatcher
+public interface IDisplayObject extends IEventDispatcher
 	{
 		/// The current accessibility options for this display object.
 		function get accessibilityProperties () : AccessibilityProperties;
