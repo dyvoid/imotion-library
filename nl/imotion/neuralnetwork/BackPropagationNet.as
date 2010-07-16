@@ -350,11 +350,11 @@ public class BackPropagationNet extends EventDispatcher implements IEventDispatc
         {
             //Apply jitter if the jitterEpoch is reached
             var jitter:Number = 0;
-            if ( _currTrainingResult.epochs != 0 && _currTrainingResult.epochs % _jitterEpoch == 0 )
+            if ( jitterEpoch != 0 && _currTrainingResult.epochs != 0 && _currTrainingResult.epochs % _jitterEpoch == 0 )
             {
                 jitter = Math.random() * 0.02 - 0.01;
             }
-
+            
             while ( exercise.hasNext() )
             {
                 var i:int = 0;
