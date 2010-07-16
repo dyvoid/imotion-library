@@ -30,11 +30,11 @@ import nl.imotion.bindmvc.core.IBindComponent;
 
 
 /**
-	 * @author Pieter van de Sluis
-	 */
-	public interface IBindModel extends IBindComponent
-	{
-		function get name():String
-	}
-	
+ * @author Pieter van de Sluis
+ */
+public interface IBindModel extends IBindComponent
+{
+    function get name():String
+}
+
 }
