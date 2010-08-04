@@ -26,10 +26,10 @@
 
 package nl.imotion.events
 {
-import flash.events.IEventDispatcher;
+    import flash.events.IEventDispatcher;
 
 
-final internal class EventListener
+    final internal class EventListener
 	{
 		private var _target:IEventDispatcher;
 		private var _type:String;

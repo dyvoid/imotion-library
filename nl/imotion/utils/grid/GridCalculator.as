@@ -26,10 +26,10 @@
 
 package nl.imotion.utils.grid
 {
-import flash.geom.Point;
+    import flash.geom.Point;
 
 
-/**
+    /**
 	* The <code>GridCalculator</code> class creates a virtual grid, that can be used to calculate individual cell positions.
 	* @author Pieter van de Sluis
 	*/

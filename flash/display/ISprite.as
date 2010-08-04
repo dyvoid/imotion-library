@@ -1,10 +1,10 @@
 ﻿package flash.display
 {
-import flash.geom.Rectangle;
-import flash.media.SoundTransform;
+    import flash.geom.Rectangle;
+    import flash.media.SoundTransform;
 
 
-public interface ISprite extends IDisplayObjectContainer
+    public interface ISprite extends IDisplayObjectContainer
 	{
 		/// Specifies the button mode of this sprite.
 		function get buttonMode () : Boolean;

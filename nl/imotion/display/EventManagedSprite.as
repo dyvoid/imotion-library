@@ -27,14 +27,14 @@
 package nl.imotion.display
 {
 
-import flash.display.Sprite;
-import flash.events.Event;
-import flash.events.IEventDispatcher;
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.events.IEventDispatcher;
 
-import nl.imotion.events.EventManager;
+    import nl.imotion.events.EventManager;
 
 
-public class EventManagedSprite extends Sprite implements IEventManagedDisplayObject
+    public class EventManagedSprite extends Sprite implements IEventManagedDisplayObject
 	{	
 		
 		public function EventManagedSprite( autoDestroy:Boolean = true ) 

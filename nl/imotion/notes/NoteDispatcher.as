@@ -26,10 +26,10 @@
 
 package nl.imotion.notes
 {
-import flash.utils.Dictionary;
+    import flash.utils.Dictionary;
 
 
-public class NoteDispatcher
+    public class NoteDispatcher
 	{
 		private static var allowInstantiation:Boolean = false;
 		private static var instance:NoteDispatcher;

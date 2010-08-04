@@ -29,7 +29,7 @@ package nl.imotion.forms.validators
 
 
 
-/**
+    /**
 	 * @author Pieter van de Sluis
 	 */
 	public class RequiredValidator extends Validator

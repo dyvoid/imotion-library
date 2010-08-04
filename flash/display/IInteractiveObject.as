@@ -1,10 +1,10 @@
 ﻿package flash.display
 {
-import flash.accessibility.AccessibilityImplementation;
-import flash.ui.ContextMenu;
+    import flash.accessibility.AccessibilityImplementation;
+    import flash.ui.ContextMenu;
 
 
-public interface IInteractiveObject extends IDisplayObject
+    public interface IInteractiveObject extends IDisplayObject
 	{
 		function get accessibilityImplementation () : AccessibilityImplementation;
 		function set accessibilityImplementation (value:AccessibilityImplementation) : void;

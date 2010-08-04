@@ -26,10 +26,10 @@
 
 package nl.imotion.events
 {
-import flash.events.Event;
+    import flash.events.Event;
 
 
-/**
+    /**
 	 * @author Pieter van de Sluis
 	 */
 	public class DataEvent extends Event 

@@ -27,88 +27,88 @@
 package nl.imotion.bindmvc.core
 {
 
-import flash.events.IEventDispatcher;
+    import flash.events.IEventDispatcher;
 
-import nl.imotion.bindmvc.model.IBindModel;
-import nl.imotion.events.EventManager;
-import nl.imotion.notes.Note;
-import nl.imotion.notes.NoteDispatcher;
+    import nl.imotion.bindmvc.model.IBindModel;
+    import nl.imotion.events.EventManager;
+    import nl.imotion.notes.Note;
+    import nl.imotion.notes.NoteDispatcher;
 
 
-public class BindComponent implements IBindComponent
-{
-
-    protected function retrieveModel( name:String ):IBindModel
+    public class BindComponent implements IBindComponent
     {
-        return BindMVCCore.getInstance().retrieveModel( name );
-    }
 
-
-    private var _eventManager:EventManager;
-    private function get eventManager():EventManager
-    {
-        if ( !_eventManager ) _eventManager = new EventManager();
-        return _eventManager;
-    }
-
-
-    protected function startEventInterest( target:*, type:*, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
-    {
-        var targets	:Array = new Array().concat( target );
-        var types	:Array = new Array().concat( type );
-
-        for each ( var currTarget:IEventDispatcher in targets )
+        protected function retrieveModel( name:String ):IBindModel
         {
-            for each ( var currType:String in types )
+            return BindMVCCore.getInstance().retrieveModel( name );
+        }
+
+
+        private var _eventManager:EventManager;
+        private function get eventManager():EventManager
+        {
+            if ( !_eventManager ) _eventManager = new EventManager();
+            return _eventManager;
+        }
+
+
+        protected function startEventInterest( target:*, type:*, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
+        {
+            var targets	:Array = new Array().concat( target );
+            var types	:Array = new Array().concat( type );
+
+            for each ( var currTarget:IEventDispatcher in targets )
             {
-                registerListener( currTarget, currType, listener, useCapture, priority, useWeakReference );
+                for each ( var currType:String in types )
+                {
+                    registerListener( currTarget, currType, listener, useCapture, priority, useWeakReference );
+                }
             }
         }
-    }
 
 
-    private function registerListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
-    {
-        eventManager.registerListener( target, type, listener, useCapture, priority, useWeakReference );
-    }
-
-
-    protected function stopEventInterest( target:*, type:*, listener:Function, useCapture:Boolean = false ):void
-    {
-        var targets	:Array = new Array().concat( target );
-        var types	:Array = new Array().concat( type );
-
-        for each ( var currTarget:IEventDispatcher in targets )
+        private function registerListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false ):void
         {
-            for each ( var currType:String in types )
+            eventManager.registerListener( target, type, listener, useCapture, priority, useWeakReference );
+        }
+
+
+        protected function stopEventInterest( target:*, type:*, listener:Function, useCapture:Boolean = false ):void
+        {
+            var targets	:Array = new Array().concat( target );
+            var types	:Array = new Array().concat( type );
+
+            for each ( var currTarget:IEventDispatcher in targets )
             {
-                unregisterListener( currTarget, currType, listener, useCapture );
+                for each ( var currType:String in types )
+                {
+                    unregisterListener( currTarget, currType, listener, useCapture );
+                }
             }
         }
-    }
 
 
-    private function unregisterListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false ):void
-    {
-        eventManager.removeListener( target, type, listener, useCapture );
-    }
-
-
-    protected function dispatchNote( note:Note ):void
-    {
-        NoteDispatcher.getInstance().dispatchNote( note );
-    }
-
-
-    public function destroy():void
-    {
-        if ( _eventManager != null )
+        private function unregisterListener( target:IEventDispatcher, type:String, listener:Function, useCapture:Boolean = false ):void
         {
-            _eventManager.removeAllListeners();
-            _eventManager = null;
+            eventManager.removeListener( target, type, listener, useCapture );
         }
-    }
 
-}
+
+        protected function dispatchNote( note:Note ):void
+        {
+            NoteDispatcher.getInstance().dispatchNote( note );
+        }
+
+
+        public function destroy():void
+        {
+            if ( _eventManager != null )
+            {
+                _eventManager.removeAllListeners();
+                _eventManager = null;
+            }
+        }
+
+    }
 
 }

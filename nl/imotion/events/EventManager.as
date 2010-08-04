@@ -26,10 +26,10 @@
 
 package nl.imotion.events
 {
-import flash.events.IEventDispatcher;
+    import flash.events.IEventDispatcher;
 
 
-public class EventManager
+    public class EventManager
 	{
 		private var listenerMap:Array 	= [];
 		private var mapLength:uint		= 0;
@@ -110,7 +110,7 @@ public class EventManager
 		 * Removes a listener from multiple EventDispatcher objects. If there is no matching listener
 		 *  registered with the EventDispatcher object, a call to this method has no effect.
 		 *
-		 * @param target            <Array> An Array of EventDispatchers that the event listener has been added to.
+		 * @param targets           <Array> An Array of EventDispatchers that the event listener has been added to.
 		 * @param type              <String> The type of event.
 		 * @param listener          <Function> The listener object to remove.
 		 * @param useCapture        <Boolean (default = false)> Specifies whether the listener was registered for the capture phase or the target and bubbling phases. If the listener was registered for both the capture phase and the target and bubbling phases, two calls to removeEventListener() are required to remove both: one call with useCapture set to true, and another call with useCapture set to false.

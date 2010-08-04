@@ -27,14 +27,14 @@
 package nl.imotion.display
 {
 
-import flash.display.MovieClip;
-import flash.events.Event;
-import flash.events.IEventDispatcher;
+    import flash.display.MovieClip;
+    import flash.events.Event;
+    import flash.events.IEventDispatcher;
 
-import nl.imotion.events.EventManager;
+    import nl.imotion.events.EventManager;
 
 
-public class EventManagedMovieClip extends MovieClip implements IEventManagedDisplayObject
+    public class EventManagedMovieClip extends MovieClip implements IEventManagedDisplayObject
 	{	
 		
 		public function EventManagedMovieClip( autoDestroy:Boolean = true ) 

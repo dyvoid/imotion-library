@@ -27,14 +27,14 @@
 package nl.imotion.display
 {
 
-import flash.display.Shape;
-import flash.events.Event;
-import flash.events.IEventDispatcher;
+    import flash.display.Shape;
+    import flash.events.Event;
+    import flash.events.IEventDispatcher;
 
-import nl.imotion.events.EventManager;
+    import nl.imotion.events.EventManager;
 
 
-public class EventManagedShape extends Shape implements IEventManagedDisplayObject
+    public class EventManagedShape extends Shape implements IEventManagedDisplayObject
 	{	
 		
 		public function EventManagedShape( autoDestroy:Boolean = true ) 

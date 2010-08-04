@@ -26,12 +26,12 @@
 
 package nl.imotion.utils.fpsmeter
 {
-import flash.display.Sprite;
-import flash.events.Event;
-import flash.utils.getTimer;
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.utils.getTimer;
 
 
-/**
+    /**
 	 * @author Pieter van de Sluis
 	 */
 	public class FPSMeter

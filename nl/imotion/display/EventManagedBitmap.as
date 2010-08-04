@@ -27,14 +27,14 @@
 package nl.imotion.display
 {
 
-import flash.display.Bitmap;
-import flash.events.Event;
-import flash.events.IEventDispatcher;
+    import flash.display.Bitmap;
+    import flash.events.Event;
+    import flash.events.IEventDispatcher;
 
-import nl.imotion.events.EventManager;
+    import nl.imotion.events.EventManager;
 
 
-public class EventManagedBitmap extends Bitmap implements IEventManagedDisplayObject
+    public class EventManagedBitmap extends Bitmap implements IEventManagedDisplayObject
 	{
 		
 		public function EventManagedBitmap( autoDestroy:Boolean = true ) 

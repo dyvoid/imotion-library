@@ -26,12 +26,12 @@
 
 package nl.imotion.forms.validators
 {
-import flash.text.TextField;
+    import flash.text.TextField;
 
-import nl.imotion.forms.IFormElement;
+    import nl.imotion.forms.IFormElement;
 
 
-/**
+    /**
 	 * @author Pieter van de Sluis
 	 */
 	public class Validator implements IValidator

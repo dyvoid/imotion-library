@@ -28,7 +28,7 @@ package nl.imotion.forms.validators
 {
 
 
-/**
+    /**
 	 * @author Pieter van de Sluis
 	 */
 	public class RegExpValidator extends Validator

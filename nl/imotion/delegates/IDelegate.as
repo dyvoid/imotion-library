@@ -26,10 +26,10 @@
 
 package nl.imotion.delegates
 {
-import nl.imotion.commands.ICommand;
+    import nl.imotion.commands.ICommand;
 
 
-/**
+    /**
 	 * @author Pieter van de Sluis
 	 * Based on code by Thomas Reppa (www.reppa.net)
 	 */

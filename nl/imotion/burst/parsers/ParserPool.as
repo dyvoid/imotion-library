@@ -26,67 +26,67 @@
 
 package nl.imotion.burst.parsers
 {
-/**
- * @author Pieter van de Sluis
- */
-public class ParserPool
-{
-
-    protected var pool	:Array = [];
-
-    //__________________________________________________________________________________________________________________
-    //                                                                                                                  |
-    //                                                                                        C O N S T R U C T O R     |
-    //__________________________________________________________________________________________________________________|
-
-    public function ParserPool() { }
-
-    //__________________________________________________________________________________________________________________
-    //                                                                                                                  |
-    //                                                                                                  P U B L I C     |
-    //__________________________________________________________________________________________________________________|
-
-    public function getParser( parserClass:Class ):IBurstParser
+    /**
+     * @author Pieter van de Sluis
+     */
+    public class ParserPool
     {
-        var parser:IBurstParser = pool[ parserClass ];
 
-        if ( !parser )
+        protected var pool	:Array = [];
+
+        //__________________________________________________________________________________________________________________
+        //                                                                                                                  |
+        //                                                                                        C O N S T R U C T O R     |
+        //__________________________________________________________________________________________________________________|
+
+        public function ParserPool() { }
+
+        //__________________________________________________________________________________________________________________
+        //                                                                                                                  |
+        //                                                                                                  P U B L I C     |
+        //__________________________________________________________________________________________________________________|
+
+        public function getParser( parserClass:Class ):IBurstParser
         {
-            parser = new parserClass();
+            var parser:IBurstParser = pool[ parserClass ];
 
-            if ( parser is IBurstParser )
+            if ( !parser )
             {
-                pool[ parserClass ] = parser;
+                parser = new parserClass();
+
+                if ( parser is IBurstParser )
+                {
+                    pool[ parserClass ] = parser;
+                }
+                else
+                {
+                    throw new Error( "parserClass is not an IBurstParser");
+                }
             }
-            else
-            {
-                throw new Error( "parserClass is not an IBurstParser");
-            }
+
+            return parser;
         }
 
-        return parser;
-    }
 
-
-    public function purge():void
-    {
-        pool = [];
-    }
-
-
-    public function showInfo():void
-    {
-        trace( "Burst Parser Pool" );
-        trace( "=================" );
-
-        for ( var c:String in pool )
+        public function purge():void
         {
-            trace( c + "::" + pool[ c ] );
+            pool = [];
         }
 
-        trace( "=================" );
-    }
 
-}
+        public function showInfo():void
+        {
+            trace( "Burst Parser Pool" );
+            trace( "=================" );
+
+            for ( var c:String in pool )
+            {
+                trace( c + "::" + pool[ c ] );
+            }
+
+            trace( "=================" );
+        }
+
+    }
 
 }

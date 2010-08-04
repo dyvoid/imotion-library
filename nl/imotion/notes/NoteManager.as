@@ -26,10 +26,10 @@
 
 package nl.imotion.notes
 {
-import flash.utils.Dictionary;
+    import flash.utils.Dictionary;
 
 
-/**
+    /**
 	 * @author Pieter van de Sluis
 	 */
 	public class NoteManager 

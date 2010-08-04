@@ -26,11 +26,11 @@
 
 package nl.imotion.utils.reflector
 {
-import flash.utils.describeType;
-import flash.utils.getDefinitionByName;
+    import flash.utils.describeType;
+    import flash.utils.getDefinitionByName;
 
 
-/**
+    /**
 	 * @author Pieter van de Sluis
 	 */
 	public class Reflector

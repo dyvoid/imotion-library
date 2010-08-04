@@ -28,19 +28,19 @@ package nl.imotion.neuralnetwork.training
 {
 
 
-/**
- * @author Pieter van de Sluis
- */
-public class TrainingState
-{
+    /**
+     * @author Pieter van de Sluis
+     */
+    public class TrainingState
+    {
 
-    // ____________________________________________________________________________________________________
-    // PUBLIC
+        // ____________________________________________________________________________________________________
+        // PUBLIC
 
-    public static const STARTED		:String = "started";
-    public static const PAUSED		:String = "paused";
-    public static const STOPPED		:String = "stopped";
+        public static const STARTED		:String = "started";
+        public static const PAUSED		:String = "paused";
+        public static const STOPPED		:String = "stopped";
 
-}
+    }
 
 }

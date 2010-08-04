@@ -26,10 +26,10 @@
 
 package nl.imotion.forms.validators
 {
-import nl.imotion.forms.IFormElement;
+    import nl.imotion.forms.IFormElement;
 
 
-/**
+    /**
 	 * @author Pieter van de Sluis
 	 */
 	public class CompareValidator extends Validator

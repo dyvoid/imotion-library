@@ -26,14 +26,14 @@
 
 package nl.imotion.forms
 {
-import nl.imotion.display.EventManagedSprite;
-import nl.imotion.forms.validators.IValidator;
-import nl.imotion.forms.validators.Validator;
-import nl.imotion.forms.validators.ValidatorGroup;
-import nl.imotion.forms.validators.ValidatorGroupOperator;
+    import nl.imotion.display.EventManagedSprite;
+    import nl.imotion.forms.validators.IValidator;
+    import nl.imotion.forms.validators.Validator;
+    import nl.imotion.forms.validators.ValidatorGroup;
+    import nl.imotion.forms.validators.ValidatorGroupOperator;
 
 
-/**
+    /**
 	 * @author Pieter van de Sluis
 	 */
 	public class FormElementSprite extends EventManagedSprite implements IFormElement

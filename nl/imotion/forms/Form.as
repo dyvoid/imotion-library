@@ -26,18 +26,18 @@
 
 package nl.imotion.forms
 {
-import flash.display.InteractiveObject;
-import flash.utils.Dictionary;
+    import flash.display.InteractiveObject;
+    import flash.utils.Dictionary;
 
-import nl.imotion.forms.validators.IValidator;
-import nl.imotion.forms.validators.Validator;
-import nl.imotion.forms.validators.ValidatorGroup;
-import nl.imotion.utils.reflector.AccessType;
-import nl.imotion.utils.reflector.PropertyDefinition;
-import nl.imotion.utils.reflector.Reflector;
+    import nl.imotion.forms.validators.IValidator;
+    import nl.imotion.forms.validators.Validator;
+    import nl.imotion.forms.validators.ValidatorGroup;
+    import nl.imotion.utils.reflector.AccessType;
+    import nl.imotion.utils.reflector.PropertyDefinition;
+    import nl.imotion.utils.reflector.Reflector;
 
 
-public class Form implements IFormElement
+    public class Form implements IFormElement
     {
 		// ____________________________________________________________________________________________________
 		// PROPERTIES

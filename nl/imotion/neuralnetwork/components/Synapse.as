@@ -28,111 +28,111 @@ package nl.imotion.neuralnetwork.components
 {
 
 
-/**
- * @author Pieter van de Sluis
- *
- * A <code>Synapse</code> is a connection between two neurons.
- * The weight of the connection determines how much the end neuron is activated.
- */
-public class Synapse
-{
-    // ____________________________________________________________________________________________________
-    // PROPERTIES
-
-    private var _startNeuron:Neuron;
-    private var _endNeuron:Neuron;
-
-    private var _weight					:Number;
-
-    private var _momentum				:Number = 0;
-
-    // ____________________________________________________________________________________________________
-    // CONSTRUCTOR
-
-
     /**
+     * @author Pieter van de Sluis
      *
-     * @param startNeuron The <code>Neuron</code> at the start of the synapse
-     * @param endNeuron The <code>Neuron</code> at the end of the synapse
-     * @param weight The weight of the connection
+     * A <code>Synapse</code> is a connection between two neurons.
+     * The weight of the connection determines how much the end neuron is activated.
      */
-    public function Synapse( startNeuron:Neuron, endNeuron:Neuron, weight:Number = NaN )
+    public class Synapse
     {
-        _startNeuron 	= startNeuron;
-        _endNeuron = endNeuron;
+        // ____________________________________________________________________________________________________
+        // PROPERTIES
 
-        _weight			= ( isNaN( weight) ) ? Math.random() * 2 - 1 : weight;
+        private var _startNeuron:Neuron;
+        private var _endNeuron:Neuron;
+
+        private var _weight					:Number;
+
+        private var _momentum				:Number = 0;
+
+        // ____________________________________________________________________________________________________
+        // CONSTRUCTOR
+
+
+        /**
+         *
+         * @param startNeuron The <code>Neuron</code> at the start of the synapse
+         * @param endNeuron The <code>Neuron</code> at the end of the synapse
+         * @param weight The weight of the connection
+         */
+        public function Synapse( startNeuron:Neuron, endNeuron:Neuron, weight:Number = NaN )
+        {
+            _startNeuron 	= startNeuron;
+            _endNeuron = endNeuron;
+
+            _weight			= ( isNaN( weight) ) ? Math.random() * 2 - 1 : weight;
+        }
+
+        // ____________________________________________________________________________________________________
+        // PUBLIC
+
+        /**
+         * @return The output of this synapse, based on the value of the start
+         * <code>Neuron</code> and the weight of this connection
+         */
+        public function getOutput():Number
+        {
+            return _startNeuron.value * _weight;
+        }
+
+
+        /**
+         * @return An XML representation of this <code>Synapse</code>
+         */
+        public function toXML():XML
+        {
+            return <synapse weight={_weight} />;
+        }
+
+        // ____________________________________________________________________________________________________
+        // GETTERS / SETTERS
+
+        /**
+         * The <code>Neuron</code> at the start of the synapse
+         */
+        public function get startNeuron():Neuron { return _startNeuron; }
+
+        /**
+         * The <code>Neuron</code> at the end of the synapse
+         */
+        public function get endNeuron():Neuron { return _endNeuron; }
+
+
+        /**
+         * The weight of the connection
+         */
+        public function get weight():Number { return _weight; }
+        public function set weight(value:Number):void
+        {
+            _weight = value;
+        }
+
+
+        /**
+         * The current momentum of this synapse's weight correction
+         */
+        public function get momentum():Number { return _momentum; }
+        public function set momentum(value:Number):void
+        {
+            _momentum = value;
+        }
+
+        // ____________________________________________________________________________________________________
+        // PROTECTED
+
+
+
+        // ____________________________________________________________________________________________________
+        // PRIVATE
+
+
+
+        // ____________________________________________________________________________________________________
+        // EVENT HANDLERS
+
+
+
     }
-
-    // ____________________________________________________________________________________________________
-    // PUBLIC
-
-    /**
-     * @return The output of this synapse, based on the value of the start
-     * <code>Neuron</code> and the weight of this connection
-     */
-    public function getOutput():Number
-    {
-        return _startNeuron.value * _weight;
-    }
-
-
-    /**
-     * @return An XML representation of this <code>Synapse</code>
-     */
-    public function toXML():XML
-    {
-        return <synapse weight={_weight} />;
-    }
-
-    // ____________________________________________________________________________________________________
-    // GETTERS / SETTERS
-
-    /**
-     * The <code>Neuron</code> at the start of the synapse
-     */
-    public function get startNeuron():Neuron { return _startNeuron; }
-
-    /**
-     * The <code>Neuron</code> at the end of the synapse
-     */
-    public function get endNeuron():Neuron { return _endNeuron; }
-
-
-    /**
-     * The weight of the connection
-     */
-    public function get weight():Number { return _weight; }
-    public function set weight(value:Number):void
-    {
-        _weight = value;
-    }
-
-
-    /**
-     * The current momentum of this synapse's weight correction
-     */
-    public function get momentum():Number { return _momentum; }
-    public function set momentum(value:Number):void
-    {
-        _momentum = value;
-    }
-
-    // ____________________________________________________________________________________________________
-    // PROTECTED
-
-
-
-    // ____________________________________________________________________________________________________
-    // PRIVATE
-
-
-
-    // ____________________________________________________________________________________________________
-    // EVENT HANDLERS
-
-
-
-}
 
 }
