@@ -1,4 +1,4 @@
-/*
+ /*
  * Licensed under the MIT license
  *
  * Copyright (c) 2010 Pieter van de Sluis
@@ -437,6 +437,8 @@ package nl.imotion.neuralnetwork
                     jitter = 0;
                 }
 
+                var trainingTime:uint = getTimer() - startTime;
+
                 exercise.reset();
 
                 _currTrainingResult.epochs++;
@@ -447,10 +449,13 @@ package nl.imotion.neuralnetwork
                 if ( ( exercise.maxEpochs > 0 && _currTrainingResult.epochs >= exercise.maxEpochs ) || _error <= exercise.maxError )
                 {
                     var trainingResult:TrainingResult = stopTraining();
+                    trainingResult.trainingTime += trainingTime;
                     this.dispatchEvent( new NeuralNetworkEvent( NeuralNetworkEvent.TRAINING_COMPLETE, trainingResult ) );
                     return;
                 }
-            } while ( ( getTimer() - startTime ) < trainingCycleTime );
+            } while ( trainingTime < trainingCycleTime );
+
+            _currTrainingResult.trainingTime += trainingTime;
         }
 
 

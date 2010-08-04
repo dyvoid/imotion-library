@@ -39,15 +39,17 @@ package nl.imotion.neuralnetwork.training
         private var _startError		:Number;
         private var _endError		:Number;
         private var _epochs			:uint;
+        private var _trainingTime   :uint;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function TrainingResult( startError:Number = NaN, endError:Number = NaN, epochs:uint = 0 ):void
+        public function TrainingResult( startError:Number = NaN, endError:Number = NaN, epochs:uint = 0, trainingTime:uint = 0 ):void
         {
             _startError 	= startError;
             _endError		= endError;
             _epochs 		= epochs;
+            _trainingTime   = trainingTime;
         }
 
         // ____________________________________________________________________________________________________
@@ -80,6 +82,12 @@ package nl.imotion.neuralnetwork.training
             _epochs = value;
         }
 
+
+        public function get trainingTime():uint { return _trainingTime; }
+        public function set trainingTime( value:uint ):void
+        {
+            _trainingTime = value;
+        }
     }
 
 }
