@@ -54,12 +54,14 @@ package nl.imotion.neuralnetwork.components
 
         public function calcActivation():Number
         {
-            if ( _synapses.length == 0 )
+            var synapsesLength:uint = _synapses.length;
+
+            if ( synapsesLength == 0 )
                 throw new Error( "Unable to calculate a value. Neuron has no synapses connected to it" );
 
             _value = 0;
 
-            for ( var i:int = 0; i < _synapses.length; i++ )
+            for ( var i:int = 0; i < synapsesLength; i++ )
             {
                 _value += _synapses[ i ].getOutput();
             }

@@ -56,7 +56,8 @@ package nl.imotion.neuralnetwork.components
         {
             var result:Array = [];
 
-            for ( var i:int = 0; i < _neurons.length; i++ )
+            var neuronsLength:uint = _neurons.length;
+            for ( var i:int = 0; i < neuronsLength; i++ )
             {
                 result.push( _neurons[ i ].calcActivation() );
             }

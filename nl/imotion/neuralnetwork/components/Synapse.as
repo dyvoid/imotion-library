@@ -59,7 +59,7 @@ package nl.imotion.neuralnetwork.components
         public function Synapse( startNeuron:Neuron, endNeuron:Neuron, weight:Number = NaN )
         {
             _startNeuron 	= startNeuron;
-            _endNeuron = endNeuron;
+            _endNeuron      = endNeuron;
 
             _weight			= ( isNaN( weight) ) ? Math.random() * 2 - 1 : weight;
         }
