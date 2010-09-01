@@ -357,13 +357,19 @@ package nl.imotion.neuralnetwork
 
                 while ( exercise.hasNext() )
                 {
+                    //Init vars that will be used for fast, optimized iterators
                     var i:int = 0;
+                    var iIterLength:int = 0;
                     var j:int = 0;
+                    var jIterLength:int = 0;
                     var k:int = 0;
+                    var kIterLength:int = 0;
 
-                    var e:ExercisePatterns = exercise.next();
+                    //Grab next exercise patterns
+                    var patterns:ExercisePatterns = exercise.next();
 
-                    var result:Array = run( e.inputPattern );
+                    //Run the neural network, using the exercise patterns
+                    var result:Array = run( patterns.inputPattern );
                     _error = 0;
 
                     var layer:Layer;
@@ -379,10 +385,11 @@ package nl.imotion.neuralnetwork
                             //First calculate errors for output layers
 
                             j = 0;
-                            for ( ; j < layer.neurons.length; j++ )
+                            jIterLength = layer.neurons.length;
+                            for ( ; j < jIterLength; j++ )
                             {
                                 var resultVal:Number = result[ j ];
-                                var targetVal:Number = e.targetPattern[ j ];
+                                var targetVal:Number = patterns.targetPattern[ j ];
                                 var delta:Number = ( targetVal - resultVal );
 
                                 layer.neurons[ j ].error = delta * resultVal * ( 1 - resultVal );
@@ -396,12 +403,14 @@ package nl.imotion.neuralnetwork
                             var nextLayer:Layer = _layers[ i + 1 ];
 
                             j = 0;
-                            for ( ; j < layer.neurons.length; j++ )
+                            jIterLength = layer.neurons.length;
+                            for ( ; j < jIterLength; j++ )
                             {
                                 var sum:Number = 0;
 
                                 k = 0;
-                                for ( ; k < nextLayer.neurons.length; k++ )
+                                kIterLength = nextLayer.neurons.length;
+                                for ( ; k < kIterLength; k++ )
                                 {
                                     sum += nextLayer.neurons[ k ].error * nextLayer.neurons[ k ].synapses[ j ].weight;
                                 }
@@ -414,15 +423,18 @@ package nl.imotion.neuralnetwork
                     //Update all weights
 
                     i = 1;
-                    for ( ; i < _layers.length; i++ )
+                    iIterLength = _layers.length;
+                    for ( ; i < iIterLength; i++ )
                     {
                         layer = _layers[ i ];
 
                         j = 0;
-                        for ( ; j < layer.neurons.length; j++ )
+                        jIterLength = layer.neurons.length;
+                        for ( ; j < jIterLength; j++ )
                         {
                             k = 0;
-                            for ( ; k < layer.neurons[ j ].synapses.length; k++ )
+                            kIterLength = layer.neurons[ j ].synapses.length;
+                            for ( ; k < kIterLength; k++ )
                             {
                                 var synapse:Synapse = layer.neurons[ j ].synapses[ k ];
 
