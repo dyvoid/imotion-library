@@ -41,13 +41,12 @@ package nl.imotion.evo.evolvers
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
+        private var _previousGenome:Genome;
         private var _genome:Genome;
 
-        private var _previousGenome:Genome;
+        private var _variation:Number = 1;
 
-        private var _momentum:Number;
-
-        private var _variation:Number = 0.1;
+        private var _fitness:Number = 0;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
@@ -66,30 +65,24 @@ package nl.imotion.evo.evolvers
         }
 
 
-        public function reward():Genome
+        public function reward( fitness:Number ):Genome
         {
             _previousGenome = _genome.clone();
 
-            _variation -= 0.001;
-
             _genome.mutate( _variation );
-            _genome.apply( this );
+
+            _fitness = fitness;
 
             return _genome;
         }
 
 
-        public function punish():Genome
+        public function punish( fitness:Number ):Genome
         {
             if ( _previousGenome )
                 _genome = _previousGenome.clone();
 
-//            _variation += 0.0001;
-
             _genome.mutate( _variation );
-            _genome.apply( this );
-
-
 
             return _genome;
         }
@@ -137,16 +130,9 @@ package nl.imotion.evo.evolvers
             return _previousGenome;
         }
 
-
-        public function get momentum():Number
+        public function set previousGenome( value:Genome ):void
         {
-            return _momentum;
-        }
-
-
-        public function set momentum( value:Number ):void
-        {
-            _momentum = value;
+            _previousGenome = value;
         }
 
 
@@ -160,6 +146,19 @@ package nl.imotion.evo.evolvers
         {
             _variation = value;
         }
+
+
+        public function get fitness():Number
+        {
+            return _fitness;
+        }
+
+
+        public function set fitness( value:Number ):void
+        {
+            _fitness = value;
+        }
+
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

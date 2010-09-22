@@ -29,24 +29,26 @@ package nl.imotion.evo.genes
     /**
      * @author Pieter van de Sluis
      * Date: 14-sep-2010
-     * Time: 21:26:57
+     * Time: 21:29:02
      */
-    public class CollectionGene extends UintGene
+    public class IntGene extends Gene
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _collection:Array;
+        private var _minVal:int;
 
+        private var _maxVal:int;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function CollectionGene( propName:String, value:Number, mutationEffect:Number, collection:Array, limitMethod:String = "bounce" )
+        public function IntGene( propName:String, value:Number, mutationEffect:Number, minVal:int, maxVal:int, limitMethod:String = "bounce" ):void
         {
-            _collection = collection;
+            _minVal = minVal;
+            _maxVal = maxVal;
 
-            super( propName, value, mutationEffect, 0, _collection.length - 1, limitMethod );
+            super( propName, value, mutationEffect, limitMethod );
         }
 
         // ____________________________________________________________________________________________________
@@ -54,14 +56,13 @@ package nl.imotion.evo.genes
 
         override public function getValue():*
         {
-            return _collection[ super.getValue() as uint ];
+            return _minVal + Math.floor( value * ( ( _maxVal + 0.99999999 - _minVal ) ) );
         }
-
 
 
         override public function clone():Gene
         {
-            return new CollectionGene( propName, value, mutationEffect, _collection, limitMethod );
+            return new IntGene( propName, value, mutationEffect, _minVal, _maxVal, limitMethod );
         }
 
 
@@ -69,7 +70,9 @@ package nl.imotion.evo.genes
         {
             var xml:XML = super.toXML();
 
-            xml[ "@type" ]      = "Collection";
+            xml[ "@type" ]      = "int";
+            xml[ "@minVal" ]    = minVal;
+            xml[ "@maxVal" ]    = maxVal;
 
             return xml;
         }
@@ -88,7 +91,28 @@ package nl.imotion.evo.genes
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
+        public function get minVal():int
+        {
+            return _minVal;
+        }
 
+
+        public function set minVal( value:int ):void
+        {
+            _minVal = value;
+        }
+
+
+        public function get maxVal():int
+        {
+            return _maxVal;
+        }
+
+
+        public function set maxVal( value:int ):void
+        {
+            _maxVal = value;
+        }
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

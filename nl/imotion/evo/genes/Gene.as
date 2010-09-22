@@ -40,25 +40,60 @@ package nl.imotion.evo.genes
 
         private var _value:Number = 0.5;
 
-        private var _variation:Number = 0.5;
+        private var _mutationEffect:Number = 0.5;
+
+        private var _limitMethod:String;
+
+        private var _momentum:Number = 0;
+        private var _momentumEffect:Number = 0.5;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function Gene( propName:String, value:Number, variation:Number )
+        public function Gene( propName:String, value:Number, mutationEffect:Number, limitMethod:String = "bounce" )
         {
             _propName = propName;
             _value = value;
-            _variation = variation;
+            _mutationEffect = mutationEffect;
+            _limitMethod = limitMethod;
         }
 
 
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        public function mutate( variation:Number = 0.5 ):Gene
+        public function mutate( globalMutationEffect:Number = 1, mutationSeed:Number = -1, updateMomentum:Boolean = false ):Gene
         {
-            _value += ( Math.random() - value ) * variation * _variation;
+            mutationSeed = ( mutationSeed >= 0 && mutationSeed <= 1 ) ? mutationSeed : Math.random();
+
+            var newVal:Number = _value + ( ( mutationSeed * 2 - 1 ) * globalMutationEffect * _mutationEffect ) + _momentum;
+
+            if ( newVal < -1 ) newVal = -1;
+            if ( newVal >  2 ) newVal =  2;
+
+            if ( newVal < 0 || newVal > 1 )
+            {
+                switch ( _limitMethod )
+                {
+                    case LimitMethod.BOUNCE:
+                        newVal = ( newVal < 0 ) ? -newVal : 1 - ( newVal - 1 );
+                    break;
+
+                    case LimitMethod.WRAP:
+                        newVal = ( newVal < 0 ) ?  1 + newVal : newVal - 1;
+                    break;
+
+                    case LimitMethod.CUT_OFF:
+                        newVal = ( newVal < 0 ) ? 0 : 1;
+                    break;
+                }
+            }
+
+            if ( updateMomentum )
+                _momentum = ( newVal - _value ) * _momentumEffect;
+//            _momentum = 0;
+            
+            _value = newVal;
 
             return this;
         }
@@ -74,13 +109,16 @@ package nl.imotion.evo.genes
 
         public function clone():Gene
         {
-            return new Gene( _propName, _value, _variation );
+            return new Gene( _propName, _value, _mutationEffect );
         }
 
 
         public function toXML():XML
         {
-            return null;
+            var xml:XML =
+                    <gene type="gene" propName={propName} value={value} mutationEffect={mutationEffect} limitMethod={limitMethod} />
+
+            return xml;
         }
 
 
@@ -96,6 +134,7 @@ package nl.imotion.evo.genes
 
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
+        
 
         public function get propName():String
         {
@@ -109,10 +148,34 @@ package nl.imotion.evo.genes
         }
 
 
-        public function get variation():Number
+        public function set value( value:Number ):void
         {
-            return _variation;
+            _value = value;
         }
+
+
+        public function get mutationEffect():Number
+        {
+            return _mutationEffect;
+        }
+
+        public function set mutationEffect( value:Number ):void
+        {
+            _mutationEffect = value;
+        }
+
+
+        public function get limitMethod():String
+        {
+            return _limitMethod;
+        }
+
+
+        public function set limitMethod( value:String ):void
+        {
+            _limitMethod = value;
+        }
+
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

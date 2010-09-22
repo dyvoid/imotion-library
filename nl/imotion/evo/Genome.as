@@ -28,6 +28,7 @@ package nl.imotion.evo
 {
     import nl.imotion.evo.evolvers.EvolverSprite;
     import nl.imotion.evo.genes.Gene;
+    import nl.imotion.evo.genes.NumberGene;
 
 
     /**
@@ -56,33 +57,49 @@ package nl.imotion.evo
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        public function mutate( variation:Number ):Genome
+        public function mutate( variation:Number, updateMomentum:Boolean = false ):Genome
         {
             for each ( var gene:Gene in _genes )
             {
-                gene.mutate( variation );
+                gene.mutate( variation, -1, updateMomentum );
             }
 
             return this;
         }
 
 
-        public function addGene( gene:Gene ):Genome
+        public function addGene( gene:Gene ):Gene
         {
             _genes.push( gene );
 
-            return this;
+            return gene;
         }
 
 
-        public function apply( evolver:EvolverSprite ):EvolverSprite
+        public function apply( target:* ):*
         {
             for each ( var gene:Gene in _genes )
             {
-                evolver[ gene.propName ] = gene.getValue();
+                target[ gene.propName ] = gene.getValue();
             }
 
-            return evolver;
+            return target;
+        }
+
+
+        public function getGeneByPropName( propName:String ):Gene
+        {
+            var numGenes:uint = _genes.length;
+
+            for ( var i:int = 0; i < numGenes; i++ )
+            {
+                var gene:Gene = _genes[i];
+
+                if ( gene.propName == propName )
+                    return gene;
+            }
+            
+            return null;
         }
 
 
@@ -90,9 +107,10 @@ package nl.imotion.evo
         {
             var clone:Genome = new Genome( _variation );
 
-            for each ( var gene:Gene in _genes )
+            var numGenes:uint = _genes.length;
+            for ( var i:int = 0; i < numGenes; i++ )
             {
-                clone.addGene( gene.clone() );
+                clone.addGene( _genes[i].clone() );
             }
 
             return clone;
@@ -126,7 +144,10 @@ package nl.imotion.evo
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
-
+        public function get genes():/*Gene*/Array
+        {
+            return _genes;
+        }
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

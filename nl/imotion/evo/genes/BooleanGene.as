@@ -41,9 +41,9 @@ package nl.imotion.evo.genes
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function BooleanGene( propName:String, value:Number, variation:Number )
+        public function BooleanGene( propName:String, value:Number, mutationEffect:Number, limitMethod:String = "bounce" )
         {
-            super( propName, value, variation, [ false, true ] );
+            super( propName, value, mutationEffect, [ false, true ], limitMethod );
         }
 
         // ____________________________________________________________________________________________________
@@ -52,14 +52,15 @@ package nl.imotion.evo.genes
 
         override public function clone():Gene
         {
-            return new BooleanGene( propName, value, variation );
+            return new BooleanGene( propName, value, mutationEffect, limitMethod );
         }
 
 
         override public function toXML():XML
         {
-            var xml:XML =
-                    <gene type="Boolean" propName={propName} value={value} variation={variation} />
+            var xml:XML = super.toXML();
+
+            xml[ "@type" ]      = "Boolean";
 
             return xml;
         }

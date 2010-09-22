@@ -37,18 +37,17 @@ package nl.imotion.evo.genes
         // PROPERTIES
 
         private var _minVal:Number;
-
         private var _maxVal:Number;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function NumberGene( propName:String, value:Number, variation:Number, minVal:Number, maxVal:Number ):void
+        public function NumberGene( propName:String, value:Number, mutationEffect:Number, minVal:Number, maxVal:Number, limitMethod:String = "bounce" ):void
         {
             _minVal = minVal;
             _maxVal = maxVal;
 
-            super( propName, value, variation );
+            super( propName, value, mutationEffect, limitMethod );
         }
 
         // ____________________________________________________________________________________________________
@@ -62,14 +61,17 @@ package nl.imotion.evo.genes
 
         override public function clone():Gene
         {
-            return new NumberGene( propName, value, variation, _minVal, _maxVal );
+            return new NumberGene( propName, value, mutationEffect, _minVal, _maxVal, limitMethod );
         }
 
 
         override public function toXML():XML
         {
-            var xml:XML =
-                    <gene type="Number" propName={propName} value={value} variation={variation} minVal={_minVal} maxVal={_maxVal} />
+            var xml:XML = super.toXML();
+            
+            xml[ "@type" ]      = "Number";
+            xml[ "@minVal" ]    = minVal;
+            xml[ "@maxVal" ]    = maxVal;
 
             return xml;
         }

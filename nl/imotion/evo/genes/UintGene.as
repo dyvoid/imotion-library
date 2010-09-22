@@ -43,12 +43,12 @@ package nl.imotion.evo.genes
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function UintGene( propName:String, value:Number, variation:Number, minVal:uint, maxVal:uint ):void
+        public function UintGene( propName:String, value:Number, variation:Number, minVal:uint, maxVal:uint, limitMethod:String = "bounce" ):void
         {
             _minVal = minVal;
             _maxVal = maxVal;
 
-            super( propName, value, variation );
+            super( propName, value, variation, limitMethod );
         }
 
         // ____________________________________________________________________________________________________
@@ -56,20 +56,23 @@ package nl.imotion.evo.genes
 
         override public function getValue():*
         {
-            return _minVal + Math.round( value * ( _maxVal - _minVal ) );
+            return _minVal + Math.floor( value * ( ( _maxVal + 0.99999999 - _minVal ) ) );
         }
 
 
         override public function clone():Gene
         {
-            return new NumberGene( propName, value, variation, _minVal, _maxVal );
+            return new UintGene( propName, value, mutationEffect, _minVal, _maxVal, limitMethod );
         }
 
 
         override public function toXML():XML
         {
-            var xml:XML =
-                    <gene type="uint" propName={propName} value={value} variation={variation} minVal={_minVal} maxVal={_maxVal} />
+            var xml:XML = super.toXML();
+
+            xml[ "@type" ]      = "uint";
+            xml[ "@minVal" ]    = minVal;
+            xml[ "@maxVal" ]    = maxVal;
 
             return xml;
         }
