@@ -41,15 +41,18 @@ package nl.imotion.neuralnetwork.training
         private var _maxEpochs			:uint;
         private var _maxError   		:Number;
 
+        private var _useAsync           :Boolean = true;
+
         private var _index				:uint = 0;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function Exercise( maxEpochs:uint = 0, maxError:Number = 0 )
+        public function Exercise( maxEpochs:uint = 0, maxError:Number = 0, useAsync:Boolean = true )
         {
             _maxEpochs		= maxEpochs;
             _maxError		= maxError;
+            _useAsync       = useAsync
         }
 
         // ____________________________________________________________________________________________________
@@ -102,6 +105,13 @@ package nl.imotion.neuralnetwork.training
         {
             _maxError = value;
         }
+
+        public function get useAsync():Boolean { return _useAsync; }
+        public function set useAsync( value:Boolean ):void
+        {
+            _useAsync = value;
+        }
+
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

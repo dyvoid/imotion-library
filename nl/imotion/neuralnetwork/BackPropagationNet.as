@@ -251,6 +251,23 @@ package nl.imotion.neuralnetwork
             return xml;
         }
 
+
+        public function reset():void
+        {
+            stopTraining();
+
+            _layers = [];
+
+            _error				= 1;
+            _trainingPriority 	= 1;
+            _learningRate		= 0.25;
+            _momentumRate 	    = 0.5;
+            _jitterEpoch        = 1000;
+
+            _fpsMeter 		= null;
+            _enterFrameClip = null;
+        }
+
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
@@ -465,26 +482,9 @@ package nl.imotion.neuralnetwork
                     this.dispatchEvent( new NeuralNetworkEvent( NeuralNetworkEvent.TRAINING_COMPLETE, trainingResult ) );
                     return;
                 }
-            } while ( trainingTime < trainingCycleTime );
+            } while ( !exercise.useAsync || trainingTime < trainingCycleTime );
 
             _currTrainingResult.trainingTime += trainingTime;
-        }
-
-
-        public function reset():void
-        {
-            stopTraining();
-
-            _layers = [];
-
-            _error				= 1;
-            _trainingPriority 	= 1;
-            _learningRate		= 0.25;
-            _momentumRate 	    = 0.5;
-            _jitterEpoch        = 1000;
-
-            _fpsMeter 		= null;
-            _enterFrameClip = null;
         }
 
         // ____________________________________________________________________________________________________
@@ -523,7 +523,7 @@ package nl.imotion.neuralnetwork
             }
 
         }
-
+        
     }
 
 }
