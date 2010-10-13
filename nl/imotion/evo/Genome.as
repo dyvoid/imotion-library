@@ -59,9 +59,10 @@ package nl.imotion.evo
 
         public function mutate( variation:Number, updateMomentum:Boolean = false ):Genome
         {
-            for each ( var gene:Gene in _genes )
+            var numGenes:uint = _genes.length;
+            for ( var i:int = 0; i < numGenes; i++ )
             {
-                gene.mutate( variation, -1, updateMomentum );
+                _genes[ i ].mutate( variation, -1, updateMomentum );
             }
 
             return this;
