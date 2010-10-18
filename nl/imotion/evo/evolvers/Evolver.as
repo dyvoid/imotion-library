@@ -39,20 +39,21 @@ package nl.imotion.evo.evolvers
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
+        private var _previousGenome:Genome;
         private var _genome:Genome;
 
-        private var _previousGenome:Genome;
+        private var _variation:Number = 1;
 
-        private var _momentum:Number;
-
-        private var _variation:Number;
+        private var _fitness:Number = 0;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function Evolver( genome:Genome )
+        public function Evolver( genome:Genome = null )
         {
             _genome = genome;
+
+            init();
         }
 
 
@@ -66,68 +67,58 @@ package nl.imotion.evo.evolvers
         }
 
 
-        public function reward():Genome
+        public function reward( fitness:Number ):Genome
         {
-            return null;
+            _previousGenome = _genome.clone();
+
+            _genome.mutate( _variation );
+
+            _fitness = fitness;
+
+            return _genome;
         }
 
 
-        public function punish():Genome
+        public function punish( fitness:Number ):Genome
         {
-            return null;
-        }
+            if ( _previousGenome )
+                _genome = _previousGenome.clone();
 
+            _genome.mutate( _variation );
 
-        public function create( genome:Genome ):Evolver
-        {
-            return null;
+            return _genome;
         }
 
 
         public function clone():Evolver
         {
-            return null;
+            var evolver:Evolver     = new Evolver();
+
+            if ( _previousGenome)
+                evolver.previousGenome  = _previousGenome.clone();
+
+            if ( _genome )
+                evolver.genome          = _genome.clone();
+            
+            evolver.fitness         = fitness;
+            evolver.variation       = variation;
+
+            return evolver;
         }
 
 
         // ____________________________________________________________________________________________________
         // PRIVATE
 
-        /*        private function addNumberGene( propertyName:String, variation:Number, minVal:Number, maxVal:Number ):void
-         {
 
-         }
-
-
-         private function addIntGene( propertyName:String, variation:Number, minVal:int, maxVal:int ):void
-         {
-
-         }
-
-
-         private function addBooleanGene( propertyName:String, variation:Number ):void
-         {
-
-         }*/
 
         // ____________________________________________________________________________________________________
         // PROTECTED
 
-        /*        protected function addConstrainedGene( propertyName:String, variation:Number, minVal:Number, maxVal:Number ):void
-         {
 
-         }
-
-
-         protected function addCollectionGene( propertyName:String, variation:Number, collection:Array ):void
-         {
-
-         }*/
 
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
-
-
 
         public function get genome():Genome
         {
@@ -146,16 +137,9 @@ package nl.imotion.evo.evolvers
             return _previousGenome;
         }
 
-
-        public function get momentum():Number
+        public function set previousGenome( value:Genome ):void
         {
-            return _momentum;
-        }
-
-
-        public function set momentum( value:Number ):void
-        {
-            _momentum = value;
+            _previousGenome = value;
         }
 
 
@@ -170,6 +154,17 @@ package nl.imotion.evo.evolvers
             _variation = value;
         }
 
+
+        public function get fitness():Number
+        {
+            return _fitness;
+        }
+
+
+        public function set fitness( value:Number ):void
+        {
+            _fitness = value;
+        }
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

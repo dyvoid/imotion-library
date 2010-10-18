@@ -37,7 +37,6 @@ package nl.imotion.evo.genes
         // PROPERTIES
 
         private var _minVal:int;
-
         private var _maxVal:int;
 
         // ____________________________________________________________________________________________________
@@ -56,7 +55,7 @@ package nl.imotion.evo.genes
 
         override public function getValue():*
         {
-            return _minVal + Math.floor( value * ( ( _maxVal + 0.99999999 - _minVal ) ) );
+            return _minVal + Math.floor( value * ( _maxVal + 0.999999999999998 - _minVal ) );
         }
 
 

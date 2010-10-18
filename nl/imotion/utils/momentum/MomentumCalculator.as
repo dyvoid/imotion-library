@@ -24,58 +24,54 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package nl.imotion.evo.genes
+package nl.imotion.utils.momentum
 {
+
+
     /**
      * @author Pieter van de Sluis
-     * Date: 14-sep-2010
-     * Time: 21:29:02
+     * Date: 22-sep-2010
+     * Time: 20:06:05
      */
-    public class UintGene extends Gene
+    public class MomentumCalculator
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _minVal:uint;
-        private var _maxVal:uint;
+        private var _samples        :Array = [];
+        private var _maxNumSamples  :uint;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function UintGene( propName:String, value:Number, variation:Number, minVal:uint, maxVal:uint, limitMethod:String = "bounce" ):void
+        public function MomentumCalculator( maxNumSamples:uint = 5 )
         {
-            _minVal = minVal;
-            _maxVal = maxVal;
-
-            super( propName, value, variation, limitMethod );
+            _maxNumSamples = maxNumSamples;
         }
+
 
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        override public function getValue():*
+        public function addSample( sample:Number ):void
         {
-            return _minVal + Math.floor( value * ( _maxVal + 0.999999999999998 - _minVal ) );
+            var numSamples:uint = numSamples;
+
+            _samples[ numSamples ] = sample;
+
+            var diff:int = _maxNumSamples - ( numSamples + 1 );
+            
+            if ( diff < 0 )
+            {
+                _samples.splice( 0, Math.abs( diff ) );
+            }
         }
 
 
-        override public function clone():Gene
+        public function reset():void
         {
-            return new UintGene( propName, value, mutationEffect, _minVal, _maxVal, limitMethod );
+            _samples = [];
         }
-
-
-        override public function toXML():XML
-        {
-            var xml:XML = super.toXML();
-
-            xml[ "@type" ]      = "uint";
-            xml[ "@minVal" ]    = minVal;
-            xml[ "@maxVal" ]    = maxVal;
-
-            return xml;
-        }
-
 
         // ____________________________________________________________________________________________________
         // PRIVATE
@@ -90,32 +86,43 @@ package nl.imotion.evo.genes
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
-        public function get minVal():uint
+        public function get momentum():Number
         {
-            return _minVal;
+            var numSamples:uint = numSamples;
+
+            if ( numSamples == 1 )
+            {
+                return _samples[ 0 ];
+            }
+            else if ( numSamples > 0 )
+            {
+                var momentum:Number = 0;
+
+                for ( var i:int = 0; i < numSamples - 1; i++ )
+                {
+                    momentum += _samples[ i + 1 ] - _samples[ i ];
+                }
+                
+                return momentum;
+            }
+
+            return NaN;
         }
 
 
-        public function set minVal( value:uint ):void
+        public function get numSamples():uint
         {
-            _minVal = value;
+            return _samples.length;    
         }
 
 
-        public function get maxVal():uint
+        public function get isReady():Boolean
         {
-            return _maxVal;
-        }
-
-
-        public function set maxVal( value:uint ):void
-        {
-            _maxVal = value;
+            return ( _samples.length == _maxNumSamples );
         }
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS
-
 
 
     }

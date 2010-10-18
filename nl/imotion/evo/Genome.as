@@ -104,6 +104,52 @@ package nl.imotion.evo
         }
 
 
+        public function resetGenes( geneNames:Array = null ):void
+        {
+            var resetList:Array;
+
+            if ( geneNames )
+            {
+                resetList = [];
+
+                var numNames:uint = geneNames.length;
+                for ( var i:int = 0; i < numNames; i++ )
+                {
+                    var gene:Gene = getGeneByPropName( geneNames[ i ] );
+                    
+                    if ( gene )
+                    {
+                        resetList[ resetList.length ] = gene;
+                    }
+                }
+            }
+            else
+            {
+                resetList = _genes;
+            }
+
+            var numGenes:uint = resetList.length;
+            for ( var j:int = 0; j < numGenes; j++ )
+            {
+                resetList[ j ].reset();
+            }
+        }
+
+
+        public function mate( mateGenome:Genome ):Genome
+        {
+            var offspring:Genome = clone();
+
+            var numGenes:uint = _genes.length;
+            for ( var i:int = 0; i < numGenes; i++ )
+            {
+                offspring._genes[ i ].value = Math.random() < 0.5 ? _genes[ i ].value : mateGenome.genes[ i ].value;
+            }
+
+            return offspring;
+        }
+
+
         public function clone():Genome
         {
             var clone:Genome = new Genome( _variation );
