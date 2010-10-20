@@ -42,26 +42,26 @@ package nl.imotion.evo.genes
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function CollectionGene( propName:String, value:Number, mutationEffect:Number, collection:Array, limitMethod:String = "bounce" )
+        public function CollectionGene( propName:String, collection:Array, mutationEffect:Number, limitMethod:String = "wrap", baseValue:Number = NaN )
         {
             _collection = collection;
 
-            super( propName, value, mutationEffect, 0, _collection.length - 1, limitMethod );
+            super( propName, 0, _collection.length - 1, mutationEffect, limitMethod, baseValue );
         }
 
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        override public function getValue():*
+        override public function getPropValue():*
         {
-            return _collection[ super.getValue() as uint ];
+            return _collection[ super.getPropValue() as uint ];
         }
 
 
 
         override public function clone():Gene
         {
-            return new CollectionGene( propName, value, mutationEffect, _collection, limitMethod );
+            return new CollectionGene( propName, _collection, mutationEffect, limitMethod, baseValue );
         }
 
 
@@ -69,7 +69,8 @@ package nl.imotion.evo.genes
         {
             var xml:XML = super.toXML();
 
-            xml[ "@type" ]      = "Collection";
+            xml[ "@type" ]       = "Collection";
+            xml[ "@collection" ] = _collection.toString();
 
             return xml;
         }

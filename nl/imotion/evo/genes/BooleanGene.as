@@ -41,9 +41,9 @@ package nl.imotion.evo.genes
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function BooleanGene( propName:String, value:Number, mutationEffect:Number, limitMethod:String = "bounce" )
+        public function BooleanGene( propName:String, mutationEffect:Number = 1, limitMethod:String = "wrap", baseValue:Number = NaN )
         {
-            super( propName, value, mutationEffect, [ false, true ], limitMethod );
+            super( propName, [ false, true ], mutationEffect, limitMethod, baseValue );
         }
 
         // ____________________________________________________________________________________________________
@@ -52,7 +52,7 @@ package nl.imotion.evo.genes
 
         override public function clone():Gene
         {
-            return new BooleanGene( propName, value, mutationEffect, limitMethod );
+            return new BooleanGene( propName, mutationEffect, limitMethod, baseValue );
         }
 
 

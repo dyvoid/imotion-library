@@ -42,26 +42,26 @@ package nl.imotion.evo.genes
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function UintGene( propName:String, value:Number, variation:Number, minVal:uint, maxVal:uint, limitMethod:String = "bounce" ):void
+        public function UintGene( propName:String, minVal:uint, maxVal:uint, mutationEffect:Number = 1, limitMethod:String = "bounce", baseValue:Number = NaN ):void
         {
             _minVal = minVal;
             _maxVal = maxVal;
 
-            super( propName, value, variation, limitMethod );
+            super( propName, mutationEffect, limitMethod, baseValue );
         }
 
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        override public function getValue():*
+        override public function getPropValue():*
         {
-            return _minVal + Math.floor( value * ( _maxVal + 0.999999999999998 - _minVal ) );
+            return _minVal + Math.floor( baseValue * ( _maxVal + 0.999999999999998 - _minVal ) );
         }
 
 
         override public function clone():Gene
         {
-            return new UintGene( propName, value, mutationEffect, _minVal, _maxVal, limitMethod );
+            return new UintGene( propName, _minVal, _maxVal, mutationEffect, limitMethod, baseValue );
         }
 
 

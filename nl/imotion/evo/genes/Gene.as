@@ -38,7 +38,7 @@ package nl.imotion.evo.genes
 
         private var _propName:String;
 
-        private var _value:Number;
+        private var _baseValue:Number;
 
         private var _mutationEffect:Number;
 
@@ -50,25 +50,24 @@ package nl.imotion.evo.genes
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function Gene( propName:String, value:Number, mutationEffect:Number, limitMethod:String = "bounce" )
+        public function Gene( propName:String, mutationEffect:Number = 1, limitMethod:String = "bounce", baseValue:Number = NaN )
         {
             _propName = propName;
-            _value = value;
             _mutationEffect = mutationEffect;
             _limitMethod = limitMethod;
+            _baseValue = ( !isNaN( baseValue ) ) ? baseValue : Math.random();
         }
-
 
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        public function mutate( globalMutationEffect:Number = 1, mutationSeed:Number = -1, updateMomentum:Boolean = false ):Gene
+        public function mutate( globalMutationEffect:Number = 1, mutation:Number = NaN, updateMomentum:Boolean = false ):*
         {
             if ( globalMutationEffect != 0 )
             {
-                mutationSeed = ( mutationSeed >= 0 && mutationSeed <= 1 ) ? mutationSeed : Math.random();
+                mutation = ( !isNaN( mutation ) ) ? mutation : Math.random() * 2 - 1;
 
-                var newVal:Number = _value + ( ( mutationSeed * 2 - 1 ) * globalMutationEffect * _mutationEffect ) + _momentum;
+                var newVal:Number = _baseValue + ( mutation * _mutationEffect * globalMutationEffect  ) + _momentum;
 
                 if ( newVal < -1 ) newVal = -1;
                 if ( newVal >  2 ) newVal =  2;
@@ -92,39 +91,37 @@ package nl.imotion.evo.genes
                 }
 
                 if ( updateMomentum )
-                    _momentum = ( newVal - _value ) * _momentumEffect;
+                    _momentum = ( newVal - _baseValue ) * _momentumEffect;
 
-                _value = newVal;
+                _baseValue = newVal;
             }
 
-            return this;
+            return getPropValue();
         }
 
 
-        public function getValue():*
+        public function getPropValue():*
         {
             throw new Error( "This method should be overridden in a subclass" );
-
-            return null;
         }
 
 
-        public function reset():void
+        public function reset( baseValue:Number = NaN ):void
         {
-            _value      = Math.random();
+            _baseValue  = ( !isNaN( baseValue) ) ? baseValue : Math.random();
             _momentum   = 0;
         }
 
 
         public function clone():Gene
         {
-            return new Gene( _propName, _value, _mutationEffect );
+            return new Gene( _propName,_mutationEffect, _limitMethod, _baseValue );
         }
 
 
         public function toXML():XML
         {
-            var xml:XML = <gene type="gene" propName={propName} value={value} mutationEffect={mutationEffect} limitMethod={limitMethod} />
+            var xml:XML = <gene type="gene" propName={propName} baseValue={baseValue} mutationEffect={mutationEffect} limitMethod={limitMethod} />
 
             return xml;
         }
@@ -149,15 +146,15 @@ package nl.imotion.evo.genes
         }
 
 
-        public function get value():Number
+        public function get baseValue():Number
         {
-            return _value;
+            return _baseValue;
         }
 
 
-        public function set value( value:Number ):void
+        public function set baseValue( value:Number ):void
         {
-            _value = value;
+            _baseValue = value;
         }
 
 

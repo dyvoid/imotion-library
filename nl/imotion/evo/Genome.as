@@ -57,12 +57,12 @@ package nl.imotion.evo
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        public function mutate( variation:Number, updateMomentum:Boolean = false ):Genome
+        public function mutate( mutationEffect:Number = 1, updateMomentum:Boolean = false ):Genome
         {
             var numGenes:uint = _genes.length;
             for ( var i:int = 0; i < numGenes; i++ )
             {
-                _genes[ i ].mutate( variation, -1, updateMomentum );
+                _genes[ i ].mutate( mutationEffect, NaN, updateMomentum );
             }
 
             return this;
@@ -81,7 +81,7 @@ package nl.imotion.evo
         {
             for each ( var gene:Gene in _genes )
             {
-                target[ gene.propName ] = gene.getValue();
+                target[ gene.propName ] = gene.getPropValue();
             }
 
             return target;
@@ -101,6 +101,33 @@ package nl.imotion.evo
             }
             
             return null;
+        }
+
+
+        public function editGene( propName:String, props:Object ):Gene
+        {
+            var gene:Gene = getGeneByPropName( propName );
+
+            if ( !gene )
+            {
+                throw new Error( "Gene with propname " + propName + " does not exist");
+            }
+            else
+            {
+                for ( var name:String in props )
+                {
+                    try
+                    {
+                        gene[ name ] = props[ name ];
+                    }
+                    catch( e:Error )
+                    {
+                        throw new Error( "Property " + name + " not found on Gene" );
+                    }
+                }
+            }
+
+            return gene;
         }
 
 
@@ -143,7 +170,7 @@ package nl.imotion.evo
             var numGenes:uint = _genes.length;
             for ( var i:int = 0; i < numGenes; i++ )
             {
-                offspring._genes[ i ].value = Math.random() < 0.5 ? _genes[ i ].value : mateGenome.genes[ i ].value;
+                offspring._genes[ i ].baseValue = Math.random() < 0.5 ? _genes[ i ].baseValue : mateGenome.genes[ i ].baseValue;
             }
 
             return offspring;
@@ -166,8 +193,7 @@ package nl.imotion.evo
 
         public function toXML():XML
         {
-            var xml:XML =
-                <genome />
+            var xml:XML = <genome />;
 
             for ( var i:int = 0; i < _genes.length; i++ )
             {
