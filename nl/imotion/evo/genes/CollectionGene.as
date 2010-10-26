@@ -26,6 +26,9 @@
 
 package nl.imotion.evo.genes
 {
+    import flash.utils.getQualifiedClassName;
+
+
     /**
      * @author Pieter van de Sluis
      * Date: 14-sep-2010
@@ -69,8 +72,16 @@ package nl.imotion.evo.genes
         {
             var xml:XML = super.toXML();
 
+            delete xml[ "@minVal" ];
+            delete xml[ "@maxVal" ];
             xml[ "@type" ]       = "Collection";
-            xml[ "@collection" ] = _collection.toString();
+
+            for each ( var item:* in _collection )
+            {
+                var classRef:String = getQualifiedClassName( item );
+
+                xml.appendChild( <item classRef={classRef}>{item}</item> );
+            }
 
             return xml;
         }

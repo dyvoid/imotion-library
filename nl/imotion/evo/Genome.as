@@ -26,9 +26,7 @@
 
 package nl.imotion.evo
 {
-    import nl.imotion.evo.evolvers.EvolverSprite;
     import nl.imotion.evo.genes.Gene;
-    import nl.imotion.evo.genes.NumberGene;
 
 
     /**
@@ -43,14 +41,12 @@ package nl.imotion.evo
 
         private var _genes:/*Gene*/Array = [];
 
-        private var _variation:Number;
-
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function Genome( variation:Number )
+        public function Genome()
         {
-            _variation = variation;
+
         }
 
 
@@ -83,7 +79,7 @@ package nl.imotion.evo
             {
                 target[ gene.propName ] = gene.getPropValue();
             }
-
+            
             return target;
         }
 
@@ -179,7 +175,7 @@ package nl.imotion.evo
 
         public function clone():Genome
         {
-            var clone:Genome = new Genome( _variation );
+            var clone:Genome = new Genome();
 
             var numGenes:uint = _genes.length;
             for ( var i:int = 0; i < numGenes; i++ )

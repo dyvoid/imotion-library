@@ -39,12 +39,12 @@ package nl.imotion.evo.evolvers
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _previousGenome:Genome;
-        private var _genome:Genome;
+        private var _previousGenome     :Genome;
+        private var _genome             :Genome;
 
-        private var _variation:Number = 1;
+        private var _mutationEffect     :Number = 1;
 
-        private var _fitness:Number = 0;
+        private var _fitness            :Number = 0;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
@@ -71,7 +71,7 @@ package nl.imotion.evo.evolvers
         {
             _previousGenome = _genome.clone();
 
-            _genome.mutate( _variation );
+            _genome.mutate( _mutationEffect );
 
             _fitness = fitness;
 
@@ -84,7 +84,7 @@ package nl.imotion.evo.evolvers
             if ( _previousGenome )
                 _genome = _previousGenome.clone();
 
-            _genome.mutate( _variation );
+            _genome.mutate( _mutationEffect );
 
             return _genome;
         }
@@ -101,7 +101,7 @@ package nl.imotion.evo.evolvers
                 evolver.genome          = _genome.clone();
             
             evolver.fitness         = fitness;
-            evolver.variation       = variation;
+            evolver.mutationEffect       = mutationEffect;
 
             return evolver;
         }
@@ -143,15 +143,15 @@ package nl.imotion.evo.evolvers
         }
 
 
-        public function get variation():Number
+        public function get mutationEffect():Number
         {
-            return _variation;
+            return _mutationEffect;
         }
 
 
-        public function set variation( value:Number ):void
+        public function set mutationEffect( value:Number ):void
         {
-            _variation = value;
+            _mutationEffect = value;
         }
 
 
