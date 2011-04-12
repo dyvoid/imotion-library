@@ -28,13 +28,17 @@ package nl.imotion.utils.fpsmeter
 {
     import flash.display.Sprite;
     import flash.events.Event;
+    import flash.events.EventDispatcher;
     import flash.utils.getTimer;
 
 
     /**
 	 * @author Pieter van de Sluis
 	 */
-	public class FPSMeter
+
+    [Event(name="FPSMeterEvent::MEASURE_COMPLETE", type="nl.imotion.utils.fpsmeter.FPSMeterEvent")]
+
+	public class FPSMeter extends EventDispatcher
 	{
 		// ____________________________________________________________________________________________________
 		// PROPERTIES
@@ -155,6 +159,8 @@ package nl.imotion.utils.fpsmeter
 				if ( fpsIsStable )
 				{
 					stopMeasure();
+
+                    dispatchEvent( new FPSMeterEvent( FPSMeterEvent.MEASURE_COMPLETE, _fps ) );
 				}
 			}
 		}
