@@ -26,14 +26,13 @@
 
 package nl.imotion.neuralnetwork
 {
-    import flash.display.Sprite;
     import flash.events.*;
     import flash.utils.getTimer;
 
     import nl.imotion.neuralnetwork.components.*;
     import nl.imotion.neuralnetwork.events.NeuralNetworkEvent;
     import nl.imotion.neuralnetwork.training.*;
-    import nl.imotion.utils.fpsmeter.FPSMeter;
+    import nl.imotion.utils.asyncprocessor.AsyncProcessor;
 
 
     /**
@@ -59,23 +58,18 @@ package nl.imotion.neuralnetwork
         private var _momentumRate		:Number;
         private var _jitterEpoch		:uint;
 
-        private var _trainingPriority	:Number;
         private var _trainingState		:String;
 
-        private var _fpsMeter			:FPSMeter;
-        private var _enterFrameClip		:Sprite;
+        private var _fps                :uint = 0;
+        private var _trainingPriority	:Number = 1;
+        private var _asyncProcessor 	:AsyncProcessor;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function BackPropagationNet( trainingPriority:Number = 1, learningRate:Number = 0.25, momentumRate:Number = 0.5, jitterEpoch:uint = 1000 )
+        public function BackPropagationNet( learningRate:Number = 0.25, momentumRate:Number = 0.5, jitterEpoch:uint = 1000 )
         {
-            this.trainingPriority	= trainingPriority;
-            this.learningRate		= learningRate;
-            this.momentumRate	    = momentumRate;
-            this.jitterEpoch        = jitterEpoch;
-
-            _trainingState			= TrainingState.STOPPED;
+            init( learningRate, momentumRate, jitterEpoch );
         }
 
         // ____________________________________________________________________________________________________
@@ -155,7 +149,6 @@ package nl.imotion.neuralnetwork
         }
 
 
-
         public function run( pattern:Array ):Array
         {
             for ( var i:int = 0; i < _layers.length; i++ )
@@ -195,44 +188,43 @@ package nl.imotion.neuralnetwork
         }
 
 
-        public function pauseTraining():void
+        public function pauseTraining():TrainingResult
         {
-            if ( _trainingState == TrainingState.STARTED )
-            {
-                toggleTraining( false );
-                _trainingState = TrainingState.PAUSED;
-            }
+            if ( _trainingState != TrainingState.STARTED ) return null;
+
+            toggleTraining( false );
+            _trainingState = TrainingState.PAUSED;
+
+            return _currTrainingResult;
         }
 
 
         public function resumeTraining():void
         {
-            if ( _trainingState == TrainingState.PAUSED )
-            {
-                toggleTraining( true );
-                _trainingState = TrainingState.STARTED;
-            }
+            if ( _trainingState != TrainingState.PAUSED ) return;
+
+            toggleTraining( true );
+            _trainingState = TrainingState.STARTED;
         }
 
 
         public function stopTraining():TrainingResult
         {
-            if ( _trainingState == TrainingState.STARTED || _trainingState == TrainingState.PAUSED )
+            if ( _trainingState != TrainingState.STARTED && _trainingState != TrainingState.PAUSED )
+                return null;
+
+            if ( _trainingState == TrainingState.STARTED )
             {
-                if ( _trainingState == TrainingState.STARTED )
-                {
-                    toggleTraining( false );
-                }
-
-                var finalTrainingResult:TrainingResult = _currTrainingResult;
-                _currTrainingResult = null;
-                _currExercise = null;
-
-                _trainingState = TrainingState.STOPPED;
-
-                return finalTrainingResult;
+                toggleTraining( false );
             }
-            return null;
+
+            var finalTrainingResult:TrainingResult = _currTrainingResult;
+            _currTrainingResult = null;
+            _currExercise = null;
+
+            _trainingState = TrainingState.STOPPED;
+
+            return finalTrainingResult;
         }
 
 
@@ -264,8 +256,7 @@ package nl.imotion.neuralnetwork
             _momentumRate 	    = 0.5;
             _jitterEpoch        = 1000;
 
-            _fpsMeter 		= null;
-            _enterFrameClip = null;
+            _asyncProcessor 	= null;
         }
 
         // ____________________________________________________________________________________________________
@@ -339,191 +330,170 @@ package nl.imotion.neuralnetwork
             _jitterEpoch = value;
         }
 
-        private function get fpsMeter():FPSMeter
+        public function get fps():uint { return _fps; }
+        public function set fps( value:uint ):void
         {
-            if ( !_fpsMeter )
-                _fpsMeter = new FPSMeter();
+            _fps = value;
 
-            return _fpsMeter;
+            if ( _asyncProcessor )
+                _asyncProcessor.fps = value;
         }
 
-        private function get enterFrameClip():Sprite
+        private function get asyncProcessor():AsyncProcessor
         {
-            if ( !_enterFrameClip )
-                _enterFrameClip = new Sprite();
+            if ( !_asyncProcessor )
+            {
+                _asyncProcessor = new AsyncProcessor( _trainingPriority, _fps );
+                _asyncProcessor.addProcess( doExercise );
+            }
 
-            return _enterFrameClip;
+            return _asyncProcessor;
         }
 
         // ____________________________________________________________________________________________________
         // PROTECTED
 
-        protected function doExercise( exercise:Exercise ):void
+        protected function doExercise():void
         {
-            var trainingCycleTime:uint = int( fpsMeter.timePerFrame * _trainingPriority );
             var startTime:uint = getTimer();
 
-            do
+            //Apply jitter if the jitterEpoch is reached
+            var jitter:Number = 0;
+            if ( jitterEpoch != 0 && _currTrainingResult.epochs != 0 && _currTrainingResult.epochs % _jitterEpoch == 0 )
             {
-                //Apply jitter if the jitterEpoch is reached
-                var jitter:Number = 0;
-                if ( jitterEpoch != 0 && _currTrainingResult.epochs != 0 && _currTrainingResult.epochs % _jitterEpoch == 0 )
+                jitter = Math.random() * 0.02 - 0.01;
+            }
+
+            while ( _currExercise.hasNext() )
+            {
+                //Init vars that will be used for fast, optimized iterators
+                var i:int = 0;
+                var iIterTarget:int = 0;
+                var j:int = 0;
+                var jIterTarget:int = 0;
+                var k:int = 0;
+                var kIterTarget:int = 0;
+
+                //Grab next exercise patterns
+                var patterns:ExercisePatterns = _currExercise.next();
+
+                //Run the neural network, using the exercise patterns
+                var result:Array = run( patterns.inputPattern );
+                _error = 0;
+
+                var layer:Layer;
+
+                //Calculate errors
+                i = _layers.length - 1;
+                for ( ; i > 0; i-- )
                 {
-                    jitter = Math.random() * 0.02 - 0.01;
-                }
+                    layer = _layers[ i ];
 
-                while ( exercise.hasNext() )
-                {
-                    //Init vars that will be used for fast, optimized iterators
-                    var i:int = 0;
-                    var iIterTarget:int = 0;
-                    var j:int = 0;
-                    var jIterTarget:int = 0;
-                    var k:int = 0;
-                    var kIterTarget:int = 0;
-
-                    //Grab next exercise patterns
-                    var patterns:ExercisePatterns = exercise.next();
-
-                    //Run the neural network, using the exercise patterns
-                    var result:Array = run( patterns.inputPattern );
-                    _error = 0;
-
-                    var layer:Layer;
-
-                    //Calculate errors
-                    i = _layers.length - 1;
-                    for ( ; i > 0; i-- )
+                    if ( i == _layers.length - 1 )
                     {
-                        layer = _layers[ i ];
-
-                        if ( i == _layers.length - 1 )
-                        {
-                            //First calculate errors for output layers
-
-                            j = 0;
-                            jIterTarget = layer.neurons.length;
-                            for ( ; j < jIterTarget; j++ )
-                            {
-                                var resultVal:Number = result[ j ];
-                                var targetVal:Number = patterns.targetPattern[ j ];
-                                var delta:Number = ( targetVal - resultVal );
-
-                                layer.neurons[ j ].error = delta * resultVal * ( 1 - resultVal );
-                                _error += delta * delta;
-                            }
-                        }
-                        else
-                        {
-                            //Calculate errors for hidden layers
-
-                            var nextLayer:Layer = _layers[ i + 1 ];
-
-                            j = 0;
-                            jIterTarget = layer.neurons.length;
-                            for ( ; j < jIterTarget; j++ )
-                            {
-                                var sum:Number = 0;
-
-                                k = 0;
-                                kIterTarget = nextLayer.neurons.length;
-                                for ( ; k < kIterTarget; k++ )
-                                {
-                                    sum += nextLayer.neurons[ k ].error * nextLayer.neurons[ k ].synapses[ j ].weight;
-                                }
-                                var neuronValue:Number = layer.neurons[ j ].value;
-                                layer.neurons[ j ].error = neuronValue * ( 1 - neuronValue ) * sum;
-                            }
-                        }
-                    }
-
-                    //Update all weights
-
-                    i = 1;
-                    iIterTarget = _layers.length;
-                    for ( ; i < iIterTarget; i++ )
-                    {
-                        layer = _layers[ i ];
+                        //First calculate errors for output layers
 
                         j = 0;
                         jIterTarget = layer.neurons.length;
                         for ( ; j < jIterTarget; j++ )
                         {
-                            k = 0;
-                            kIterTarget = layer.neurons[ j ].synapses.length;
-                            for ( ; k < kIterTarget; k++ )
-                            {
-                                var synapse:Synapse = layer.neurons[ j ].synapses[ k ];
+                            var resultVal:Number = result[ j ];
+                            var targetVal:Number = patterns.targetPattern[ j ];
+                            var delta:Number = ( targetVal - resultVal );
 
-                                var weightChange:Number = ( _learningRate * synapse.endNeuron.error * synapse.startNeuron.value ) + synapse.momentum;
-                                synapse.momentum = weightChange * _momentumRate;
-                                synapse.weight += weightChange + jitter;
-                            }
+                            layer.neurons[ j ].error = delta * resultVal * ( 1 - resultVal );
+                            _error += delta * delta;
                         }
                     }
+                    else
+                    {
+                        //Calculate errors for hidden layers
 
-                    //Reset jitter. If it was set it only needed to be applied once this epoch
-                    jitter = 0;
+                        var nextLayer:Layer = _layers[ i + 1 ];
+
+                        j = 0;
+                        jIterTarget = layer.neurons.length;
+                        for ( ; j < jIterTarget; j++ )
+                        {
+                            var sum:Number = 0;
+
+                            k = 0;
+                            kIterTarget = nextLayer.neurons.length;
+                            for ( ; k < kIterTarget; k++ )
+                            {
+                                sum += nextLayer.neurons[ k ].error * nextLayer.neurons[ k ].synapses[ j ].weight;
+                            }
+                            var neuronValue:Number = layer.neurons[ j ].value;
+                            layer.neurons[ j ].error = neuronValue * ( 1 - neuronValue ) * sum;
+                        }
+                    }
                 }
 
-                var trainingTime:uint = getTimer() - startTime;
+                //Update all weights
 
-                exercise.reset();
-
-                _currTrainingResult.epochs++;
-                _currTrainingResult.endError = _error;
-
-                this.dispatchEvent( new NeuralNetworkEvent( NeuralNetworkEvent.TRAINING_EPOCH_COMPLETE, _currTrainingResult ) );
-
-                if ( ( exercise.maxEpochs > 0 && _currTrainingResult.epochs >= exercise.maxEpochs ) || _error <= exercise.maxError )
+                i = 1;
+                iIterTarget = _layers.length;
+                for ( ; i < iIterTarget; i++ )
                 {
-                    var trainingResult:TrainingResult = stopTraining();
-                    trainingResult.trainingTime += trainingTime;
-                    this.dispatchEvent( new NeuralNetworkEvent( NeuralNetworkEvent.TRAINING_COMPLETE, trainingResult ) );
-                    return;
-                }
-            } while ( !exercise.useAsync || trainingTime < trainingCycleTime );
+                    layer = _layers[ i ];
 
-            _currTrainingResult.trainingTime += trainingTime;
+                    j = 0;
+                    jIterTarget = layer.neurons.length;
+                    for ( ; j < jIterTarget; j++ )
+                    {
+                        k = 0;
+                        kIterTarget = layer.neurons[ j ].synapses.length;
+                        for ( ; k < kIterTarget; k++ )
+                        {
+                            var synapse:Synapse = layer.neurons[ j ].synapses[ k ];
+
+                            var weightChange:Number = ( _learningRate * synapse.endNeuron.error * synapse.startNeuron.value ) + synapse.momentum;
+                            synapse.momentum = weightChange * _momentumRate;
+                            synapse.weight += weightChange + jitter;
+                        }
+                    }
+                }
+
+                //Reset jitter. If it was set it only needed to be applied once this epoch
+                jitter = 0;
+            }
+
+            _currExercise.reset();
+
+            _currTrainingResult.epochs++;
+            _currTrainingResult.endError = _error;
+            _currTrainingResult.trainingTime += getTimer() - startTime;
+
+            this.dispatchEvent( new NeuralNetworkEvent( NeuralNetworkEvent.TRAINING_EPOCH_COMPLETE, _currTrainingResult ) );
+
+            if ( ( _currExercise.maxEpochs > 0 && _currTrainingResult.epochs >= _currExercise.maxEpochs ) || _error <= _currExercise.maxError )
+            {
+                var trainingResult:TrainingResult = stopTraining();
+                this.dispatchEvent( new NeuralNetworkEvent( NeuralNetworkEvent.TRAINING_COMPLETE, trainingResult ) );
+            }
         }
 
         // ____________________________________________________________________________________________________
         // PRIVATE
 
+        private function init( learningRate:Number, momentumRate:Number, jitterEpoch:uint ):void
+        {
+            this.learningRate		= learningRate;
+            this.momentumRate	    = momentumRate;
+            this.jitterEpoch        = jitterEpoch;
+
+            _trainingState			= TrainingState.STOPPED;
+        }
+
+        
         private function toggleTraining( isTraining:Boolean ):void
         {
-            var hasListener:Boolean = enterFrameClip.hasEventListener( Event.ENTER_FRAME );
-
-            if ( isTraining )
-            {
-                fpsMeter.startMeasure( false );
-                if ( !hasListener )
-                    enterFrameClip.addEventListener( Event.ENTER_FRAME, enterFrameHandler, false, 0, true );
-            }
-            else
-            {
-                fpsMeter.stopMeasure();
-                if ( hasListener )
-                    enterFrameClip.removeEventListener( Event.ENTER_FRAME, enterFrameHandler );
-            }
+            ( isTraining ) ? asyncProcessor.start() : asyncProcessor.stop();
         }
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS
 
-        private function enterFrameHandler( e:Event ):void
-        {
-            if ( _trainingState == TrainingState.STARTED )
-            {
-                doExercise( _currExercise );
-            }
-            else
-            {
-                enterFrameClip.removeEventListener( Event.ENTER_FRAME, enterFrameHandler );
-            }
-
-        }
-        
     }
 
 }

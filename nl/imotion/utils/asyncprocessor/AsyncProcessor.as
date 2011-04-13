@@ -26,6 +26,7 @@
 
 package nl.imotion.utils.asyncprocessor
 {
+    import flash.events.EventDispatcher;
     import flash.events.TimerEvent;
     import flash.utils.Timer;
 
@@ -38,7 +39,11 @@ package nl.imotion.utils.asyncprocessor
     /**
      * @author Pieter van de Sluis
      */
-    public class AsyncProcessor
+
+    [Event(name="AsyncProcessorEvent::FPS_MEASURE_START", type="nl.imotion.utils.asyncprocessor.AsyncProcessorEvent")]
+    [Event(name="AsyncProcessorEvent::FPS_MEASURE_COMPLETE", type="nl.imotion.utils.asyncprocessor.AsyncProcessorEvent")]
+
+    public class AsyncProcessor extends EventDispatcher
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
@@ -50,19 +55,21 @@ package nl.imotion.utils.asyncprocessor
 
         private var _processTimer           :Timer;
 
+        private var _fps                    :uint;
         private var _fpsMeter               :FPSMeter;
 
         private var _processes              :Vector.<Function>;
 
         private var _isReady                :Boolean = false;
         private var _isRunning              :Boolean = false;
+        private var _isMeasuringFPS         :Boolean = false;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function AsyncProcessor( priority:Number = 1, framerate:int = -1 )
+        public function AsyncProcessor( priority:Number = 1, fps:uint = 0 )
         {
-            init( priority, framerate );
+            init( priority, fps );
         }
 
         // ____________________________________________________________________________________________________
@@ -127,28 +134,28 @@ package nl.imotion.utils.asyncprocessor
         // ____________________________________________________________________________________________________
         // PRIVATE
 
-        private function init( priority:Number, framerate:int = -1 ):void
+        private function init( priority:Number, fps:int = -1 ):void
         {
             _priority = priority;
+            _fps = fps;
+
             _processes = new Vector.<Function>();
             _processTimer = new Timer( 0 );
 
-            if ( framerate != -1 )
+            if ( _fps != 0 )
             {
-                setAllocation( framerate );
+                updateAllocation();
             }
             else
             {
-                _fpsMeter = new FPSMeter( 30 );
-                _fpsMeter.addEventListener( FPSMeterEvent.MEASURE_COMPLETE, fpsMeasureCompleteHandler );
-                _fpsMeter.startMeasure();
+                startFPSMeasurement();
             }
         }
 
 
-        private function setAllocation( framerate:uint ):void
+        private function updateAllocation():void
         {
-            var timePerFrame:Number = 1000 / framerate;
+            var timePerFrame:Number = 1000 / _fps;
 
             _processTimer.delay  = timePerFrame;
             _totalTimeAllocation = timePerFrame * _priority;
@@ -172,15 +179,48 @@ package nl.imotion.utils.asyncprocessor
 
                     do
                     {
+                        if ( !_isRunning )
+                        {
+                            // The AsyncProcessor has been stopped while processing
+                            return;
+                        }
+
                         _processes[ i ]();
                     }
-                    while ( getTimer() - processStartTime < processTimeAllocation );
+                    while ( ( getTimer() - processStartTime ) < processTimeAllocation );
                 }
             }
 
             _timeError += ( getTimer() - startTime ) - _totalTimeAllocation;
             if ( _timeError < 0 )
-                _timeError = 0;       
+                _timeError = 0;
+        }
+
+
+        private function startFPSMeasurement():void
+        {
+            _fpsMeter = new FPSMeter( 30 );
+            _fpsMeter.addEventListener( FPSMeterEvent.MEASURE_COMPLETE, fpsMeasureCompleteHandler );
+            _fpsMeter.startMeasure();
+            
+            _isMeasuringFPS = true;
+
+            dispatchEvent( new AsyncProcessorEvent( AsyncProcessorEvent.FPS_MEASURE_START ) );
+        }
+        
+
+        private function endFPSMeasurement():void
+        {
+            _fpsMeter.stopMeasure();
+            _fpsMeter.removeEventListener( FPSMeterEvent.MEASURE_COMPLETE, fpsMeasureCompleteHandler );
+            _fpsMeter = null;
+
+            _isMeasuringFPS = false;
+
+            dispatchEvent( new AsyncProcessorEvent( AsyncProcessorEvent.FPS_MEASURE_COMPLETE ) );
+
+            if ( _isRunning )
+                _processTimer.start();
         }
 
         // ____________________________________________________________________________________________________
@@ -202,20 +242,33 @@ package nl.imotion.utils.asyncprocessor
         }
 
 
+        public function get fps():uint { return _fps; }
+        public function set fps( value:uint ):void
+        {
+            if ( _fps == value || value == 0 ) return;
+
+            _fps = value;
+            updateAllocation();
+
+            if ( _isMeasuringFPS )
+                endFPSMeasurement();
+        }
+
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS
 
         private function fpsMeasureCompleteHandler( e:FPSMeterEvent ):void
         {
-            _fpsMeter.removeEventListener( FPSMeterEvent.MEASURE_COMPLETE, fpsMeasureCompleteHandler );
-            _fpsMeter = null;
+            if ( e.fps == 0 )
+            {
+                _fpsMeter.startMeasure();
+                return;
+            }
 
-            setAllocation( e.fps );
-
-            if ( _isRunning )
-                _processTimer.start();
+            _fps = e.fps;
+            updateAllocation();
+            endFPSMeasurement();
         }
-
 
         private function processTimerTickHandler( e:TimerEvent ):void
         {
