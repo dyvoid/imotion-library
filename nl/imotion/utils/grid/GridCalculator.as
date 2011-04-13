@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT license
  *
- * Copyright (c) 2010 Pieter van de Sluis
+ * Copyright (c) 2010-2011 Pieter van de Sluis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -123,14 +123,9 @@ package nl.imotion.utils.grid
 		 */
 		public function get nrOfRows():uint
 		{
-			if ( nrOfCells != -1 )
-			{
-				return Math.ceil( this.nrOfCells / this.nrOfCols );
-			}
-			else
-			{
-				return null;
-			}
+			if ( nrOfCells == -1 ) return 0;
+
+            return Math.ceil( this.nrOfCells / this.nrOfCols );
 		}
 		
 		/**
@@ -147,14 +142,9 @@ package nl.imotion.utils.grid
 		 */
 		public function get height():Number
 		{
-			if ( nrOfCells != -1 )
-			{
-				return ( this.cellHeight + this.margin ) * this.nrOfRows - this.margin;
-			}
-			else
-			{
-				return 0;
-			}
+			if ( nrOfCells == -1 ) return 0;
+
+            return ( this.cellHeight + this.margin ) * this.nrOfRows - this.margin;
 		}
 		
 		

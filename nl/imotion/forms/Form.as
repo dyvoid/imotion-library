@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT license
  *
- * Copyright (c) 2010 Pieter van de Sluis
+ * Copyright (c) 2010-2011 Pieter van de Sluis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ package nl.imotion.forms
 
     import nl.imotion.forms.validators.IValidator;
     import nl.imotion.forms.validators.Validator;
+    import nl.imotion.forms.validators.ValidatorError;
     import nl.imotion.forms.validators.ValidatorGroup;
     import nl.imotion.utils.reflector.AccessType;
     import nl.imotion.utils.reflector.PropertyDefinition;
@@ -217,7 +218,7 @@ package nl.imotion.forms
 		public function get errors():/*ValidatorError*/Array
 		{
 			var errors:/*ValidatorError*/Array = [];
-			
+
 			for each ( var element:IFormElement in _elements )
 			{
 				errors = errors.concat( element.errors );

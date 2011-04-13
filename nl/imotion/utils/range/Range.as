@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT license
  *
- * Copyright (c) 2010 Pieter van de Sluis
+ * Copyright (c) 2010-2011 Pieter van de Sluis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ package nl.imotion.utils.range
 		 * @param	targetBoundary2 the second boundary value of the target range
 		 * @return	the translated value
 		 */
-		public static function translateValue( value:Number, sourceBoundary1:Number, sourceBoundary2:Number, targetBoundary1:Number, targetBoundary2:Number ):Number
+		public static function translateValue( value:Number, sourceBoundary1:Number, sourceBoundary2:Number, targetBoundary1:Number = 0, targetBoundary2:Number = 1 ):Number
 		{
 			return new Range( sourceBoundary1, sourceBoundary2 ).translate( value, new Range( targetBoundary1, targetBoundary2 ) );
 		}

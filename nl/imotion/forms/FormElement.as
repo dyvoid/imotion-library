@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT license
  *
- * Copyright (c) 2010 Pieter van de Sluis
+ * Copyright (c) 2010-2011 Pieter van de Sluis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -106,7 +106,7 @@ package nl.imotion.forms
         }
 		
 		
-		public function get errors():/*String*/Array
+		public function get errors():/*ValidatorError*/Array
 		{
 			return _validatorGroup.errors;
 		}
