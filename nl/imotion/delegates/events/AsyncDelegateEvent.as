@@ -36,8 +36,8 @@ package nl.imotion.delegates.events
     {
 
         // EVENT TYPES
-        public static const RESULT  :String = "RESULT";
-        public static const FAULT   :String = "FAULT";
+        public static const RESULT  :String = "AsyncDelegateEvent::RESULT";
+        public static const FAULT   :String = "AsyncDelegateEvent::FAULT";
 
         // EVENT DATA
         private var _data:*;

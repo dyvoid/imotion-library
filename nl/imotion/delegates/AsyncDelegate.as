@@ -36,6 +36,10 @@ package nl.imotion.delegates
     /**
      * @author Pieter van de Sluis
      */
+
+    [Event(name="AsyncDelegateEvent::RESULT", type="nl.imotion.delegates.events.AsyncDelegateEvent")]
+    [Event(name="AsyncDelegateEvent::FAULT", type="nl.imotion.delegates.events.AsyncDelegateEvent")]
+
     public class AsyncDelegate extends AbstractDelegate implements IEventDispatcher
     {
         // ____________________________________________________________________________________________________
