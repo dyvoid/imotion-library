@@ -26,6 +26,7 @@
 
 package nl.imotion.delegates
 {
+    import nl.imotion.delegates.IResponder;
 
 
     /**
@@ -34,55 +35,84 @@ package nl.imotion.delegates
 	 */
 	public class AbstractDelegate implements IDelegate
 	{
-		protected static var defaultResponder	:IDelegateResponder;
-		
+
+        // ____________________________________________________________________________________________________
+        // PROPERTIES
+
 		private var _operationName	:String;
-		private var _data:Object;
-		private var _responder:IDelegateResponder;
-		
-		
-		public function AbstractDelegate( operationName:String = null, data:Object = null, responder:IDelegateResponder = null ) 
+		private var _requestData    :*;
+        private var _responder:IResponder;
+
+        protected static var defaultResponder	:IResponder;
+
+        // ____________________________________________________________________________________________________
+        // CONSTRUCTOR
+
+		public function AbstractDelegate( operationName:String = null, requestData:* = null, responder:IResponder = null )
 		{
 			_operationName 	= operationName;
-			_data 			= data;
-			_responder 		= responder;
+			_requestData    = requestData;
+            _responder      = responder;
 		}
-		
-		
-		public static function setDefaultResponder( responder:IDelegateResponder ):void
-		{
-			defaultResponder = responder;
-		}
-		
+
+        // ____________________________________________________________________________________________________
+        // PUBLIC
 		
 		public function execute():void
 		{
 			// override in subclass
 		}
-		
-		
-		public function get operationName():String { return _operationName; }
-		public function set operationName( value:String ):void 
+
+        public static function setDefaultResponder( responder:IResponder ):void
+		{
+			defaultResponder = responder;
+		}
+
+        public function reset():void
+        {
+            _operationName = null;
+            _requestData = null;
+            _responder = null;
+        }
+
+        // ____________________________________________________________________________________________________
+        // PRIVATE
+
+
+        // ____________________________________________________________________________________________________
+        // PROTECTED
+
+
+        // ____________________________________________________________________________________________________
+        // GETTERS / SETTERS
+
+        public function get operationName():String { return _operationName; }
+		public function set operationName( value:String ):void
 		{
 			_operationName = value;
 		}
-		
-		
-		public function get data():Object { return _data; }
-		public function set data( value:Object ):void 
+
+
+		public function get requestData():* { return _requestData; }
+		public function set requestData( value:* ):void
 		{
-			_data = value;
+			_requestData = value;
 		}
-		
-		
-		public function get responder():IDelegateResponder 
-		{ 
+
+
+        public function get responder():IResponder
+		{
 			return ( _responder == null ) ? defaultResponder : _responder;
 		}
-		public function set responder( value:IDelegateResponder ):void
+		public function set responder( value:IResponder ):void
 		{
 			_responder = value;
 		}
+
+        // ____________________________________________________________________________________________________
+        // EVENT HANDLERS
+
+
 		
 	}
 	

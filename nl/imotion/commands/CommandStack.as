@@ -33,7 +33,7 @@ package nl.imotion.commands
 
 	public class CommandStack
 	{
-		private var stack		:Array  = [];
+		private var _stack		:Array  = [];
 		private var _index		:int	= -1;
 		private var _maxLength	:uint;
 		
@@ -53,11 +53,11 @@ package nl.imotion.commands
 		 */
 		private function enforceMaxLength():void
 		{
-			if ( _maxLength != 0 && stack.length > _maxLength )
+			if ( _maxLength != 0 && _stack.length > _maxLength )
 			{
-				stack.splice( stack.length - _maxLength );
+				_stack.splice( _stack.length - _maxLength );
 				
-				_index = stack.length - 1;
+				_index = _stack.length - 1;
 			}
 		}
 		
@@ -67,7 +67,7 @@ package nl.imotion.commands
 		 */
 		public function clear():void
 		{
-			stack  = [];
+			_stack  = [];
 			_index = -1;
 		}
 		
@@ -78,8 +78,8 @@ package nl.imotion.commands
 		 */
 		public function addCommand( command:ICommand ):void
 		{
-			stack[ _index++ ] = command;
-			stack.splice( _index );
+			_stack[ _index++ ] = command;
+			_stack.splice( _index );
 			
 			enforceMaxLength();
 		}
@@ -87,7 +87,7 @@ package nl.imotion.commands
 		
 		private function doSingleUndo():void
 		{
-			IUndoableCommand( stack[ --_index ] ).undo();
+			IUndoableCommand( _stack[ --_index ] ).undo();
 		}
 		
 		
@@ -97,7 +97,7 @@ package nl.imotion.commands
 		 */
 		public function undo( nrOfSteps:uint = 1 ):void
 		{
-			if ( stack.length > 0 )
+			if ( _stack.length > 0 )
 			{
 				nrOfSteps = Math.min( nrOfSteps, index + 1 );
 				
@@ -111,9 +111,9 @@ package nl.imotion.commands
 		
 		private function doSingleRedo():void
 		{
-			if ( index < stack.length )
+			if ( index < _stack.length )
 			{
-				IRedoableCommand( stack[ ++_index ] ).redo();
+				IRedoableCommand( _stack[ ++_index ] ).redo();
 			}
 		}
 		
@@ -124,9 +124,9 @@ package nl.imotion.commands
 		 */
 		public function redo( nrOfSteps:uint = 1 ):void
 		{
-			if ( stack.length > 0 )
+			if ( _stack.length > 0 )
 			{
-				nrOfSteps = Math.min( nrOfSteps, stack.length - index );
+				nrOfSteps = Math.min( nrOfSteps, _stack.length - index );
 				
 				for ( var i:int = 0; i < nrOfSteps; i++ ) 
 				{
@@ -145,7 +145,7 @@ package nl.imotion.commands
 		/**
 		 * The length of the stack
 		 */
-		public function get length():uint { return stack.length; }
+		public function get length():uint { return _stack.length; }
 		
 	}
 }

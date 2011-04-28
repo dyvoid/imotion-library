@@ -38,11 +38,11 @@ package nl.imotion.delegates
 		function get operationName():String
 		function set operationName( value:String ):void 
 		
-		function get data():Object
-		function set data( value:Object ):void 
-		
-		function get responder():IDelegateResponder 
-		function set responder( value:IDelegateResponder ):void
+		function get requestData():*
+		function set requestData( value:* ):void
+        
+        function get responder():IResponder
+		function set responder( value:IResponder ):void
 	}
 	
 }

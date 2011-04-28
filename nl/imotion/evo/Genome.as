@@ -39,14 +39,14 @@ package nl.imotion.evo
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _genes:/*Gene*/Array = [];
+        private var _genes:Vector.<Gene>;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
         public function Genome()
         {
-
+            _genes = new Vector.<Gene>();
         }
 
 
@@ -129,11 +129,11 @@ package nl.imotion.evo
 
         public function resetGenes( geneNames:Array = null ):void
         {
-            var resetList:Array;
+            var resetList:Vector.<Gene>;
 
             if ( geneNames )
             {
-                resetList = [];
+                resetList = new Vector.<Gene>();
 
                 var numNames:uint = geneNames.length;
                 for ( var i:int = 0; i < numNames; i++ )
@@ -213,7 +213,7 @@ package nl.imotion.evo
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
-        public function get genes():/*Gene*/Array
+        public function get genes():Vector.<Gene>
         {
             return _genes;
         }
