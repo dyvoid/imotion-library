@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT license
  *
- * Copyright (c) 2010 Pieter van de Sluis
+ * Copyright (c) 2009-2011 Pieter van de Sluis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package test.evo.scribbler
+package test.evo.flowtext
 {
     import flash.display.Bitmap;
     import flash.display.BitmapData;
@@ -49,7 +49,7 @@ package test.evo.scribbler
      * Date: 19-sep-2010
      * Time: 20:06:56
      */
-    public class ScribblerEvolver extends Evolver implements IVisualEvolver
+    public class FlowTextEvolver extends Evolver implements IVisualEvolver
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
@@ -62,7 +62,7 @@ package test.evo.scribbler
         private var _previous:IEvolver;
         private var _next:IEvolver;
 
-        private var scribbler:FlowText;
+        private var _flowText:FlowText;
 
         private var _lastDraw:Bitmap;
         private var _bestDraw:Bitmap;
@@ -72,7 +72,7 @@ package test.evo.scribbler
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function ScribblerEvolver( areaWidth:Number, areaHeight:Number )
+        public function FlowTextEvolver( areaWidth:Number, areaHeight:Number )
         {
             _areaWidth = areaWidth;
             _areaHeight = areaHeight;
@@ -89,36 +89,39 @@ package test.evo.scribbler
         {
             genome = new Genome();
 
+            /*var characters:Array = [];
+
+            var firstChar:String = "!";
+            var lastChar:String  = "Z";
+
+            for ( var i:int = firstChar.charCodeAt(0); i <= lastChar.charCodeAt(0); i++ )
+            {
+                characters.push( String.fromCharCode(i) );
+            }*/
+
+            var characterList:String = "0123456789cefhijlopqstuvxyCEFHIJLOPQSTUVXY!@#$%^&*(){}[]:\"|;'\\<>?,./~`";
+//            var characters:Array =["a","b"];
+            var characters:Array = characterList.split("");
+
+            genome.addGene( new CollectionGene( "text", characters, 0.05 ) );
+
             genome.addGene( new UintGene( "x", 0, _areaWidth, 0.01 ) );
             genome.addGene( new UintGene( "y", 0, _areaHeight, 0.01 ) );
-            genome.addGene( new NumberGene( "startAngle", 0, Math.PI*2, 0.1, LimitMethod.WRAP ) );
-//            genome.addGene( new CollectionGene( "startAngle", [ Math.PI*0.25, Math.PI*1.75 ], 1, LimitMethod.WRAP ) );
 
-//            genome.addGene( new IntGene( "rotation", -180, 180, 0.1, LimitMethod.WRAP ) );
+            genome.addGene( new NumberGene( "scale", 0.2, 8, 0  ) );
 
-            genome.addGene( new NumberGene( "seed", 0, 1, 0, LimitMethod.WRAP ) );
-            genome.addGene( new NumberGene( "mutateSeed", 0, 1, 0.01, LimitMethod.WRAP ) );
-            genome.addGene( new UintGene( "stepLength", 1, 75, 0.05 ) );
-            genome.addGene( new UintGene( "life", 10, 50, 0.01 ) );
-            genome.addGene( new NumberGene( "strokeWidth", 1, 2, 0.01  ) );
-//            genome.addGene( new NumberGene( "straightening", 0.9, 0.95, 0.001 ) );
-            genome.addGene( new NumberGene( "straightening", 0.85, 0.95, 0.01 ) );
+            genome.addGene( new IntGene( "rotation", -180, 180, 0.1, LimitMethod.WRAP ) );
 
-//            genome.addGene( new NumberGene( "alpha", 0.5, 1, 0.1 ) );
-//            genome.addGene( new NumberGene( "brightness", 0, 1, 0.1, LimitMethod.CUT_OFF ) );
+//            genome.addGene( new NumberGene( "brightness", 0, 1, 0.01, LimitMethod.CUT_OFF ) )
 
-//            genome.addGene( new CollectionGene( "colorR", [ 0x00, 0xff ], 0.1, LimitMethod.WRAP, 0 ) );
-
-//            genome.addGene( new NumberGene  ( "colorR", 0, 0xFF, 0.1, LimitMethod.CUT_OFF ) );
-//            genome.addGene( new NumberGene  ( "colorG", 0, 0xFF, 0.1, LimitMethod.CUT_OFF ) );
-//            genome.addGene( new NumberGene  ( "colorB", 0, 0xFF, 0.1, LimitMethod.CUT_OFF ) );
+            genome.addGene( new NumberGene( "alpha", 0.5, 1, 0.1 ) );
 
             _container = new Sprite();
 
-            scribbler = new FlowText();
-            _container.addChild( scribbler );
+            _flowText = new FlowText();
+            _container.addChild( _flowText );
 
-            _momentumCalc = new MomentumCalculator( 20 );
+            _momentumCalc = new MomentumCalculator( 40 );
 
             return this;
         }
@@ -126,9 +129,8 @@ package test.evo.scribbler
 
         public function reset( minSize:Number, maxSize:Number ):IEvolver
         {
-            genome.editGene( "stepLength", { minVal: minSize, maxVal: maxSize } );
-            genome.resetGenes( [ "x", "y", "startAngle", "seed", "mutateSeed" ] );
-//            genome.resetGenes( [ "startAngle", "seed", "mutateSeed" ] );
+            genome.editGene( "scale", { minVal: minSize, maxVal: maxSize } );
+            genome.resetGenes( [ "scale", "x", "y"  ] );
             previousGenome = null;
 
             fitness = 0;
@@ -143,14 +145,11 @@ package test.evo.scribbler
 
         public function draw():Bitmap
         {
-            genome.apply( scribbler );
-            scribbler.update();
+            genome.mutate( mutationEffect );
+            genome.apply( _flowText );
+            _flowText.update();
 
-            var bounds:Rectangle = scribbler.getRect( _container );
-            bounds.left -=2;
-            bounds.top -=2;
-            bounds.right +=2;
-            bounds.bottom +=2;
+            var bounds:Rectangle = _flowText.getRect( _container );
 
             var leftExtra:Number = ( bounds.left < 0 ) ? -bounds.left : 0;
             var topExtra:Number = ( bounds.top < 0 ) ? -bounds.top : 0;
@@ -168,8 +167,8 @@ package test.evo.scribbler
             bmd.draw( _container, matrix );
 
             _lastDraw = new Bitmap( bmd );
-            _lastDraw.x = scribbler.x - ( scribbler.x - bounds.left ) + leftExtra;
-            _lastDraw.y = scribbler.y - ( scribbler.y - bounds.top ) + topExtra;
+            _lastDraw.x = _flowText.x - ( _flowText.x - bounds.left ) + leftExtra;
+            _lastDraw.y = _flowText.y - ( _flowText.y - bounds.top ) + topExtra;
 
             var bm:Bitmap = new Bitmap( bmd );
             bm.transform.matrix = _lastDraw.transform.matrix;
@@ -258,6 +257,12 @@ package test.evo.scribbler
         public function get momentumIsReady():Boolean
         {
             return _momentumCalc.isReady;
+        }
+
+
+        public function get flowText():FlowText
+        {
+            return _flowText;
         }
 
 

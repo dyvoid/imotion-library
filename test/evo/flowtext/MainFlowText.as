@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT license
  *
- * Copyright (c) 2010 Pieter van de Sluis
+ * Copyright (c) 2009-2011 Pieter van de Sluis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package test.evo.scribbler
+package test.evo.flowtext
 {
     import flash.display.Bitmap;
     import flash.display.BitmapData;
@@ -34,12 +34,15 @@ package test.evo.scribbler
     import flash.events.MouseEvent;
     import flash.geom.Matrix;
     import flash.net.FileReference;
+    import flash.text.Font;
     import flash.utils.getTimer;
 
     import nl.imotion.evo.Genome;
+    import nl.imotion.evo.genes.Gene;
     import nl.imotion.utils.momentum.MomentumCalculator;
 
     import test.evo.*;
+    import test.evo.scribbler.ScribblerEvolver;
 
 
     /**
@@ -49,15 +52,16 @@ package test.evo.scribbler
      */
 
     [SWF(backgroundColor="#ffffff",width="1100",height="900",frameRate="31")]
-    public class MainScribbler extends Sprite
+    public class MainFlowText extends Sprite
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
         private var firstEvo:IEvolver;
 
+        private var targetEvoFitness:Number = 0.7;
         private var targetPopulationFitness:Number = 0.99;
-        private var minGenerationMomentum:Number = 0.0000001;
+        private var minGenerationMomentum:Number = 0.00001;
 
         private var populationFitness:Number;
 
@@ -77,13 +81,13 @@ package test.evo.scribbler
         private var minSize:uint = 0;
         private var maxSize:uint = 0;
 
-        private var startMinSize:Number = 3;
-        private var startMaxSize:Number = 4;
-        private var endMinSize:Number = 1;
-        private var endMaxSize:Number = 3;
+        private var startMinSize:Number = 1;
+        private var startMaxSize:Number = 5;
+        private var endMinSize:Number = 0.5;
+        private var endMaxSize:Number = 2;
 
         private var startEvos:uint = 500;
-        private var endEvos:uint = 400;
+        private var endEvos:uint   = 500;
 
         private var evoList:/*IEvolver*/Array = [];
 
@@ -92,15 +96,25 @@ package test.evo.scribbler
         private var _displayEnabled:Boolean = true;
         private var _btDisplay:Sprite;
 
+//        [Embed(source="../../../../lib/evo_logo.png")]
         [Embed(source="../../../../lib/black_horse.png")]
+//        [Embed(source="../../../../lib/rose_silhouette.png")]
+//        [Embed(source="../../../../lib/pieter_silhouette_4.jpg")]
+//        [Embed(source="../../../../lib/banksy girl with heart balloon grafitti.png")]
         private var SourceImage:Class;
 
+//        [Embed(source="C:/Windows/Fonts/arial.ttf", fontName="ArialFont", mimeType="application/x-font-truetype")]
+//        private var Arial:Class;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function MainScribbler()
+        public function MainFlowText()
         {
+            Font.registerFont( Arial );
+            Font.registerFont( Andalus );
+            Font.registerFont( Junkos );
+
             /*var sourceBMD:BitmapData = new Pieter();
             var resizedBMD:BitmapData = new BitmapData( sourceBMD.width*2, sourceBMD.height*2, false );
             var matrix:Matrix = new Matrix();
@@ -117,22 +131,22 @@ package test.evo.scribbler
 //            holder.graphics.beginFill( 0x0000ff, 1 )
 //            holder.graphics.lineStyle( 1, 0xffffff );
 //            holder.graphics.drawRect(0,0,sourceImg.width,sourceImg.height);
-            holder.x = holder.y = 50;
+            holder.x = holder.y = 0;
             this.addChild( holder );
 
             _btDisplay = new Sprite();
             _btDisplay.buttonMode = true;
             _btDisplay.graphics.beginFill( 0x000077 )
             _btDisplay.graphics.drawCircle( stage.stageWidth - 50, stage.stageHeight - 50, 20 );
+            _btDisplay.addEventListener( MouseEvent.CLICK, btDisplayHandler );
             _btDisplay.alpha = 0.5;
-            _btDisplay.addEventListener( MouseEvent.CLICK, btDisplayHandler )
             this.addChild( _btDisplay );
 
             numEvos = startEvos;
             minSize = startMinSize;
             maxSize = startMaxSize;
 
-            firstEvo = new ScribblerEvolver( sourceImg.width, sourceImg.height );
+            firstEvo = new FlowTextEvolver( sourceImg.width, sourceImg.height );
             evoList[ 0 ] = firstEvo;
 
             resetAndCreateEvos();
@@ -175,17 +189,17 @@ package test.evo.scribbler
             {
                 if ( !evo.next && evoCount < numEvos )
                 {
-                    evo.next = new ScribblerEvolver( sourceImg.width, sourceImg.height );
+                    evo.next = new FlowTextEvolver( sourceImg.width, sourceImg.height );
                     evo.next.previous = evo;
                     evoList.push( evo.next );
                 }
 
                 if ( evoList.length > 1 && numPopulations > 1 )
                 {
-                    evo.genome = genome1.mate( genome2 );
+//                    evo.genome = genome1.mate( genome2 );
                 }
 
-                ScribblerEvolver( evo ).reset( minSize, maxSize );
+                FlowTextEvolver( evo ).reset( minSize, maxSize );
 
                 evoCount++;
 
@@ -226,7 +240,7 @@ package test.evo.scribbler
 
             do
             {
-                if ( ScribblerEvolver( evo ).momentum != 0 || !ScribblerEvolver( evo ).momentumIsReady )
+                if ( FlowTextEvolver( evo ).momentum != 0  || !FlowTextEvolver( evo ).momentumIsReady )
                 {
                     bm = evo.draw();
                     bmWidth = bm.width;
@@ -268,7 +282,7 @@ package test.evo.scribbler
 
                     if ( evo.fitness < fitness )
                     {
-                        var s:ScribblerEvolver = evo as ScribblerEvolver;
+                        var s:FlowTextEvolver = evo as FlowTextEvolver;
                         if ( s.bestDraw && layer.contains( s.bestDraw ) )
                             layer.removeChild( s.bestDraw );
 
@@ -282,9 +296,13 @@ package test.evo.scribbler
                         evo.punish( fitness );
                     }
                 }
-                else if ( evo.fitness < 0.8 )
+                else if ( evo.fitness < targetEvoFitness )
                 {
-                    ScribblerEvolver( evo ).reset( minSize, maxSize );
+                    var e:FlowTextEvolver = evo as FlowTextEvolver;
+                    if ( e.bestDraw && layer.contains( e.bestDraw ) )
+                        layer.removeChild( e.bestDraw );
+
+                    e.reset( minSize, maxSize );
                 }
 
                 newPopulationFitness += evo.fitness;
@@ -305,7 +323,7 @@ package test.evo.scribbler
 
                 evoList.sortOn( "fitness", Array.DESCENDING | Array.NUMERIC );
 
-                for each ( var evolver:ScribblerEvolver in evoList )
+                for each ( var evolver:FlowTextEvolver in evoList )
                 {
                     if ( evolver.bestDraw )
                     {
@@ -316,7 +334,7 @@ package test.evo.scribbler
                 var layerBmd:BitmapData = new BitmapData( sourceImg.width, sourceImg.height, true, 0x00000000 )
                 layerBmd.draw( layer );
 
-                holder.addChild( new Bitmap( layerBmd ) );
+                holder.addChild( new Bitmap( layerBmd ) )
                 holder.removeChild( layer );
 
                 if ( numPopulations == maxNumPopulations )
@@ -363,6 +381,20 @@ package test.evo.scribbler
             _displayEnabled = !_displayEnabled;
 
             var evo:IEvolver = firstEvo;
+
+            var genome:Genome = evo.genome;
+            var gene:Gene = genome.getGeneByPropName("rotation");
+            trace( "rotation baseval:"+gene.baseValue );
+            trace( "rotation val:"+gene.getPropValue() );
+            gene = genome.getGeneByPropName("x")
+            trace( "x baseval:"+gene.baseValue );
+            trace( "x val:"+gene.getPropValue() );
+            gene = genome.getGeneByPropName("y")
+            trace( "y baseval:"+gene.baseValue );
+            trace( "y val:"+gene.getPropValue() );
+
+            trace(FlowTextEvolver(evo).flowText.rotation);
+
 
             var xml:XML = <root />;
 

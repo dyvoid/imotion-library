@@ -44,10 +44,7 @@ package nl.imotion.neuralnetwork.components
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function Neuron()
-        {
-
-        }
+        public function Neuron() { }
 
         // ____________________________________________________________________________________________________
         // PUBLIC
@@ -66,7 +63,7 @@ package nl.imotion.neuralnetwork.components
                 _value += _synapses[ i ].getOutput();
             }
 
-            _value = applySigmoid( _value );
+            _value = getSigmoid( _value );
 
             return _value;
         }
@@ -109,7 +106,7 @@ package nl.imotion.neuralnetwork.components
         // ____________________________________________________________________________________________________
         // PRIVATE
 
-        private function applySigmoid( value:Number ):Number
+        private function getSigmoid( value:Number ):Number
         {
             return 1 / ( 1 + Math.exp( -value ) );
         }

@@ -29,7 +29,7 @@ package test.evo
     import flash.display.Sprite;
     import flash.events.Event;
 
-    import test.evo.scribbler.Scribbler;
+    import test.evo.scribbler.FlowText;
 
 
     /**
@@ -43,7 +43,7 @@ package test.evo
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _scribbler:Scribbler;
+        private var _scribbler:FlowText;
 
 
         // ____________________________________________________________________________________________________
@@ -52,7 +52,7 @@ package test.evo
 
         public function MainTester()
         {
-            _scribbler = new Scribbler();
+            _scribbler = new FlowText();
             _scribbler.x = stage.stageWidth / 2;
             _scribbler.y = stage.stageHeight / 2;
 
@@ -68,7 +68,7 @@ package test.evo
 
         private function ef( e:Event ):void
         {
-            var s:Scribbler = new Scribbler();
+            var s:FlowText = new FlowText();
             s.x = stage.stageWidth / 2;
             s.y = stage.stageHeight / 2;
 

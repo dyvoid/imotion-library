@@ -26,7 +26,11 @@
 
 package nl.imotion.evo
 {
+    import nl.imotion.evo.genes.CollectionGene;
     import nl.imotion.evo.genes.Gene;
+    import nl.imotion.evo.genes.IntGene;
+    import nl.imotion.evo.genes.NumberGene;
+    import nl.imotion.evo.genes.UintGene;
 
 
     /**
@@ -75,8 +79,10 @@ package nl.imotion.evo
 
         public function apply( target:* ):*
         {
-            for each ( var gene:Gene in _genes )
+            var numGenes:uint = genes.length;
+            for ( var i:int = 0; i < numGenes; i++ )
             {
+                var gene:Gene = genes[i];
                 target[ gene.propName ] = gene.getPropValue();
             }
             
@@ -139,7 +145,6 @@ package nl.imotion.evo
                 for ( var i:int = 0; i < numNames; i++ )
                 {
                     var gene:Gene = getGeneByPropName( geneNames[ i ] );
-                    
                     if ( gene )
                     {
                         resetList[ resetList.length ] = gene;
@@ -197,6 +202,59 @@ package nl.imotion.evo
             }
 
             return xml;
+        }
+
+
+        public function fromXML( xml:XML ):Genome
+        {
+            for each ( var geneNode:XML in xml.children() )
+            {
+                var geneType:String = geneNode.@type.toString();
+
+                switch( true )
+                {
+                    case geneType == "int":
+                        this.addGene(
+                                new IntGene( geneNode.@propName.toString(), int( geneNode.@minVal.toString() ),
+                               int( geneNode.@maxVal.toString() ), Number( geneNode.@mutationEffect.toString() ),
+                                geneNode.@limitMethod.toString(), Number( geneNode.@baseValue.toString() ) )
+                                );
+                    break;
+
+                    case geneType == "uint":
+                        this.addGene(
+                                new UintGene( geneNode.@propName.toString(), int( geneNode.@minVal.toString() ),
+                               int( geneNode.@maxVal.toString() ), Number( geneNode.@mutationEffect.toString() ),
+                                geneNode.@limitMethod.toString(), Number( geneNode.@baseValue.toString() ) )
+                                );
+                    break;
+
+                    case geneType == "Number":
+                        this.addGene(
+                                new NumberGene( geneNode.@propName.toString(), Number( geneNode.@minVal.toString() ),
+                               Number( geneNode.@maxVal.toString() ), Number( geneNode.@mutationEffect.toString() ),
+                                geneNode.@limitMethod.toString(), Number( geneNode.@baseValue.toString() ) )
+                                );
+                    break;
+
+                    case geneType == "Collection":
+                        var collection:Array = [];
+
+                        for each ( var collectionNode:XML in geneNode.children() )
+                        {
+                            collection.push( collectionNode.valueOf().toString() )
+                        }
+
+                        this.addGene(
+                                new CollectionGene( geneNode.@propName.toString(), collection,
+                                Number( geneNode.@mutationEffect.toString() ),
+                                geneNode.@limitMethod.toString(), Number( geneNode.@baseValue.toString() ) )
+                                );
+                    break;
+                }
+            }
+
+            return this;
         }
 
 

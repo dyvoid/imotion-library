@@ -122,10 +122,11 @@ package test.evo.shapeshifter
         {
             genome.editGene( "size", { minVal: minSize, maxVal: maxSize } )
             genome.resetGenes( [ "x", "y", "rotation" ] );
+            previousGenome = null;
 
             fitness = 0;
             _lastDraw =
-                    _bestDraw = null;
+            _bestDraw = null;
 
             _momentumCalc.reset();
 

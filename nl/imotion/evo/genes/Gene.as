@@ -93,7 +93,7 @@ package nl.imotion.evo.genes
                 if ( updateMomentum )
                     _momentum = ( newVal - _baseValue ) * _momentumEffect;
 
-                _baseValue = newVal;
+                _baseValue = Math.round( newVal * 1000000 ) / 1000000;
             }
 
             return getPropValue();
@@ -121,7 +121,7 @@ package nl.imotion.evo.genes
 
         public function toXML():XML
         {
-            var xml:XML = <gene type="gene" propName={propName} baseValue={baseValue} mutationEffect={mutationEffect} limitMethod={limitMethod} />
+            var xml:XML = <gene type="gene" propName={propName} baseValue={baseValue} mutationEffect={mutationEffect} limitMethod={limitMethod} />;
 
             return xml;
         }

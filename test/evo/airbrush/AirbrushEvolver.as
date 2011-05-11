@@ -108,10 +108,11 @@ package test.evo.airbrush
             sizeGene.maxVal = maxSize;
 
             genome.resetGenes();
+            previousGenome = null;
 
             fitness = 0;
             _lastDraw =
-                    _bestDraw = null;
+            _bestDraw = null;
 
             return this;
         }

@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT license
  *
- * Copyright (c) 2010 Pieter van de Sluis
+ * Copyright (c) 2009-2011 Pieter van de Sluis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,58 +24,50 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package test.evo.scribbler
+package test.evo.flowtext
 {
+    import com.greensock.events.LoaderEvent;
+    import com.greensock.loading.LoaderMax;
+    import com.greensock.loading.XMLLoader;
+
     import flash.display.Sprite;
-    import flash.events.Event;
+
+    import flash.net.FileReference;
+    import flash.text.Font;
+
+    import nl.imotion.evo.Genome;
+    import nl.imotion.evo.genes.Gene;
 
 
     /**
      * @author Pieter van de Sluis
-     * Date: 15-okt-2010
-     * Time: 20:10:15
      */
 
-    [SWF(backgroundColor="#000000",width="1024",height="700",frameRate="31")]
-    public class ScribblerAwesomeness extends Sprite
+    [SWF(backgroundColor="#ffffff",width="800",height="640",frameRate="31")]
+    
+    public class FlowTextViewer extends Sprite
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _nrOfScribblers:uint = 10;
+        private var loader:LoaderMax;
 
-        private var _scribblers:Vector.<AwesomeScribbler> = new Vector.<AwesomeScribbler>();
-
-        private var scribbler:FlowText;
-        private var scribbler2:FlowText;
-        private var scribbler3:FlowText;
+        private var fileName:String = "xml/pieter.xml";
+//        private var fileName:String = "xml/horse.xml";
+//        private var fileName:String = "xml/evo_logo.xml";
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function ScribblerAwesomeness()
+        public function FlowTextViewer()
         {
-            for ( var i:int = 0; i < _nrOfScribblers; i++ )
-            {
-                var s:AwesomeScribbler = new AwesomeScribbler();
-                s.x = stage.stageWidth / 2;
-                s.y = stage.stageHeight / 2;
-                this.addChild( s )
-                _scribblers.push( s );
-            }
+            Font.registerFont( Arial );
 
-            this.addEventListener( Event.ENTER_FRAME, enterFrameHandler )
+            loader = new LoaderMax();
+            loader.append( new XMLLoader( fileName ) );
+            loader.addEventListener( LoaderEvent.COMPLETE, loaderCompleteHandler );
+            loader.load();
         }
-
-
-        private function enterFrameHandler( e:Event ):void
-        {
-            for ( var i:int = 0; i < _nrOfScribblers; i++ )
-            {
-                _scribblers[ i ].update();
-            }
-        }
-
 
         // ____________________________________________________________________________________________________
         // PUBLIC
@@ -84,6 +76,32 @@ package test.evo.scribbler
         // ____________________________________________________________________________________________________
         // PRIVATE
 
+        private function view():void
+        {
+            var xml:XML = loader.getContent( fileName ) as XML;
+
+            var genomeNode:XML;
+
+            var newXML:XML = <root />;
+
+            for each ( genomeNode in xml.children() )
+            {
+                var genome:Genome = new Genome();
+                genome.fromXML( genomeNode );
+
+                var flowText:FlowText = new FlowText();
+                genome.apply( flowText );
+                flowText.update();
+                this.addChild( flowText );
+
+                newXML.appendChild( genome.toXML() );
+            }
+
+//            var fileRef:FileReference = new FileReference();
+//            fileRef.save( newXML );
+            
+
+        }
 
         // ____________________________________________________________________________________________________
         // PROTECTED
@@ -96,6 +114,11 @@ package test.evo.scribbler
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS
 
+        private function loaderCompleteHandler( e:LoaderEvent ):void
+        {
+            view();
+        }
 
     }
+    
 }

@@ -71,8 +71,6 @@ package nl.imotion.evo.evolvers
         {
             _previousGenome = _genome.clone();
 
-            _genome.mutate( _mutationEffect );
-
             _fitness = fitness;
 
             return _genome;
@@ -83,8 +81,6 @@ package nl.imotion.evo.evolvers
         {
             if ( _previousGenome )
                 _genome = _previousGenome.clone();
-
-            _genome.mutate( _mutationEffect );
 
             return _genome;
         }

@@ -39,6 +39,8 @@ package nl.imotion.evo.genes
         private var _minVal:uint;
         private var _maxVal:uint;
 
+        private var _totalRange:Number;
+
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
@@ -46,6 +48,8 @@ package nl.imotion.evo.genes
         {
             _minVal = minVal;
             _maxVal = maxVal;
+
+            updateTotalRange();
 
             super( propName, mutationEffect, limitMethod, baseValue );
         }
@@ -55,7 +59,12 @@ package nl.imotion.evo.genes
 
         override public function getPropValue():*
         {
-            return _minVal + Math.floor( baseValue * ( _maxVal + 0.999999999999998 - _minVal ) );
+            var n:Number = baseValue * _totalRange;
+            //Optimized Math.floor()
+            var ni:int = n;
+            ni = ( n < 0 && n != ni ) ? ni - 1 : ni;
+
+            return _minVal + ni;
         }
 
 
@@ -76,11 +85,13 @@ package nl.imotion.evo.genes
             return xml;
         }
 
-
         // ____________________________________________________________________________________________________
         // PRIVATE
 
-
+        private function updateTotalRange():void
+        {
+            _totalRange = _maxVal + 0.999999999999998 - _minVal;
+        }
 
         // ____________________________________________________________________________________________________
         // PROTECTED
@@ -99,6 +110,7 @@ package nl.imotion.evo.genes
         public function set minVal( value:uint ):void
         {
             _minVal = value;
+            updateTotalRange();
         }
 
 
@@ -111,6 +123,7 @@ package nl.imotion.evo.genes
         public function set maxVal( value:uint ):void
         {
             _maxVal = value;
+            updateTotalRange();
         }
 
         // ____________________________________________________________________________________________________

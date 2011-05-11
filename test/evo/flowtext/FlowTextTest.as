@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT license
  *
- * Copyright (c) 2010 Pieter van de Sluis
+ * Copyright (c) 2009-2011 Pieter van de Sluis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,56 +24,33 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package test.evo.scribbler
+package test.evo.flowtext
 {
     import flash.display.Sprite;
-    import flash.events.Event;
 
 
     /**
      * @author Pieter van de Sluis
-     * Date: 15-okt-2010
-     * Time: 20:10:15
      */
-
-    [SWF(backgroundColor="#000000",width="1024",height="700",frameRate="31")]
-    public class ScribblerAwesomeness extends Sprite
+    public class FlowTextTest extends Sprite
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _nrOfScribblers:uint = 10;
-
-        private var _scribblers:Vector.<AwesomeScribbler> = new Vector.<AwesomeScribbler>();
-
-        private var scribbler:FlowText;
-        private var scribbler2:FlowText;
-        private var scribbler3:FlowText;
+        private var _flowText:FlowText
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function ScribblerAwesomeness()
+        public function FlowTextTest()
         {
-            for ( var i:int = 0; i < _nrOfScribblers; i++ )
-            {
-                var s:AwesomeScribbler = new AwesomeScribbler();
-                s.x = stage.stageWidth / 2;
-                s.y = stage.stageHeight / 2;
-                this.addChild( s )
-                _scribblers.push( s );
-            }
+            _flowText = new FlowText();
+            _flowText.text = "test";
 
-            this.addEventListener( Event.ENTER_FRAME, enterFrameHandler )
-        }
+            _flowText.x = 200;
+            _flowText.y = 200;
 
-
-        private function enterFrameHandler( e:Event ):void
-        {
-            for ( var i:int = 0; i < _nrOfScribblers; i++ )
-            {
-                _scribblers[ i ].update();
-            }
+            addChild( _flowText );
         }
 
 

@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT license
  *
- * Copyright (c) 2010 Pieter van de Sluis
+ * Copyright (c) 2009-2011 Pieter van de Sluis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,54 +26,73 @@
 
 package test.evo.scribbler
 {
+    import flash.display.Bitmap;
+    import flash.display.BitmapData;
     import flash.display.Sprite;
     import flash.events.Event;
 
 
     /**
      * @author Pieter van de Sluis
-     * Date: 15-okt-2010
-     * Time: 20:10:15
      */
 
-    [SWF(backgroundColor="#000000",width="1024",height="700",frameRate="31")]
-    public class ScribblerAwesomeness extends Sprite
+    [SWF(backgroundColor="#ffffff",width="1100",height="900",frameRate="30")]
+
+    public class ScribblerTest extends Sprite
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _nrOfScribblers:uint = 10;
-
-        private var _scribblers:Vector.<AwesomeScribbler> = new Vector.<AwesomeScribbler>();
-
-        private var scribbler:FlowText;
-        private var scribbler2:FlowText;
-        private var scribbler3:FlowText;
+        private var bm:BitmapData;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function ScribblerAwesomeness()
+        public function ScribblerTest()
         {
-            for ( var i:int = 0; i < _nrOfScribblers; i++ )
-            {
-                var s:AwesomeScribbler = new AwesomeScribbler();
-                s.x = stage.stageWidth / 2;
-                s.y = stage.stageHeight / 2;
-                this.addChild( s )
-                _scribblers.push( s );
-            }
+            bm = new BitmapData( stage.stageWidth, stage.stageHeight, false, 0xffffff )
+            this.addChild( new Bitmap( bm ) );
 
-            this.addEventListener( Event.ENTER_FRAME, enterFrameHandler )
+            addEventListener( Event.ENTER_FRAME, enterFrameHandler );
         }
 
 
         private function enterFrameHandler( e:Event ):void
         {
-            for ( var i:int = 0; i < _nrOfScribblers; i++ )
+            var scribblers:Array = [];
+            var numDraw:uint = 100;
+            var i:uint;
+            var scribbler:FlowText;
+
+            for ( i = 0; i < numDraw; i++ )
             {
-                _scribblers[ i ].update();
+                scribbler = new FlowText();
+                scribbler.x = stage.stageWidth/2;
+                scribbler.y = stage.stageHeight/2;
+                scribbler.startAngle = Math.random() * ( Math.PI * 2 );
+                scribbler.life = 2 + Math.random() * 70;
+//                scribbler.straightening = 0;
+                scribbler.straightening = 0 + Math.random() * 1;
+                scribbler.alpha = Math.random();
+                scribbler.seed = Math.random();
+                scribbler.mutateSeed = Math.random();
+                scribbler.update();
+                scribbler.z = Math.random() * 300;
+                scribbler.rotationX = Math.random() * 90 - 180;
+                scribbler.rotationY = Math.random() * 90 - 180;
+
+                this.addChild( scribbler );
+                scribblers[ scribblers.length ] = scribbler;
             }
+
+            bm.draw( stage, null, null, null, null, true );
+
+            for (  i = 0; i < numDraw; i++ )
+            {
+                removeChild( scribblers[ i ] );
+            }
+
+            scribblers.length = 0;
         }
 
 

@@ -232,7 +232,7 @@ package nl.imotion.neuralnetwork
         {
             var xml:XML =
                 <root>
-                    <net error={_error} learningRate={_learningRate} momentumRate={_momentumRate} trainingPriority={trainingPriority} jitterEpoch={jitterEpoch} />
+                    <net error={_error} learningRate={_learningRate} momentumRate={_momentumRate} trainingPriority={_trainingPriority} jitterEpoch={_jitterEpoch} />
                 </root>;
 
             for ( var i:int = 0; i < _layers.length; i++ )
@@ -264,7 +264,7 @@ package nl.imotion.neuralnetwork
 
         public function get layers():/*Layer*/Array { return _layers; }
 
-        public function get nrOfNeuronsPerHiddenLayer():uint
+        public function get numNeuronsPerHiddenLayer():uint
         {
             if ( _layers.length > 2 )
             {
@@ -273,7 +273,7 @@ package nl.imotion.neuralnetwork
             return 0;
         }
 
-        public function get nrOfHiddenLayers():uint
+        public function get numHiddenLayers():uint
         {
             if ( _layers.length > 2 )
             {
@@ -282,7 +282,7 @@ package nl.imotion.neuralnetwork
             return 0;
         }
 
-        public function get nrOfOutputNeurons():uint
+        public function get numOutputNeurons():uint
         {
             if ( _layers.length > 0 )
             {
@@ -291,7 +291,7 @@ package nl.imotion.neuralnetwork
             return 0;
         }
 
-        public function get nrOfInputNeurons():uint
+        public function get numInputNeurons():uint
         {
             if ( _layers.length > 0 )
             {
@@ -300,7 +300,7 @@ package nl.imotion.neuralnetwork
             return 0;
         }
 
-        public function get nrOfLayers():uint { return _layers.length; }
+        public function get numLayers():uint { return _layers.length; }
 
         public function get error():Number { return _error; }
 

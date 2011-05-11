@@ -39,8 +39,8 @@ package nl.imotion.neuralnetwork.components
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _startNeuron:Neuron;
-        private var _endNeuron:Neuron;
+        private var _startNeuron            :Neuron;
+        private var _endNeuron              :Neuron;
 
         private var _weight					:Number;
 

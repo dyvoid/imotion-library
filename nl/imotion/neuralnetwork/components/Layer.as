@@ -38,15 +38,15 @@ package nl.imotion.neuralnetwork.components
 
         private var _neurons			:/*Neuron*/Array = [];
 
-        private var _nrOfNeurons		:uint;
+        private var _numNeurons		:uint;
         private var _inputLayer			:Layer;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function Layer( nrOfNeurons:uint, inputLayer:Layer = null )
+        public function Layer( numNeurons:uint, inputLayer:Layer = null )
         {
-            init ( nrOfNeurons, inputLayer );
+            init ( numNeurons, inputLayer );
         }
 
         // ____________________________________________________________________________________________________
@@ -95,7 +95,7 @@ package nl.imotion.neuralnetwork.components
 
         public function get neurons():/*Neuron*/Array { return _neurons; }
 
-        public function get nrOfNeurons():uint { return _nrOfNeurons; }
+        public function get numNeurons():uint { return _numNeurons; }
 
         public function get inputLayer():Layer { return _inputLayer; }
 
@@ -107,12 +107,12 @@ package nl.imotion.neuralnetwork.components
         // ____________________________________________________________________________________________________
         // PRIVATE
 
-        private function init( nrOfNeurons:uint, inputLayer:Layer = null ):void
+        private function init( numNeurons:uint, inputLayer:Layer = null ):void
         {
-            _nrOfNeurons = nrOfNeurons;
-            _inputLayer	 = inputLayer;
+            _numNeurons = numNeurons;
+            _inputLayer	= inputLayer;
 
-            for ( var i:uint = 0; i < _nrOfNeurons; i++ )
+            for ( var i:uint = 0; i < _numNeurons; i++ )
             {
                 var neuron:Neuron = new Neuron();
 
