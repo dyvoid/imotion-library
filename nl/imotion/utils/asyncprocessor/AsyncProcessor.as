@@ -29,7 +29,6 @@ package nl.imotion.utils.asyncprocessor
     import flash.events.EventDispatcher;
     import flash.events.TimerEvent;
     import flash.utils.Timer;
-
     import flash.utils.getTimer;
 
     import nl.imotion.utils.fpsmeter.FPSMeter;

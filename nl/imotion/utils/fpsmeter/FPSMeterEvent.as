@@ -26,10 +26,7 @@
 
 package nl.imotion.utils.fpsmeter
 {
-    import nl.imotion.neuralnetwork.events.*;
     import flash.events.Event;
-
-    import nl.imotion.neuralnetwork.training.TrainingResult;
 
 
     /**
