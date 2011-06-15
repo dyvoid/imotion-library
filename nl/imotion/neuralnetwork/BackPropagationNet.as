@@ -67,9 +67,9 @@ package nl.imotion.neuralnetwork
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function BackPropagationNet( learningRate:Number = 0.25, momentumRate:Number = 0.5, jitterEpoch:uint = 1000 )
+        public function BackPropagationNet( learningRate:Number = 0.25, momentumRate:Number = 0.5, jitterEpoch:uint = 1000, fps:uint = 0 )
         {
-            init( learningRate, momentumRate, jitterEpoch );
+            init( learningRate, momentumRate, jitterEpoch, fps );
         }
 
         // ____________________________________________________________________________________________________
@@ -476,11 +476,12 @@ package nl.imotion.neuralnetwork
         // ____________________________________________________________________________________________________
         // PRIVATE
 
-        private function init( learningRate:Number, momentumRate:Number, jitterEpoch:uint ):void
+        private function init( learningRate:Number, momentumRate:Number, jitterEpoch:uint, fps:uint ):void
         {
             this.learningRate		= learningRate;
             this.momentumRate	    = momentumRate;
             this.jitterEpoch        = jitterEpoch;
+            this.fps                = fps;
 
             _trainingState			= TrainingState.STOPPED;
         }
