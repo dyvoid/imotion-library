@@ -62,7 +62,7 @@ package test.evo.scribbler
         private var _previous:IEvolver;
         private var _next:IEvolver;
 
-        private var scribbler:FlowText;
+        private var scribbler:Scribbler;
 
         private var _lastDraw:Bitmap;
         private var _bestDraw:Bitmap;
@@ -99,10 +99,10 @@ package test.evo.scribbler
             genome.addGene( new NumberGene( "seed", 0, 1, 0, LimitMethod.WRAP ) );
             genome.addGene( new NumberGene( "mutateSeed", 0, 1, 0.01, LimitMethod.WRAP ) );
             genome.addGene( new UintGene( "stepLength", 1, 75, 0.05 ) );
-            genome.addGene( new UintGene( "life", 10, 50, 0.01 ) );
-            genome.addGene( new NumberGene( "strokeWidth", 1, 2, 0.01  ) );
+            genome.addGene( new UintGene( "life", 10, 20, 0.01 ) );
+            genome.addGene( new NumberGene( "strokeWidth", 1, 1, 0  ) );
 //            genome.addGene( new NumberGene( "straightening", 0.9, 0.95, 0.001 ) );
-            genome.addGene( new NumberGene( "straightening", 0.85, 0.95, 0.01 ) );
+            genome.addGene( new NumberGene( "straightening", 0.95, 1, 0.01 ) );
 
 //            genome.addGene( new NumberGene( "alpha", 0.5, 1, 0.1 ) );
 //            genome.addGene( new NumberGene( "brightness", 0, 1, 0.1, LimitMethod.CUT_OFF ) );
@@ -115,7 +115,7 @@ package test.evo.scribbler
 
             _container = new Sprite();
 
-            scribbler = new FlowText();
+            scribbler = new Scribbler();
             _container.addChild( scribbler );
 
             _momentumCalc = new MomentumCalculator( 20 );
@@ -251,7 +251,7 @@ package test.evo.scribbler
 
         public function get momentum():Number
         {
-            return _momentumCalc.isReady ? _momentumCalc.momentum : 0;
+            return _momentumCalc.isReady ? _momentumCalc.momentum : 1;
         }
 
 

@@ -175,9 +175,9 @@ package test.evo.evoanimator
                 {
                     var geneVal:Number = genomeArr[j];
 
-                    genomeTimeLine.insert( new TweenMax( genes[j], 2.5, { baseValue: geneVal, ease: Quint.easeInOut } ) );
+                    genomeTimeLine.insert( new TweenMax( genes[j], 1, { baseValue: geneVal, ease: Quint.easeInOut } ) );
                 }
-                timeLine.insert( genomeTimeLine, i * 0.002 );
+                timeLine.insert( genomeTimeLine );
             }
 
             timeLine.append( new TweenMax( this, 0, {} ) );

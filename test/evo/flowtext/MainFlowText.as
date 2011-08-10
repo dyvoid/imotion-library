@@ -75,19 +75,19 @@ package test.evo.flowtext
         private var numGenerations:uint = 0;
 
         private var numPopulations:uint = 1;
-        private var maxNumPopulations:uint = 1;
+        private var maxNumPopulations:uint = 2;
 
         private var numEvos:uint = 0;
         private var minSize:uint = 0;
         private var maxSize:uint = 0;
 
-        private var startMinSize:Number = 1;
-        private var startMaxSize:Number = 5;
-        private var endMinSize:Number = 0.5;
-        private var endMaxSize:Number = 2;
+        private var startMinSize:Number = 4;
+        private var startMaxSize:Number = 8;
+        private var endMinSize:Number = 1;
+        private var endMaxSize:Number = 4;
 
-        private var startEvos:uint = 500;
-        private var endEvos:uint   = 500;
+        private var startEvos:uint = 50;
+        private var endEvos:uint   = 1000;
 
         private var evoList:/*IEvolver*/Array = [];
 
@@ -97,10 +97,11 @@ package test.evo.flowtext
         private var _btDisplay:Sprite;
 
 //        [Embed(source="../../../../lib/evo_logo.png")]
-        [Embed(source="../../../../lib/black_horse.png")]
+//        [Embed(source="../../../../lib/black_horse.png")]
 //        [Embed(source="../../../../lib/rose_silhouette.png")]
 //        [Embed(source="../../../../lib/pieter_silhouette_4.jpg")]
 //        [Embed(source="../../../../lib/banksy girl with heart balloon grafitti.png")]
+        [Embed(source="../../../../lib/BirdChild.jpg")]
         private var SourceImage:Class;
 
 //        [Embed(source="C:/Windows/Fonts/arial.ttf", fontName="ArialFont", mimeType="application/x-font-truetype")]

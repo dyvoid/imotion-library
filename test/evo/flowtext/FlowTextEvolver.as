@@ -145,7 +145,6 @@ package test.evo.flowtext
 
         public function draw():Bitmap
         {
-            genome.mutate( mutationEffect );
             genome.apply( _flowText );
             _flowText.update();
 

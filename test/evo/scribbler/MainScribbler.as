@@ -77,13 +77,13 @@ package test.evo.scribbler
         private var minSize:uint = 0;
         private var maxSize:uint = 0;
 
-        private var startMinSize:Number = 3;
-        private var startMaxSize:Number = 4;
+        private var startMinSize:Number = 1;
+        private var startMaxSize:Number = 3.5;
         private var endMinSize:Number = 1;
-        private var endMaxSize:Number = 3;
+        private var endMaxSize:Number = 2;
 
-        private var startEvos:uint = 500;
-        private var endEvos:uint = 400;
+        private var startEvos:uint = 3000;
+        private var endEvos:uint = 3000;
 
         private var evoList:/*IEvolver*/Array = [];
 
@@ -92,7 +92,7 @@ package test.evo.scribbler
         private var _displayEnabled:Boolean = true;
         private var _btDisplay:Sprite;
 
-        [Embed(source="../../../../lib/black_horse.png")]
+        [Embed(source="../../../../lib/BirdChild.jpg")]
         private var SourceImage:Class;
 
 
@@ -228,6 +228,7 @@ package test.evo.scribbler
             {
                 if ( ScribblerEvolver( evo ).momentum != 0 || !ScribblerEvolver( evo ).momentumIsReady )
                 {
+                    evo.mutate();
                     bm = evo.draw();
                     bmWidth = bm.width;
                     bmHeight = bm.height;
