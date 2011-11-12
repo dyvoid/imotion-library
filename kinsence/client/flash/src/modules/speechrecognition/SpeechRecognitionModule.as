@@ -1,18 +1,18 @@
-package modules.speechrecognition
+package nl.usmedia.kinsence.modules.speechrecognition
 {
-    import modules.AbstractKinectModule;
+    import nl.usmedia.kinsence.modules.AbstractKinectModule;
 
 
     /**
      * @author Pieter van de Sluis
      */
 
-    [Event(name="SpeechRecognitionEvent::ACTIVATED", type="modules.speechrecognition.SpeechRecognitionEvent")]
-    [Event(name="SpeechRecognitionEvent::DEACTIVATED", type="modules.speechrecognition.SpeechRecognitionEvent")]
-    [Event(name="SpeechRecognitionEvent::SPEECH_DETECTED", type="modules.speechrecognition.SpeechRecognitionEvent")]
-    [Event(name="SpeechRecognitionEvent::SPEECH_HYPOTHIZED", type="modules.speechrecognition.SpeechRecognitionEvent")]
-    [Event(name="SpeechRecognitionEvent::SPEECH_RECOGNIZED", type="modules.speechrecognition.SpeechRecognitionEvent")]
-    [Event(name="SpeechRecognitionEvent::SPEECH_RECOGNITION_REJECTED", type="modules.speechrecognition.SpeechRecognitionEvent")]
+    [Event(name="SpeechRecognitionEvent::ACTIVATED", type="nl.usmedia.kinsence.modules.speechrecognition.SpeechRecognitionEvent")]
+    [Event(name="SpeechRecognitionEvent::DEACTIVATED", type="nl.usmedia.kinsence.modules.speechrecognition.SpeechRecognitionEvent")]
+    [Event(name="SpeechRecognitionEvent::SPEECH_DETECTED", type="nl.usmedia.kinsence.modules.speechrecognition.SpeechRecognitionEvent")]
+    [Event(name="SpeechRecognitionEvent::SPEECH_HYPOTHIZED", type="nl.usmedia.kinsence.modules.speechrecognition.SpeechRecognitionEvent")]
+    [Event(name="SpeechRecognitionEvent::SPEECH_RECOGNIZED", type="nl.usmedia.kinsence.modules.speechrecognition.SpeechRecognitionEvent")]
+    [Event(name="SpeechRecognitionEvent::SPEECH_RECOGNITION_REJECTED", type="nl.usmedia.kinsence.modules.speechrecognition.SpeechRecognitionEvent")]
 
     public class SpeechRecognitionModule extends AbstractKinectModule
     {

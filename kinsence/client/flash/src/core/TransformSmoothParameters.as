@@ -1,4 +1,4 @@
-package core
+package nl.usmedia.kinsence.core
 {
     /**
      * @author Pieter van de Sluis

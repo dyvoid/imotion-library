@@ -1,16 +1,16 @@
-package modules.skeletontracking
+package nl.usmedia.kinsence.modules.skeletontracking
 {
-    import modules.*;
-    import modules.skeletontracking.SkeletonTrackingEvent;
+    import nl.usmedia.kinsence.modules.*;
+    import nl.usmedia.kinsence.modules.skeletontracking.SkeletonTrackingEvent;
 
-    import modules.skeletontracking.skeleton.SkeletonFrame;
+    import nl.usmedia.kinsence.modules.skeletontracking.skeleton.SkeletonFrame;
 
 
     /**
      * @author Pieter van de Sluis
      */
 
-    [Event(name="SkeletonTrackingEvent::SKELETON_TRACKING_UPDATE", type="modules.skeletontracking.SkeletonTrackingEvent")]
+    [Event(name="SkeletonTrackingEvent::SKELETON_TRACKING_UPDATE", type="nl.usmedia.kinsence.modules.skeletontracking.SkeletonTrackingEvent")]
 
     public class SkeletonTrackingModule extends AbstractKinectModule
     {

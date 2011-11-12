@@ -1,4 +1,4 @@
-package interfaces
+package nl.usmedia.kinsence.interfaces
 {
     /**
      * @author Pieter van de Sluis

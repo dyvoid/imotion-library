@@ -24,9 +24,9 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package modules.skeletontracking
+package nl.usmedia.kinsence.modules.skeletontracking
 {
-    import modules.skeletontracking.skeleton.SkeletonFrame;
+    import nl.usmedia.kinsence.modules.skeletontracking.skeleton.SkeletonFrame;
 
     import nl.imotion.events.*;
     import flash.events.Event;

@@ -1,4 +1,4 @@
-package modules.speechrecognition
+package nl.usmedia.kinsence.modules.speechrecognition
 {
     /**
      * @author Pieter van de Sluis

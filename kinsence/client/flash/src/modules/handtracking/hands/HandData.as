@@ -1,4 +1,4 @@
-package modules.handtracking.hands
+package nl.usmedia.kinsence.modules.handtracking.hands
 {
     /**
      * @author Pieter van de Sluis

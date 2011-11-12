@@ -1,5 +1,5 @@
 package
-core{
+nl.usmedia.kinsence.core{
     import flash.events.ErrorEvent;
 
     import flash.events.Event;
@@ -10,11 +10,11 @@ core{
     import flash.net.Socket;
     import flash.utils.Dictionary;
 
-    import interfaces.IKinectCore;
+    import nl.usmedia.kinsence.interfaces.IKinectCore;
 
-    import interfaces.IKinectModule;
+    import nl.usmedia.kinsence.interfaces.IKinectModule;
 
-    import modules.events.KinectModuleEvent;
+    import nl.usmedia.kinsence.modules.events.KinectModuleEvent;
 
 
     /**

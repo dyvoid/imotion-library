@@ -1,4 +1,4 @@
-package interfaces
+package nl.usmedia.kinsence.interfaces
 {
     import flash.events.IEventDispatcher;
 

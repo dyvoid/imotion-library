@@ -24,14 +24,14 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package modules.handtracking
+package nl.usmedia.kinsence.modules.handtracking
 {
-    import modules.skeletontracking.skeleton.SkeletonFrame;
+    import nl.usmedia.kinsence.modules.skeletontracking.skeleton.SkeletonFrame;
 
     import nl.imotion.events.*;
     import flash.events.Event;
 
-    import modules.skeletontracking.skeleton.KinectVector;
+    import nl.usmedia.kinsence.modules.skeletontracking.skeleton.KinectVector;
 
 
     /**

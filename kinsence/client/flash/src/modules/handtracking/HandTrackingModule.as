@@ -1,17 +1,17 @@
-package modules.handtracking
+package nl.usmedia.kinsence.modules.handtracking
 {
-    import modules.handtracking.HandTrackingEvent;
+    import nl.usmedia.kinsence.modules.handtracking.HandTrackingEvent;
 
-    import modules.AbstractKinectModule;
-    import modules.handtracking.hands.Hands;
-    import modules.skeletontracking.skeleton.KinectVector;
+    import nl.usmedia.kinsence.modules.AbstractKinectModule;
+    import nl.usmedia.kinsence.modules.handtracking.hands.Hands;
+    import nl.usmedia.kinsence.modules.skeletontracking.skeleton.KinectVector;
 
 
     /**
      * @author Pieter van de Sluis
      */
 
-    [Event(name="HandControlEvent::HAND_TRACKING_UPDATE", type="modules.handtracking.HandTrackingEvent")]
+    [Event(name="HandControlEvent::HAND_TRACKING_UPDATE", type="nl.usmedia.kinsence.modules.handtracking.HandTrackingEvent")]
 
     public class HandTrackingModule extends AbstractKinectModule
     {

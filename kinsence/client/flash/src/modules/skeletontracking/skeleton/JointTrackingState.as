@@ -1,4 +1,4 @@
-package modules.skeletontracking.skeleton
+package nl.usmedia.kinsence.modules.skeletontracking.skeleton
 {
     /**
      * @author Pieter van de Sluis

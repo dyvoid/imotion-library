@@ -1,4 +1,4 @@
-package modules.events
+package nl.usmedia.kinsence.modules.events
 {
 
     import flash.events.Event;

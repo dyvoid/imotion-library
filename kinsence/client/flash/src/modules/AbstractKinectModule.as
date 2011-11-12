@@ -1,18 +1,18 @@
-package modules
+package nl.usmedia.kinsence.modules
 {
     import flash.events.EventDispatcher;
 
-    import interfaces.IKinectCore;
+    import nl.usmedia.kinsence.interfaces.IKinectCore;
 
-    import interfaces.IKinectModule;
+    import nl.usmedia.kinsence.interfaces.IKinectModule;
 
 
     /**
      * @author Pieter van de Sluis
      */
 
-    [Event(name="KinectModuleEvent::REGISTERED", type="modules.events.KinectModuleEvent")]
-    [Event(name="KinectModuleEvent::REMOVED", type="modules.events.KinectModuleEvent")]
+    [Event(name="KinectModuleEvent::REGISTERED", type="nl.usmedia.kinsence.modules.events.KinectModuleEvent")]
+    [Event(name="KinectModuleEvent::REMOVED", type="nl.usmedia.kinsence.modules.events.KinectModuleEvent")]
 
     public class AbstractKinectModule extends EventDispatcher implements IKinectModule
     {
