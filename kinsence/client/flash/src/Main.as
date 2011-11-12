@@ -30,8 +30,8 @@ package
     import com.greensock.TweenMax;
     import com.greensock.easing.Quint;
 
-    import core.KinectClient;
-    import core.TransformSmoothParameters;
+    import nl.usmedia.kinsence.KinectClient;
+    import nl.usmedia.kinsence.transformsmooth.TransformSmoothParameters;
 
     import flash.display.Bitmap;
     import flash.display.BitmapData;
@@ -44,21 +44,21 @@ package
     import flash.geom.Vector3D;
     import flash.net.URLRequest;
 
-    import modules.events.KinectModuleEvent;
-    import modules.handtracking.HandTrackingEvent;
-    import modules.handtracking.HandTrackingModule;
-    import modules.handtracking.hands.HandData;
-    import modules.handtracking.hands.Hands;
-    import modules.skeletontracking.SkeletonTrackingEvent;
-    import modules.skeletontracking.SkeletonTrackingModule;
-    import modules.skeletontracking.skeleton.Joint;
-    import modules.skeletontracking.skeleton.JointID;
-    import modules.skeletontracking.skeleton.JointTrackingState;
-    import modules.skeletontracking.skeleton.KinectVector;
-    import modules.skeletontracking.skeleton.SkeletonData;
-    import modules.skeletontracking.skeleton.SkeletonTrackingState;
-    import modules.speechrecognition.SpeechRecognitionEvent;
-    import modules.speechrecognition.SpeechRecognitionModule;
+    import nl.usmedia.kinsence.modules.events.KinectModuleEvent;
+    import nl.usmedia.kinsence.modules.handtracking.HandTrackingEvent;
+    import nl.usmedia.kinsence.modules.handtracking.HandTrackingModule;
+    import nl.usmedia.kinsence.modules.handtracking.hands.HandData;
+    import nl.usmedia.kinsence.modules.handtracking.hands.Hands;
+    import nl.usmedia.kinsence.modules.skeletontracking.SkeletonTrackingEvent;
+    import nl.usmedia.kinsence.modules.skeletontracking.SkeletonTrackingModule;
+    import nl.usmedia.kinsence.modules.skeletontracking.skeleton.Joint;
+    import nl.usmedia.kinsence.modules.skeletontracking.skeleton.JointID;
+    import nl.usmedia.kinsence.modules.skeletontracking.skeleton.JointTrackingState;
+    import nl.usmedia.kinsence.modules.skeletontracking.skeleton.KinectVector;
+    import nl.usmedia.kinsence.modules.skeletontracking.skeleton.SkeletonData;
+    import nl.usmedia.kinsence.modules.skeletontracking.skeleton.SkeletonTrackingState;
+    import nl.usmedia.kinsence.modules.speechrecognition.SpeechRecognitionEvent;
+    import nl.usmedia.kinsence.modules.speechrecognition.SpeechRecognitionModule;
 
     import nl.imotion.utils.range.Range;
 
