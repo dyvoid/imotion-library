@@ -83,7 +83,7 @@ example.db9{
 
         private var _autoRotate:Boolean = false;
 
-        private var _kinect:KinSence;
+        private var _kinSence:KinSence;
 
         private var _skeletonTracking:SkeletonTrackingModule;
         private var _speechRecognition:SpeechRecognitionModule;
@@ -195,32 +195,32 @@ example.db9{
 
         private function initKinectClient():void
         {
-            _kinect = new KinSence();
-            _kinect.addEventListener( Event.CONNECT, connectHandler );
+            _kinSence = new KinSence();
+            _kinSence.addEventListener( Event.CONNECT, connectHandler );
 
             _skeletonTracking = new SkeletonTrackingModule();
             _skeletonTracking.addEventListener( SkeletonTrackingEvent.SKELETON_TRACKING_UPDATE, skeletonTrackingUpdateHandler );
-            _kinect.registerModule( _skeletonTracking );
+            _kinSence.registerModule( _skeletonTracking );
 
             _speechRecognition = new SpeechRecognitionModule();
             _speechRecognition.addEventListener( SpeechRecognitionEvent.SPEECH_RECOGNIZED, speechRecognizedHandler );
             _speechRecognition.addEventListener( KinSenceModuleEvent.REGISTERED, speechRecognitionModuleRegisteredEvent );
-            _kinect.registerModule( _speechRecognition );
+            _kinSence.registerModule( _speechRecognition );
 
             _handTracking = new HandTrackingModule();
             _handTracking.addEventListener( HandTrackingEvent.HAND_TRACKING_UPDATE, handTrackingUpdateHandler );
-            _kinect.registerModule( _handTracking );
+            _kinSence.registerModule( _handTracking );
 
             if ( !kinectlessMode )
-                _kinect.connect( "127.0.0.1", 3000 );
+                _kinSence.connect( "127.0.0.1", 3000 );
         }
 
 
         private function connectHandler( event:Event ):void
         {
-            _kinect.setElevationAngle( 10 );
-            _kinect.setTransformSmooth( true );
-            _kinect.setTransformSmoothParameters( new TransformSmoothParameters( 0.3, 1, 0.5, 0.4, 0.5 ) );
+            _kinSence.setElevationAngle( 10 );
+            _kinSence.setTransformSmooth( true );
+            _kinSence.setTransformSmoothParameters( new TransformSmoothParameters( 0.3, 1, 0.5, 0.4, 0.5 ) );
 
 //            _tts.say( "connected to server" );
         }
@@ -455,7 +455,7 @@ example.db9{
 //            _view.camera.y += 1;
             _view.camera.lookAt( new Vector3D(0,0,0) );
 
-//            _kinect.fakeIt( TestData.next() );
+//            _kinSence.fakeIt( TestData.next() );
 
             _view.render();
         }
