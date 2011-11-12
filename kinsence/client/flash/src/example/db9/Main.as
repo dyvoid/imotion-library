@@ -1,5 +1,5 @@
 package
-{
+example.db9{
     import away3d.containers.ObjectContainer3D;
     import away3d.containers.View3D;
     import away3d.entities.Mesh;
@@ -119,10 +119,10 @@ package
 
         private var _localDir:String;
 
-        [Embed("../assets/car/Skybox_Side.png")]
+        [Embed("../../../assets/car/Skybox_Side.png")]
         private var SkyboxSide:Class;
 
-        [Embed("../assets/car/Skybox_TopBottom.png")]
+        [Embed("../../../assets/car/Skybox_TopBottom.png")]
         private var SkyboxTopBottom:Class;
 
         // ____________________________________________________________________________________________________
