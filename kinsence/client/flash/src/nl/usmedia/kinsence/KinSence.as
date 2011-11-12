@@ -11,11 +11,11 @@ nl.usmedia.kinsence{
     import flash.net.Socket;
     import flash.utils.Dictionary;
 
-    import nl.usmedia.kinsence.interfaces.IKinectCore;
+    import nl.usmedia.kinsence.interfaces.IKinSenceCore;
 
-    import nl.usmedia.kinsence.interfaces.IKinectModule;
+    import nl.usmedia.kinsence.interfaces.IKinSenceModule;
 
-    import nl.usmedia.kinsence.modules.events.KinectModuleEvent;
+    import nl.usmedia.kinsence.modules.events.KinSenceModuleEvent;
     import nl.usmedia.kinsence.transformsmooth.TransformSmoothParameters;
 
 
@@ -28,7 +28,7 @@ nl.usmedia.kinsence{
     [Event(name="ioError", type="flash.events.IOErrorEvent")]
     [Event(name="securityError", type="flash.events.SecurityErrorEvent")]
     
-    public class KinectClient extends EventDispatcher implements IKinectCore
+    public class KinSence extends EventDispatcher implements IKinSenceCore
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
@@ -45,7 +45,7 @@ nl.usmedia.kinsence{
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function KinectClient()
+        public function KinSence()
         {
             _modules = new Dictionary();
         }
@@ -64,7 +64,7 @@ nl.usmedia.kinsence{
         }
 
 
-        public function registerModule( module:IKinectModule ):IKinectModule
+        public function registerModule( module:IKinSenceModule ):IKinSenceModule
         {
             _modules[ module.name ] = module;
 
@@ -76,9 +76,9 @@ nl.usmedia.kinsence{
         }
 
 
-        public function removeModule( name:String ):IKinectModule
+        public function removeModule( name:String ):IKinSenceModule
         {
-            var module:IKinectModule = _modules[ name ];
+            var module:IKinSenceModule = _modules[ name ];
 
             if ( module )
             {
@@ -91,7 +91,7 @@ nl.usmedia.kinsence{
         }
 
 
-        public function retrieveModule( name:String ):IKinectModule
+        public function retrieveModule( name:String ):IKinSenceModule
         {
             return _modules[ name ];
         }
@@ -160,7 +160,7 @@ nl.usmedia.kinsence{
             }
             else
             {
-                var module:IKinectModule = retrieveModule( target );
+                var module:IKinSenceModule = retrieveModule( target );
 
                 if ( module )
                 {
@@ -174,12 +174,12 @@ nl.usmedia.kinsence{
                     {
                         case "Registered":
                             module.onRegister();
-                            module.dispatchEvent( new KinectModuleEvent( KinectModuleEvent.REGISTERED ) );
+                            module.dispatchEvent( new KinSenceModuleEvent( KinSenceModuleEvent.REGISTERED ) );
                         break;
 
                         case "Removed":
                             module.onRemove();
-                            module.dispatchEvent( new KinectModuleEvent( KinectModuleEvent.REMOVED ) );
+                            module.dispatchEvent( new KinSenceModuleEvent( KinSenceModuleEvent.REMOVED ) );
                         break;
                     }
 
@@ -208,7 +208,7 @@ nl.usmedia.kinsence{
             trace("Socket Connected");
             dispatchEvent( event.clone() );
 
-            for each ( var module:IKinectModule in _modules )
+            for each ( var module:IKinSenceModule in _modules )
             {
                 sendMessage( NAME, "RegisterModule", module.name );
             }

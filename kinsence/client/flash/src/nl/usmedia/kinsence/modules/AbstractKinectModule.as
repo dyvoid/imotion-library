@@ -2,25 +2,25 @@ package nl.usmedia.kinsence.modules
 {
     import flash.events.EventDispatcher;
 
-    import nl.usmedia.kinsence.interfaces.IKinectCore;
+    import nl.usmedia.kinsence.interfaces.IKinSenceCore;
 
-    import nl.usmedia.kinsence.interfaces.IKinectModule;
+    import nl.usmedia.kinsence.interfaces.IKinSenceModule;
 
 
     /**
      * @author Pieter van de Sluis
      */
 
-    [Event(name="KinectModuleEvent::REGISTERED", type="nl.usmedia.kinsence.modules.events.KinectModuleEvent")]
-    [Event(name="KinectModuleEvent::REMOVED", type="nl.usmedia.kinsence.modules.events.KinectModuleEvent")]
+    [Event(name="KinectModuleEvent::REGISTERED", type="nl.usmedia.kinsence.modules.events.KinSenceModuleEvent")]
+    [Event(name="KinectModuleEvent::REMOVED", type="nl.usmedia.kinsence.modules.events.KinSenceModuleEvent")]
 
-    public class AbstractKinectModule extends EventDispatcher implements IKinectModule
+    public class AbstractKinectModule extends EventDispatcher implements IKinSenceModule
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
         private var _name       :String;
-        private var _core       :IKinectCore;
+        private var _core       :IKinSenceCore;
         
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
@@ -55,12 +55,12 @@ package nl.usmedia.kinsence.modules
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
-        public function get core():IKinectCore
+        public function get core():IKinSenceCore
         {
             return _core;
         }
 
-        public function set core( value:IKinectCore ):void
+        public function set core( value:IKinSenceCore ):void
         {
             _core = value;
         }

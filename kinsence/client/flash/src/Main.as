@@ -30,7 +30,7 @@ package
     import com.greensock.TweenMax;
     import com.greensock.easing.Quint;
 
-    import nl.usmedia.kinsence.KinectClient;
+    import nl.usmedia.kinsence.KinSence;
     import nl.usmedia.kinsence.transformsmooth.TransformSmoothParameters;
 
     import flash.display.Bitmap;
@@ -44,7 +44,7 @@ package
     import flash.geom.Vector3D;
     import flash.net.URLRequest;
 
-    import nl.usmedia.kinsence.modules.events.KinectModuleEvent;
+    import nl.usmedia.kinsence.modules.events.KinSenceModuleEvent;
     import nl.usmedia.kinsence.modules.handtracking.HandTrackingEvent;
     import nl.usmedia.kinsence.modules.handtracking.HandTrackingModule;
     import nl.usmedia.kinsence.modules.handtracking.hands.HandData;
@@ -83,7 +83,7 @@ package
 
         private var _autoRotate:Boolean = false;
 
-        private var _kinect:KinectClient;
+        private var _kinect:KinSence;
 
         private var _skeletonTracking:SkeletonTrackingModule;
         private var _speechRecognition:SpeechRecognitionModule;
@@ -195,7 +195,7 @@ package
 
         private function initKinectClient():void
         {
-            _kinect = new KinectClient();
+            _kinect = new KinSence();
             _kinect.addEventListener( Event.CONNECT, connectHandler );
 
             _skeletonTracking = new SkeletonTrackingModule();
@@ -204,7 +204,7 @@ package
 
             _speechRecognition = new SpeechRecognitionModule();
             _speechRecognition.addEventListener( SpeechRecognitionEvent.SPEECH_RECOGNIZED, speechRecognizedHandler );
-            _speechRecognition.addEventListener( KinectModuleEvent.REGISTERED, speechRecognitionModuleRegisteredEvent );
+            _speechRecognition.addEventListener( KinSenceModuleEvent.REGISTERED, speechRecognitionModuleRegisteredEvent );
             _kinect.registerModule( _speechRecognition );
 
             _handTracking = new HandTrackingModule();
@@ -472,7 +472,7 @@ package
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS
 
-        private function speechRecognitionModuleRegisteredEvent( e:KinectModuleEvent ):void
+        private function speechRecognitionModuleRegisteredEvent( e:KinSenceModuleEvent ):void
         {
             var phrases:Array = [
                 "color black",

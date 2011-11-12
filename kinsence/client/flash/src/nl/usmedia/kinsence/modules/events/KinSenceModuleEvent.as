@@ -11,12 +11,12 @@ package nl.usmedia.kinsence.modules.events
      * @author     pieter.van.de.sluis
      * @since      10/28/11
      */
-    public class KinectModuleEvent extends Event
+    public class KinSenceModuleEvent extends Event
     {
 
         // EVENT TYPES
-        public static const REGISTERED:String = "KinectModuleEvent::REGISTERED";
-        public static const REMOVED:String = "KinectModuleEvent::REMOVED";
+        public static const REGISTERED:String = "KinSenceModuleEvent::REGISTERED";
+        public static const REMOVED:String = "KinSenceModuleEvent::REMOVED";
 
         // EVENT DATA
 
@@ -24,7 +24,7 @@ package nl.usmedia.kinsence.modules.events
         //_________________________________________________________________________________________________________
         //                                                                                    C O N S T R U C T O R
 
-        public function KinectModuleEvent( type:String, bubbles:Boolean = false, cancelable:Boolean = false )
+        public function KinSenceModuleEvent( type:String, bubbles:Boolean = false, cancelable:Boolean = false )
         {
             super( type, bubbles, cancelable );
         }
@@ -35,7 +35,7 @@ package nl.usmedia.kinsence.modules.events
 
         public override function clone():Event
         {
-            return new KinectModuleEvent( type, bubbles, cancelable );
+            return new KinSenceModuleEvent( type, bubbles, cancelable );
         }
 
 
