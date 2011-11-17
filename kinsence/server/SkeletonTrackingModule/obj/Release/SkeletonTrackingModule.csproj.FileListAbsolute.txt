@@ -1,0 +1,5 @@
+F:\Projects\ActionScript Library\sources\src\kinsence\server\SkeletonTrackingModule\obj\Release\ResolveAssemblyReference.cache
+F:\Projects\ActionScript Library\sources\src\kinsence\server\SkeletonTrackingModule\bin\Release\UsMedia.KinectServer.Modules.SkeletonTracking.dll
+F:\Projects\ActionScript Library\sources\src\kinsence\server\SkeletonTrackingModule\bin\Release\UsMedia.KinectServer.Modules.SkeletonTracking.pdb
+F:\Projects\ActionScript Library\sources\src\kinsence\server\SkeletonTrackingModule\obj\Release\UsMedia.KinectServer.Modules.SkeletonTracking.dll
+F:\Projects\ActionScript Library\sources\src\kinsence\server\SkeletonTrackingModule\obj\Release\UsMedia.KinectServer.Modules.SkeletonTracking.pdb

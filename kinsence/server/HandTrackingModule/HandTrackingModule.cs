@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Research.Kinect.Nui;
-using UsMedia.KinectServer.Server;
 using UsMedia.KinectServer.Util;
 
 namespace UsMedia.KinectServer.Modules.HandTracking
 {
-    class HandTrackingModule : AbstractModule
+    public class HandTrackingModule : AbstractModule
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES

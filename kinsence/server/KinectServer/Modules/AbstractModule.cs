@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace UsMedia.KinectServer.Modules
 {
-    class AbstractModule : IKinectModule
+    public class AbstractModule : IKinectModule
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES

@@ -16,7 +16,7 @@ using System.Reflection;
 
 namespace UsMedia.KinectServer.Modules.SpeechRecognition
 {
-    class SpeechRecognitionModule : AbstractModule
+    public class SpeechRecognitionModule : AbstractModule
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
@@ -127,9 +127,9 @@ namespace UsMedia.KinectServer.Modules.SpeechRecognition
 
                     if ( data.Phrases != null )
                     {
-                        ICollection<JToken> phrasesList = (ICollection<JToken>) data.Phrases;
+                        ICollection<JToken> phrasesList = (ICollection<JToken>)data.Phrases;
 
-                        foreach ( String phrase in phrasesList )
+                        foreach (string phrase in phrasesList)
                         {
                             newPhrases.Add( phrase );
                         }

@@ -1,0 +1,6 @@
+F:\Projects\ActionScript Library\sources\src\kinsence\server\SpeechRecognitionModule\bin\Debug\SpeechRecognition.dll
+F:\Projects\ActionScript Library\sources\src\kinsence\server\SpeechRecognitionModule\bin\Debug\SpeechRecognition.pdb
+F:\Projects\ActionScript Library\sources\src\kinsence\server\SpeechRecognitionModule\bin\Debug\Newtonsoft.Json.dll
+F:\Projects\ActionScript Library\sources\src\kinsence\server\SpeechRecognitionModule\obj\Debug\ResolveAssemblyReference.cache
+F:\Projects\ActionScript Library\sources\src\kinsence\server\SpeechRecognitionModule\obj\Debug\SpeechRecognition.dll
+F:\Projects\ActionScript Library\sources\src\kinsence\server\SpeechRecognitionModule\obj\Debug\SpeechRecognition.pdb

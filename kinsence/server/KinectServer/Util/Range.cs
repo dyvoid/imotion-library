@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UsMedia.KinectServer.Util
 {
-    class Range
+    public class Range
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES

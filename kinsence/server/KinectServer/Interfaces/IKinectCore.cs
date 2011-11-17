@@ -6,7 +6,7 @@ using Microsoft.Research.Kinect.Nui;
 
 namespace UsMedia.KinectServer.Interfaces
 {
-    interface IKinectCore : IClientMessageHandler
+    public interface IKinectCore : IClientMessageHandler
     {
         IKinectModule RegisterModule( IKinectModule module );
         IKinectModule RemoveModule( string name );

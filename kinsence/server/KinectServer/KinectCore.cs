@@ -6,13 +6,16 @@ using Microsoft.Research.Kinect.Nui;
 using UsMedia.KinectServer.Server;
 using UsMedia.KinectServer.Messages;
 using UsMedia.KinectServer.Modules;
-using UsMedia.KinectServer.Modules.HandTracking;
-using UsMedia.KinectServer.Modules.SkeletonTracking;
-using UsMedia.KinectServer.Modules.SpeechRecognition;
+//using UsMedia.KinectServer.Modules.HandTracking;
+//using UsMedia.KinectServer.Modules.SkeletonTracking;
+//using UsMedia.KinectServer.Modules.SpeechRecognition;
 using UsMedia.KinectServer.Util;
 using UsMedia.KinectServer.Interfaces;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using System.Reflection;
+using System.Windows;
+using System.IO;
 
 namespace UsMedia.KinectServer
 {
@@ -117,10 +120,18 @@ namespace UsMedia.KinectServer
                 case "RegisterModule":
                     string moduleName = data as string;
 
-                    if ( availableModules.ContainsKey( moduleName ) )
+                    Assembly assembly = Assembly.LoadFrom(moduleName + ".dll");
+
+                    if ( assembly != null )
                     {
-                        IKinectModule module = (IKinectModule)Activator.CreateInstance( availableModules[ moduleName ] );
-                        RegisterModule( module );
+                        string className = "UsMedia.KinectServer.Modules." + moduleName + "." + moduleName + "Module";
+                        //string className = moduleName + "Module";
+                        IKinectModule module = assembly.CreateInstance(className) as IKinectModule;
+
+                        if (module != null)
+                        {
+                            RegisterModule(module);
+                        }
                     }
                     break;
 
@@ -156,9 +167,19 @@ namespace UsMedia.KinectServer
         private void init()
         {
             availableModules = new Dictionary<string, Type>();
-            availableModules.Add( HandTrackingModule.NAME, typeof( HandTrackingModule ) );
-            availableModules.Add( SkeletonTrackingModule.NAME, typeof( SkeletonTrackingModule ) );
-            availableModules.Add( SpeechRecognitionModule.NAME, typeof( SpeechRecognitionModule ) );
+
+            /*string path = Application.Current.StartupUri.AbsoluteUri;
+            string[] pluginFiles = Directory.GetFiles(path, "*.dll");
+            //ipi = new IPlugin[pluginFiles.Length];
+
+            for (int i = 0; i < pluginFiles.Length; i++)
+            {
+                System.Diagnostics.Debug.WriteLine(pluginFiles[i]);
+            }*/
+
+            //availableModules.Add( HandTrackingModule.NAME, typeof( HandTrackingModule ) );
+            //availableModules.Add( SkeletonTrackingModule.NAME, typeof( SkeletonTrackingModule ) );
+            //availableModules.Add( SpeechRecognitionModule.NAME, typeof( SpeechRecognitionModule ) );
 
             activeModules = new Dictionary<string, IKinectModule>();
 

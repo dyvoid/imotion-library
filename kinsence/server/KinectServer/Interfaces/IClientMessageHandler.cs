@@ -6,7 +6,7 @@ using UsMedia.KinectServer.Messages;
 
 namespace UsMedia.KinectServer.Interfaces
 {
-    interface IClientMessageHandler
+    public interface IClientMessageHandler
     {
         void OnClientMessage( string type, dynamic data );
     }

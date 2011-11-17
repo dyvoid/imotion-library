@@ -7,7 +7,7 @@ using UsMedia.KinectServer.Server;
 
 namespace UsMedia.KinectServer.Modules.SkeletonTracking
 {
-    class SkeletonTrackingModule : AbstractModule
+    public class SkeletonTrackingModule : AbstractModule
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES

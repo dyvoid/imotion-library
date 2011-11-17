@@ -74,10 +74,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Research.Kinect, Version=1.0.0.45, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Speech, Version=10.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Microsoft Speech Platform SDK\Assembly\Microsoft.Speech.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\net\KinectServer\bin\Debug\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -105,7 +101,6 @@
     <Compile Include="Interfaces\IKinectModule.cs" />
     <Compile Include="KinectCore.cs" />
     <Compile Include="Modules\AbstractModule.cs" />
-    <Compile Include="Modules\SpeechRecognition\SpeechRecognitionResult.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -117,14 +112,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Server\DataReceivedEventArgs.cs" />
-    <Compile Include="Modules\HandTracking\HandTrackingModule.cs" />
-    <Compile Include="Modules\HandTracking\HandData.cs" />
-    <Compile Include="Modules\HandTracking\Hands.cs" />
     <Compile Include="Util\Range.cs" />
     <Compile Include="Server\TcpServer.cs" />
-    <Compile Include="Modules\SkeletonTracking\SkeletonTrackingModule.cs" />
     <Compile Include="Messages\Message.cs" />
-    <Compile Include="Modules\SpeechRecognition\SpeechRecognitionModule.cs" />
     <Compile Include="Server\TcpServerState.cs" />
     <Compile Include="Server\StateChangedEventArgs.cs" />
     <Page Include="MainWindow.xaml">
@@ -182,38 +172,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <PublishFile Include="INuiInstanceHelper">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="Microsoft.Research.Kinect">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="Microsoft.Speech">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="background.png" />
     <Resource Include="logo.png" />

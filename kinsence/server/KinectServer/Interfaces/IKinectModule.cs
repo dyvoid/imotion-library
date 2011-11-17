@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UsMedia.KinectServer.Interfaces
 {
-    interface IKinectModule : IClientMessageHandler
+    public interface IKinectModule : IClientMessageHandler
     {
         void OnRegister();
         void OnRemove();
