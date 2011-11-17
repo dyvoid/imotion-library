@@ -1,5 +1,0 @@
-F:\Projects\ActionScript Library\sources\src\kinsence\server\HandTrackingModule\bin\Release\UsMedia.KinectServer.Modules.HandTrackingModule.dll
-F:\Projects\ActionScript Library\sources\src\kinsence\server\HandTrackingModule\bin\Release\UsMedia.KinectServer.Modules.HandTrackingModule.pdb
-F:\Projects\ActionScript Library\sources\src\kinsence\server\HandTrackingModule\obj\Release\ResolveAssemblyReference.cache
-F:\Projects\ActionScript Library\sources\src\kinsence\server\HandTrackingModule\obj\Release\UsMedia.KinectServer.Modules.HandTrackingModule.dll
-F:\Projects\ActionScript Library\sources\src\kinsence\server\HandTrackingModule\obj\Release\UsMedia.KinectServer.Modules.HandTrackingModule.pdb

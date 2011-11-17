@@ -1,5 +1,0 @@
-F:\Projects\ActionScript Library\sources\src\kinsence\server\HandTrackingModule\bin\Debug\HandTracking.dll
-F:\Projects\ActionScript Library\sources\src\kinsence\server\HandTrackingModule\bin\Debug\HandTracking.pdb
-F:\Projects\ActionScript Library\sources\src\kinsence\server\HandTrackingModule\obj\Debug\ResolveAssemblyReference.cache
-F:\Projects\ActionScript Library\sources\src\kinsence\server\HandTrackingModule\obj\Debug\HandTracking.dll
-F:\Projects\ActionScript Library\sources\src\kinsence\server\HandTrackingModule\obj\Debug\HandTracking.pdb
