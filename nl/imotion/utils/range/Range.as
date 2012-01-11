@@ -75,10 +75,10 @@ package nl.imotion.utils.range
 		{
 			value = constrain( value );
 			
-			return Math.abs( value - _boundary1 ) / rangeSize;
+			return Math.abs( value - _boundary1 ) / size;
 		}
-		
-		
+
+
 		/**
 		 * Translates a relative position (0-1) to a value within the range.
 		 * The input value is automatically constrained to 0-1.
@@ -88,22 +88,22 @@ package nl.imotion.utils.range
 		public function getValueFromRelativePos( relativePos:Number ):Number
 		{
 			relativePos = constrainTo( relativePos, 0, 1 );
-			
+
 			var result	:Number;
-			
+
 			if ( _boundary2 > _boundary1 )
 			{
-				result	= _boundary1 + ( relativePos * rangeSize );
+				result	= _boundary1 + ( relativePos * size );
 			}
 			else
 			{
-				result	= _boundary1 - ( relativePos * rangeSize );
+				result	= _boundary1 - ( relativePos * size );
 			}
-			
+
 			return result;
 		}
-		
-		
+
+
 		/**
 		 * Translates a value within this range to a value in a target range
 		 * @param	value a value within the boundaries of this range
@@ -114,8 +114,36 @@ package nl.imotion.utils.range
 		{
 			return targetRange.getValueFromRelativePos( getRelativePosFromValue( value ) );
 		}
-		
-		
+
+
+        /**
+		 * Scales the size of the range
+		 * @param	value the amount that the range should be scaled. 1.0 equals 100% scale.
+		 * @return	the new size of the range
+		 */
+        public function scale( value:Number ):Number
+        {
+            if ( value == 1 ) return this.size;
+
+            var rangeSize:Number = this.size;
+
+            var sizeAddition:Number = - ( rangeSize - ( rangeSize * value ) ) * 0.5;
+
+            if ( _boundary2 > _boundary1 )
+			{
+				_boundary1 -= sizeAddition;
+				_boundary2 += sizeAddition;
+			}
+			else
+			{
+				_boundary1 += sizeAddition;
+				_boundary2 -= sizeAddition;
+			}
+
+			return this.size;
+        }
+
+
 		/**
 		 * Constrains a value to the boundaries of the range
 		 * @param	value the value that should be constrained
@@ -132,8 +160,8 @@ package nl.imotion.utils.range
 				return constrainTo( value, _boundary2, _boundary1 );
 			}
 		}
-		
-		
+
+
 		/**
 		 * Constrains a value to an upper and lower limit
 		 * @param	value the value that should be constrained
@@ -147,12 +175,12 @@ package nl.imotion.utils.range
 			if (value < lower) return lower;
 			return value;
 		}
-		
-		
+
+
 		/**
 		 * The total size of the range
 		 */
-		public function get rangeSize():Number
+		public function get size():Number
 		{
 			var c:Number = (_boundary2 - _boundary1);
 			return c > 0 ? c : -c;
