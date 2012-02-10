@@ -33,11 +33,8 @@ package test.evo
     {
         function get momentum():Number;
 
-
         function reset( minSize:Number, maxSize:Number ):IEvolver;
 
-
         function get bestDraw():Bitmap;
-
     }
 }

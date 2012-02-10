@@ -80,10 +80,8 @@ package test.evo.scribbler
             init();
         }
 
-
         // ____________________________________________________________________________________________________
         // PUBLIC
-
 
         override public function init():Evolver
         {

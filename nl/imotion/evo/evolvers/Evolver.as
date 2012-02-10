@@ -103,6 +103,11 @@ package nl.imotion.evo.evolvers
         }
 
 
+        public function mutate( mutationEffect:Number = 1, updateMomentum:Boolean = false ):Genome
+        {
+            return genome.mutate( mutationEffect, updateMomentum );
+        }
+
         // ____________________________________________________________________________________________________
         // PRIVATE
 

@@ -57,7 +57,7 @@ package test.evo
         function set fitness( value:Number ):void;
 
 
-        function mutate():Genome;
+        function mutate( mutationEffect:Number = 1, updateMomentum:Boolean = false ):Genome;
 
 
         function reward( fitness:Number ):Genome;
