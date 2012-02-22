@@ -177,6 +177,24 @@ package nl.imotion.utils.range
 		}
 
 
+        /**
+		 * Checks whether a value is within the boundaries of the range
+		 * @param	value the value
+		 * @return	whether the value is within the boundaries of the range
+		 */
+        public function isWithin( value:Number ):Boolean
+        {
+            if ( _boundary2 > _boundary1 )
+			{
+				return ( value <= _boundary2 && value >= _boundary1 );
+			}
+			else
+			{
+				return ( value >= _boundary2 && value <= _boundary1 );
+			}
+        }
+
+
 		/**
 		 * The total size of the range
 		 */
