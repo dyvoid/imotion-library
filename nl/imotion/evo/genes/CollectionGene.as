@@ -55,16 +55,16 @@ package nl.imotion.evo.genes
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        override public function getPropValue():*
+        override public function getValue():*
         {
-            return _collection[ super.getPropValue() as uint ];
+            return _collection[ super.getValue() as uint ];
         }
 
 
 
         override public function clone():Gene
         {
-            return new CollectionGene( propName, _collection, mutationEffect, limitMethod, baseValue );
+            return new CollectionGene( name, _collection, mutationEffect, limitMethod, baseValue );
         }
 
 

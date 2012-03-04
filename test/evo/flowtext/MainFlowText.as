@@ -38,6 +38,7 @@ package test.evo.flowtext
     import flash.utils.getTimer;
 
     import nl.imotion.evo.Genome;
+    import nl.imotion.evo.evolvers.IEvolver;
     import nl.imotion.evo.genes.Gene;
     import nl.imotion.utils.momentum.MomentumCalculator;
 
@@ -386,13 +387,13 @@ package test.evo.flowtext
             var genome:Genome = evo.genome;
             var gene:Gene = genome.getGeneByPropName("rotation");
             trace( "rotation baseval:"+gene.baseValue );
-            trace( "rotation val:"+gene.getPropValue() );
+            trace( "rotation val:"+gene.getValue() );
             gene = genome.getGeneByPropName("x")
             trace( "x baseval:"+gene.baseValue );
-            trace( "x val:"+gene.getPropValue() );
+            trace( "x val:"+gene.getValue() );
             gene = genome.getGeneByPropName("y")
             trace( "y baseval:"+gene.baseValue );
-            trace( "y val:"+gene.getPropValue() );
+            trace( "y val:"+gene.getValue() );
 
             trace(FlowTextEvolver(evo).flowText.rotation);
 

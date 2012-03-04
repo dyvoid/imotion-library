@@ -40,8 +40,8 @@ package test.evo.benchmark
     import nl.imotion.evo.genes.NumberGene;
     import nl.imotion.evo.genes.UintGene;
 
-    import test.evo.IEvolver;
-    import test.evo.Texture;
+    import nl.imotion.evo.evolvers.IEvolver;
+    import test.evo.util.Texture;
     import test.evo.shapeshifter.ShapeShifter;
 
 

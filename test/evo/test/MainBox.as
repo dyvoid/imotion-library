@@ -24,12 +24,14 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package test.evo
+package test.evo.test
 {
     import flash.display.Shape;
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.geom.Rectangle;
+
+    import test.evo.test.BoxEvolver;
 
 
     /**

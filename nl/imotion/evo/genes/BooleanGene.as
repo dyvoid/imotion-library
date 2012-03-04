@@ -52,7 +52,7 @@ package nl.imotion.evo.genes
 
         override public function clone():Gene
         {
-            return new BooleanGene( propName, mutationEffect, limitMethod, baseValue );
+            return new BooleanGene( name, mutationEffect, limitMethod, baseValue );
         }
 
 

@@ -31,6 +31,8 @@ package test.evo.ribbon
     import flash.geom.ColorTransform;
 
     import test.evo.*;
+    import test.evo.util.Color;
+    import test.evo.util.Trig;
 
 
     /**

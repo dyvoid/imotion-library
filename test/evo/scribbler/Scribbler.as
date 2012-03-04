@@ -32,13 +32,15 @@ package test.evo.scribbler
     import flash.display.Sprite;
     import flash.geom.Point;
 
+    import nl.imotion.evo.evolvers.IUpdateableDisplayObject;
+
 
     /**
      * @author Pieter van de Sluis
      * Date: 15-okt-2010
      * Time: 20:07:46
      */
-    public class Scribbler extends Sprite
+    public class Scribbler extends Sprite implements IUpdateableDisplayObject
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
@@ -48,7 +50,7 @@ package test.evo.scribbler
 
         private var _seed:Number = 0;
         private var _mutateSeed:Number = 0;
-        private var _mutateDampening:Number = 0.35;
+        private var _mutationDampening:Number = 0.35;
         private var _straightening:Number = 0.9;
 
         private var _rndMap:BitmapData;
@@ -113,7 +115,7 @@ package test.evo.scribbler
                 }
                 else
                 {
-                     angle = ( Math.PI * 2 ) * ( rndVal + ( mutateVal * mutateEffect * _mutateDampening ) );
+                     angle = ( Math.PI * 2 ) * ( rndVal + ( mutateVal * mutateEffect * _mutationDampening ) );
                 }
 
                 if ( !isNaN( prevAngle ) && _straightening != 0 )

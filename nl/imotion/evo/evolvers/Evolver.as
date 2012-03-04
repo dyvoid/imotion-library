@@ -34,42 +34,47 @@ package nl.imotion.evo.evolvers
      * Date: 13-sep-2010
      * Time: 22:07:02
      */
-    public class Evolver
+    public class Evolver implements IEvolver
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
+        public static const ERROR_NO_GENOME:String = "Genome has not been set";
+
         private var _previousGenome     :Genome;
         private var _genome             :Genome;
 
-        private var _mutationEffect     :Number = 1;
-
         private var _fitness            :Number = 0;
+
+        private var _mutationEffect     :Number = 1;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function Evolver( genome:Genome = null )
+        public function Evolver( genome:Genome = null, fitness:Number = 0 )
         {
-            _genome = genome;
-
-            init();
+            _genome  = genome;
+            _fitness = fitness;
         }
-
 
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-
-        public function init():Evolver
+        public function mutate( mutationDampening:Number = 0, updateMomentum:Boolean = true ):Genome
         {
-            return this;
+            if ( !genome ) throw new Error( ERROR_NO_GENOME );
+
+            _previousGenome  = _genome.clone();
+
+            return genome.mutate( mutationDampening, updateMomentum );
         }
 
 
         public function reward( fitness:Number ):Genome
         {
-            _previousGenome = _genome.clone();
+            if ( !genome ) throw new Error( ERROR_NO_GENOME );
+
+            _previousGenome = null;
 
             _fitness = fitness;
 
@@ -77,35 +82,16 @@ package nl.imotion.evo.evolvers
         }
 
 
-        public function punish( fitness:Number ):Genome
+        public function punish():Genome
         {
+            if ( !genome ) throw new Error( ERROR_NO_GENOME );
+
             if ( _previousGenome )
                 _genome = _previousGenome.clone();
 
+            _previousGenome = null;
+
             return _genome;
-        }
-
-
-        public function clone():Evolver
-        {
-            var evolver:Evolver     = new Evolver();
-
-            if ( _previousGenome)
-                evolver.previousGenome  = _previousGenome.clone();
-
-            if ( _genome )
-                evolver.genome          = _genome.clone();
-            
-            evolver.fitness         = fitness;
-            evolver.mutationEffect       = mutationEffect;
-
-            return evolver;
-        }
-
-
-        public function mutate( mutationEffect:Number = 1, updateMomentum:Boolean = false ):Genome
-        {
-            return genome.mutate( mutationEffect, updateMomentum );
         }
 
         // ____________________________________________________________________________________________________
@@ -121,6 +107,19 @@ package nl.imotion.evo.evolvers
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
+
+        protected function get previousGenome():Genome
+        {
+            return _previousGenome;
+        }
+
+
+        protected function set previousGenome( value:Genome ):void
+        {
+            _previousGenome = value;
+        }
+
+
         public function get genome():Genome
         {
             return _genome;
@@ -130,17 +129,7 @@ package nl.imotion.evo.evolvers
         public function set genome( value:Genome ):void
         {
             _genome = value;
-        }
-
-
-        public function get previousGenome():Genome
-        {
-            return _previousGenome;
-        }
-
-        public function set previousGenome( value:Genome ):void
-        {
-            _previousGenome = value;
+            _fitness = 0;
         }
 
 

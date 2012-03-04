@@ -37,6 +37,10 @@ package test.evo.scribbler
     import flash.utils.getTimer;
 
     import nl.imotion.evo.Genome;
+    import nl.imotion.evo.evaluators.BitmapEvaluator;
+    import nl.imotion.evo.evolvers.IEvolver;
+    import nl.imotion.evo.evolvers.ILinkedEvolver;
+    import nl.imotion.evo.evolvers.IBitmapEvolver;
     import nl.imotion.utils.momentum.MomentumCalculator;
 
     import test.evo.*;
@@ -54,7 +58,7 @@ package test.evo.scribbler
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var firstEvo:IEvolver;
+        private var firstEvo:IBitmapEvolver;
 
         private var targetPopulationFitness:Number = 0.99;
         private var minGenerationMomentum:Number = 0.0000001;
@@ -71,28 +75,41 @@ package test.evo.scribbler
         private var numGenerations:uint = 0;
 
         private var numPopulations:uint = 1;
-        private var maxNumPopulations:uint = 1;
+        private var maxNumPopulations:uint = 15;
 
         private var numEvos:uint = 0;
         private var minSize:uint = 0;
         private var maxSize:uint = 0;
 
-        private var startMinSize:Number = 1;
-        private var startMaxSize:Number = 3.5;
-        private var endMinSize:Number = 1;
-        private var endMaxSize:Number = 2;
+        private var startMinSize:Number = 20;
+        private var startMaxSize:Number = 40;
+        private var endMinSize:Number = 2;
+        private var endMaxSize:Number = 6;
 
-        private var startEvos:uint = 3000;
-        private var endEvos:uint = 3000;
+        private var startEvos:uint = 200;
+        private var endEvos:uint = 1000;
 
-        private var evoList:/*IEvolver*/Array = [];
+        private var evaluator:BitmapEvaluator;
+
+        private var redeployTreshold:Number = 0.7;
+
+        //For good result: use small sizes, as below
+        /*private var startMinSize:Number = 2;
+        private var startMaxSize:Number = 13;
+        private var endMinSize:Number = 2;
+        private var endMaxSize:Number = 6;
+
+        private var startEvos:uint = 200;
+        private var endEvos:uint = 1600;*/
+
+        private var evoList:/*IBitmapEvolver*/Array = [];
 
         private var momentumCalc:MomentumCalculator;
 
         private var _displayEnabled:Boolean = true;
         private var _btDisplay:Sprite;
 
-        [Embed(source="../../../../lib/BirdChild.jpg")]
+        [Embed(source="../../../../lib/pieter_silhouette_4.jpg")]
         private var SourceImage:Class;
 
 
@@ -112,6 +129,8 @@ package test.evo.scribbler
             sourceImg.x = 100 + sourceImg.width + 50;
             sourceImg.y = 50;
 //            this.addChild( sourceImg );
+
+            evaluator = new BitmapEvaluator( sourceImg.bitmapData );
 
             holder = new Sprite();
 //            holder.graphics.beginFill( 0x0000ff, 1 )
@@ -151,19 +170,10 @@ package test.evo.scribbler
         }
 
 
-        public function getValue( minVal:int, maxVal:int ):int
-        {
-
-//            return minVal + Math.round( Math.random() * ( maxVal - minVal ) );
-            return minVal + Math.floor( Math.random() * (  maxVal + 0.99999999 - minVal ) );
-        }
-
-
         private function resetAndCreateEvos():void
         {
             var evoCount:Number = 1;
-            var evo:IEvolver = firstEvo;
-//            evo.next = null;
+            var evo:ILinkedEvolver = firstEvo;
 
             if ( evoList.length > 1 && numPopulations > 1 )
             {
@@ -185,7 +195,7 @@ package test.evo.scribbler
                     evo.genome = genome1.mate( genome2 );
                 }
 
-                ScribblerEvolver( evo ).reset( minSize, maxSize );
+                resetEvo( evo );
 
                 evoCount++;
 
@@ -213,105 +223,71 @@ package test.evo.scribbler
 
         private function evolve():void
         {
-            var evo:IEvolver;
-            var bm:Bitmap, bmWidth:uint, bmHeight:uint, sourceSegment:BitmapData;
-            var difference:uint, numPixels:uint, numUsedPixels:uint, bmPix:uint, sourcePix:uint;
-            var rDiff:Number, gDiff:Number, bDiff:Number;
-            var sourceVector:Vector.<uint>, bmVector:Vector.<uint>;
-            var fitness:Number;
-
-            evo = firstEvo;
+            var evo:IBitmapEvolver = firstEvo;
             var newPopulationFitness:Number = 0;
-            var matrix:Matrix = new Matrix();
 
             do
             {
-                if ( ScribblerEvolver( evo ).momentum != 0 || !ScribblerEvolver( evo ).momentumIsReady )
+                if ( IBitmapEvolver( evo ).momentum != 0 || !IBitmapEvolver( evo ).momentumIsReady )
                 {
                     evo.mutate();
-                    bm = evo.draw();
-                    bmWidth = bm.width;
-                    bmHeight = bm.height;
-
-                    sourceSegment = new BitmapData( bmWidth, bmHeight, false );
-                    matrix.tx = -bm.x;
-                    matrix.ty = -bm.y;
-
-                    sourceSegment.draw( sourceImg, matrix );
-                    sourceSegment.draw( bm.bitmapData, null, null, BlendMode.DIFFERENCE );
-
-                    difference = 0;
-                    numUsedPixels = 0;
-
-                    sourceVector = sourceSegment.getVector( sourceSegment.rect );
-                    bmVector = bm.bitmapData.getVector( bm.bitmapData.rect );
-
-                    numPixels = sourceVector.length;
-
-                    for ( var j:int = 0; j < numPixels; j++ )
-                    {
-                        if ( ( bmVector[ j ] >> 24 & 0xFF ) != 0x00 )
-                        {
-                            sourcePix = sourceVector[ j ];
-
-                            difference += ( sourcePix >> 16 & 0xFF );
-                            difference += ( sourcePix >> 8 & 0xFF );
-                            difference += ( sourcePix & 0xFF );
-
-                            numUsedPixels++;
-                        }
-                    }
-
-                    difference = difference / numUsedPixels;
-
-                    //765 is the worst fitness, where every color channel difference is 255
-                    fitness = 1 - ( difference / 765 );
+                    var fitness:Number = evaluator.evaluate( evo );
 
                     if ( evo.fitness < fitness )
                     {
-                        var s:ScribblerEvolver = evo as ScribblerEvolver;
-                        if ( s.bestDraw && layer.contains( s.bestDraw ) )
-                            layer.removeChild( s.bestDraw );
-
                         evo.reward( fitness );
-
-                        if ( _displayEnabled )
-                            layer.addChild( s.bestDraw );
                     }
                     else
                     {
-                        evo.punish( fitness );
+                        evo.punish();
                     }
                 }
-                else if ( evo.fitness < 0.8 )
+                else if ( evo.fitness < redeployTreshold )
                 {
-                    ScribblerEvolver( evo ).reset( minSize, maxSize );
+                    var genome1:Genome = evoList[ 0 ].genome.clone();
+                    var genome2:Genome = evoList[ 1 ].genome.clone();
+
+                    evo.genome = genome1.mate( genome2 );
+                    resetEvo( evo );
                 }
 
                 newPopulationFitness += evo.fitness;
 
-                evo = evo.next;
-
+                evo = IBitmapEvolver( evo.next );
             }
             while ( evo );
+
+            if ( _displayEnabled )
+            {
+                clearLayer();
+
+                evo = firstEvo;
+
+                do
+                {
+                    layer.addChild( ScribblerEvolver( evo ).getBitmap() );
+
+                    evo = IBitmapEvolver( evo.next );
+                }
+                while ( evo );
+            }
 
             newPopulationFitness = newPopulationFitness / numEvos;
             momentumCalc.addSample( newPopulationFitness );
             numGenerations++;
             trace( "[" + numPopulations + "/" + maxNumPopulations + ":" + numGenerations + "] Fitness:" + newPopulationFitness + ". Momentum:" + momentumCalc.momentum );
 
-            if ( newPopulationFitness > targetPopulationFitness || ( momentumCalc.isReady && ( momentumCalc.momentum < minGenerationMomentum ) ) )
+            evoList.sortOn( "fitness", Array.DESCENDING | Array.NUMERIC );
+
+            if ( newPopulationFitness > targetPopulationFitness || ( momentumCalc.isReady && ( Math.abs( momentumCalc.momentum ) < minGenerationMomentum ) ) )
             {
                 trace( "finished population: " + ( numPopulations ) );
 
-                evoList.sortOn( "fitness", Array.DESCENDING | Array.NUMERIC );
-
+                clearLayer();
                 for each ( var evolver:ScribblerEvolver in evoList )
                 {
-                    if ( evolver.bestDraw )
-                    {
-                        layer.addChildAt( evolver.bestDraw, 0 );
-                    }
+                    if ( evolver.fitness > redeployTreshold )
+                        layer.addChildAt( evolver.getBitmap(), 0 );
                 }
 
                 var layerBmd:BitmapData = new BitmapData( sourceImg.width, sourceImg.height, true, 0x00000000 )
@@ -348,6 +324,25 @@ package test.evo.scribbler
         }
 
 
+        private function resetEvo( evo:ILinkedEvolver ):void
+        {
+            var s:ScribblerEvolver = evo as ScribblerEvolver;
+
+            s.minSize = minSize;
+            s.maxSize = maxSize;
+            s.reset();
+        }
+
+
+        private function clearLayer():void
+        {
+            while ( layer.numChildren != 0 )
+            {
+                layer.removeChildAt( 0 );
+            }
+        }
+
+
         // ____________________________________________________________________________________________________
         // PROTECTED
 
@@ -363,7 +358,7 @@ package test.evo.scribbler
         {
             _displayEnabled = !_displayEnabled;
 
-            var evo:IEvolver = firstEvo;
+            var evo:IBitmapEvolver = firstEvo;
 
             var xml:XML = <root />;
 
@@ -371,7 +366,7 @@ package test.evo.scribbler
             {
                 xml.appendChild( evo.genome.toXML() );
 
-                evo = evo.next;
+                evo = evo.next as IBitmapEvolver;
             }
             while ( evo );
 

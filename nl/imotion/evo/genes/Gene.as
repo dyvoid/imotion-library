@@ -36,7 +36,7 @@ package nl.imotion.evo.genes
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _propName:String;
+        private var _name:String;
 
         private var _baseValue:Number;
 
@@ -45,62 +45,62 @@ package nl.imotion.evo.genes
         private var _limitMethod:String;
 
         private var _momentum:Number = 0;
-        private var _momentumEffect:Number = 0.5;
+        private var _momentumEffect:Number;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function Gene( propName:String, mutationEffect:Number = 1, limitMethod:String = "bounce", baseValue:Number = NaN )
+        public function Gene( name:String, mutationEffect:Number = 1, limitMethod:String = "bounce", baseValue:Number = NaN, momentumEffect:Number = 0.25 )
         {
-            _propName = propName;
+            _name = name;
             _mutationEffect = mutationEffect;
             _limitMethod = limitMethod;
             _baseValue = ( !isNaN( baseValue ) ) ? baseValue : Math.random();
+            _momentumEffect = momentumEffect;
         }
 
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        public function mutate( globalMutationEffect:Number = 1, mutation:Number = NaN, updateMomentum:Boolean = false ):*
+        public function mutate( mutationDampening:Number = 0, mutation:Number = NaN, updateMomentum:Boolean = false ):*
         {
-            if ( globalMutationEffect != 0 )
+            if ( mutationDampening == 1 ) return getValue();
+
+            mutation = ( !isNaN( mutation ) ) ? mutation : Math.random() * 2 - 1;
+
+            var newVal:Number = _baseValue + ( mutation * _mutationEffect * ( 1 - mutationDampening ) ) + _momentum;
+
+            if ( newVal < -1 ) newVal = -1;
+            if ( newVal >  2 ) newVal =  2;
+
+            if ( newVal < 0 || newVal > 1 )
             {
-                mutation = ( !isNaN( mutation ) ) ? mutation : Math.random() * 2 - 1;
-
-                var newVal:Number = _baseValue + ( mutation * _mutationEffect * globalMutationEffect  ) + _momentum;
-
-                if ( newVal < -1 ) newVal = -1;
-                if ( newVal >  2 ) newVal =  2;
-
-                if ( newVal < 0 || newVal > 1 )
+                switch ( _limitMethod )
                 {
-                    switch ( _limitMethod )
-                    {
-                        case LimitMethod.BOUNCE:
-                            newVal = ( newVal < 0 ) ? -newVal : 1 - ( newVal - 1 );
-                        break;
+                    case LimitMethod.BOUNCE:
+                        newVal = ( newVal < 0 ) ? -newVal : 1 - ( newVal - 1 );
+                    break;
 
-                        case LimitMethod.WRAP:
-                            newVal = ( newVal < 0 ) ?  1 + newVal : newVal - 1;
-                        break;
+                    case LimitMethod.WRAP:
+                        newVal = ( newVal < 0 ) ?  1 + newVal : newVal - 1;
+                    break;
 
-                        case LimitMethod.CUT_OFF:
-                            newVal = ( newVal < 0 ) ? 0 : 1;
-                        break;
-                    }
+                    case LimitMethod.CUT_OFF:
+                        newVal = ( newVal < 0 ) ? 0 : 1;
+                    break;
                 }
-
-                if ( updateMomentum )
-                    _momentum = ( newVal - _baseValue ) * _momentumEffect;
-
-                _baseValue = Math.round( newVal * 1000000 ) / 1000000;
             }
 
-            return getPropValue();
+            if ( updateMomentum )
+                _momentum = ( newVal - _baseValue ) * _momentumEffect;
+
+            _baseValue = newVal;
+
+            return getValue();
         }
 
 
-        public function getPropValue():*
+        public function getValue():*
         {
             throw new Error( "This method should be overridden in a subclass" );
         }
@@ -115,13 +115,13 @@ package nl.imotion.evo.genes
 
         public function clone():Gene
         {
-            return new Gene( _propName,_mutationEffect, _limitMethod, _baseValue );
+            return new Gene( _name,_mutationEffect, _limitMethod, _baseValue, _momentumEffect );
         }
 
 
         public function toXML():XML
         {
-            var xml:XML = <gene type="gene" propName={propName} baseValue={baseValue} mutationEffect={mutationEffect} limitMethod={limitMethod} />;
+            var xml:XML = <gene type="gene" name={name} baseValue={baseValue} mutationEffect={mutationEffect} momentumEffect={momentumEffect} limitMethod={limitMethod} />;
 
             return xml;
         }
@@ -140,9 +140,9 @@ package nl.imotion.evo.genes
         // GETTERS / SETTERS
         
 
-        public function get propName():String
+        public function get name():String
         {
-            return _propName;
+            return _name;
         }
 
 
@@ -166,6 +166,23 @@ package nl.imotion.evo.genes
         public function set mutationEffect( value:Number ):void
         {
             _mutationEffect = value;
+        }
+
+
+        public function get momentum():Number
+        {
+            return _momentum;
+        }
+
+
+        public function get momentumEffect():Number
+        {
+            return _momentumEffect;
+        }
+
+        public function set momentumEffect( value:Number ):void
+        {
+            _momentumEffect = value;
         }
 
 

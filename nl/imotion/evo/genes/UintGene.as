@@ -57,7 +57,7 @@ package nl.imotion.evo.genes
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        override public function getPropValue():*
+        override public function getValue():*
         {
             var n:Number = baseValue * _totalRange;
             //Optimized Math.floor()
@@ -70,7 +70,7 @@ package nl.imotion.evo.genes
 
         override public function clone():Gene
         {
-            return new UintGene( propName, _minVal, _maxVal, mutationEffect, limitMethod, baseValue );
+            return new UintGene( name, _minVal, _maxVal, mutationEffect, limitMethod, baseValue );
         }
 
 

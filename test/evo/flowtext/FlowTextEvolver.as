@@ -34,6 +34,8 @@ package test.evo.flowtext
 
     import nl.imotion.evo.Genome;
     import nl.imotion.evo.evolvers.Evolver;
+    import nl.imotion.evo.evolvers.IEvolver;
+    import nl.imotion.evo.evolvers.IBitmapEvolver;
     import nl.imotion.evo.genes.CollectionGene;
     import nl.imotion.evo.genes.IntGene;
     import nl.imotion.evo.genes.LimitMethod;
@@ -49,7 +51,7 @@ package test.evo.flowtext
      * Date: 19-sep-2010
      * Time: 20:06:56
      */
-    public class FlowTextEvolver extends Evolver implements IVisualEvolver
+    public class FlowTextEvolver extends Evolver implements IBitmapEvolver
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES

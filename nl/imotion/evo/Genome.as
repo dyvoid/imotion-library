@@ -57,12 +57,12 @@ package nl.imotion.evo
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        public function mutate( mutationEffect:Number = 1, updateMomentum:Boolean = false ):Genome
+        public function mutate( mutationDampening:Number = 0, updateMomentum:Boolean = false ):Genome
         {
             var numGenes:uint = _genes.length;
             for ( var i:int = 0; i < numGenes; i++ )
             {
-                _genes[ i ].mutate( mutationEffect, NaN, updateMomentum );
+                _genes[ i ].mutate( mutationDampening, NaN, updateMomentum );
             }
 
             return this;
@@ -83,7 +83,7 @@ package nl.imotion.evo
             for ( var i:int = 0; i < numGenes; i++ )
             {
                 var gene:Gene = genes[i];
-                target[ gene.propName ] = gene.getPropValue();
+                target[ gene.name ] = gene.getValue();
             }
             
             return target;
@@ -98,7 +98,7 @@ package nl.imotion.evo
             {
                 var gene:Gene = _genes[i];
 
-                if ( gene.propName == propName )
+                if ( gene.name == propName )
                     return gene;
             }
             

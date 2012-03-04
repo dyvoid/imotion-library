@@ -30,6 +30,7 @@ package test.evo.brush
     import flash.geom.ColorTransform;
 
     import test.evo.*;
+    import test.evo.util.Color;
 
 
     /**

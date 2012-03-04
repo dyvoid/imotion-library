@@ -34,6 +34,8 @@ package test.evo.shapeshifter
     import flash.geom.Matrix;
     import flash.utils.getTimer;
 
+    import nl.imotion.evo.evolvers.IEvolver;
+
     import nl.imotion.utils.momentum.MomentumCalculator;
 
     import test.evo.*;

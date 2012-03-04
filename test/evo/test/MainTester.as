@@ -24,58 +24,71 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package test.evo
+package test.evo.test
 {
-    import flash.display.BlendMode;
-    import flash.events.MouseEvent;
+    import flash.display.Sprite;
+    import flash.events.Event;
 
-    import nl.imotion.evo.Genome;
-    import nl.imotion.evo.genes.NumberGene;
+    import test.evo.scribbler.FlowText;
 
 
     /**
      * @author Pieter van de Sluis
-     * Date: 14-sep-2010
-     * Time: 21:43:08
+     * Date: 16-okt-2010
+     * Time: 13:31:37
      */
-    public class BoxEvolver extends EvolverSprite
+    [SWF(backgroundColor="#000000",width="1024",height="700",frameRate="31")]
+    public class MainTester extends Sprite
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _color:uint;
+        private var _scribbler:FlowText;
+
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function BoxEvolver()
+
+        public function MainTester()
         {
-            super();
+            _scribbler = new FlowText();
+            _scribbler.x = stage.stageWidth / 2;
+            _scribbler.y = stage.stageHeight / 2;
 
-            this.graphics.beginFill( 0xff0000 );
-            this.graphics.drawRect( -50, -50, 100, 100 );
-            this.blendMode = BlendMode.ADD;
+            this.addChild( _scribbler );
 
-            this.addEventListener( MouseEvent.CLICK, clickHandler );
+            _scribbler.colorR = 0xff;
+            _scribbler.seed = 200;
+            _scribbler.stepLength = 35;
+
+            addEventListener( Event.ENTER_FRAME, ef );
+        }
+
+
+        private function ef( e:Event ):void
+        {
+            var s:FlowText = new FlowText();
+            s.x = stage.stageWidth / 2;
+            s.y = stage.stageHeight / 2;
+
+            this.addChild( s );
+
+            s.colorR = 0xff;
+            s.seed = _scribbler.seed;
+            s.mutateSeed = _scribbler.mutateSeed;
+            s.stepLength = 35;
+            s.update();
+
+            _scribbler.mutateSeed++;
+            _scribbler.seed = Math.round( Math.random() * 0xffffffff );
+            _scribbler.update();
+
         }
 
 
         // ____________________________________________________________________________________________________
         // PUBLIC
-
-
-        override public function init():EvolverSprite
-        {
-            genome = new Genome( 0.5 );
-            genome.addGene( new NumberGene( "width", Math.random(), 1, 1, 500 ) );
-            genome.addGene( new NumberGene( "height", Math.random(), 1, 1, 500 ) );
-            genome.addGene( new NumberGene( "x", Math.random(), 1, 100, 700 ) );
-            genome.addGene( new NumberGene( "y", Math.random(), 1, 100, 500 ) );
-
-            genome.apply( this );
-
-            return super.init();
-        }
 
 
         // ____________________________________________________________________________________________________
@@ -93,10 +106,6 @@ package test.evo
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS
 
-        private function clickHandler( e:MouseEvent ):void
-        {
-            trace( genome.toXML() );
-        }
 
     }
 }

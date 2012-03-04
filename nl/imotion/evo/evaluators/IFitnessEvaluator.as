@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT license
  *
- * Copyright (c) 2010 Pieter van de Sluis
+ * Copyright (c) 2012 Pieter van de Sluis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,48 +24,13 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package test.evo
+package nl.imotion.evo.evaluators
 {
-    import flash.display.Bitmap;
-
-    import nl.imotion.evo.Genome;
+    import flash.display.BitmapData;
 
 
-    public interface IEvolver
+    public interface IFitnessEvaluator
     {
-        function get genome():Genome;
-
-
-        function set genome( value:Genome ):void;
-
-
-        function get previous():IEvolver;
-
-
-        function set previous( value:IEvolver ):void;
-
-
-        function get next():IEvolver;
-
-
-        function set next( value:IEvolver ):void;
-
-
-        function get fitness():Number;
-
-
-        function set fitness( value:Number ):void;
-
-
-        function mutate( mutationEffect:Number = 1, updateMomentum:Boolean = false ):Genome;
-
-
-        function reward( fitness:Number ):Genome;
-
-
-        function punish( fitness:Number ):Genome;
-
-
-        function draw():Bitmap;
+        function evaluate( data:* ):Number
     }
 }

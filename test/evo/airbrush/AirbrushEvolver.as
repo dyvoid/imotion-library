@@ -32,6 +32,7 @@ package test.evo.airbrush
     import flash.geom.Rectangle;
 
     import nl.imotion.evo.Genome;
+    import nl.imotion.evo.evolvers.IEvolver;
     import nl.imotion.evo.genes.LimitMethod;
     import nl.imotion.evo.genes.UintGene;
 

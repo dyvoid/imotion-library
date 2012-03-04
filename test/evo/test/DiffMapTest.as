@@ -1,4 +1,4 @@
-package test.evo
+package test.evo.test
 {
     import flash.display.Bitmap;
     import flash.display.BitmapData;

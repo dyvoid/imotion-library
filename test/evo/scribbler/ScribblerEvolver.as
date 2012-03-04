@@ -26,22 +26,12 @@
 
 package test.evo.scribbler
 {
-    import flash.display.Bitmap;
-    import flash.display.BitmapData;
-    import flash.display.Sprite;
-    import flash.geom.Matrix;
-    import flash.geom.Rectangle;
-
     import nl.imotion.evo.Genome;
-    import nl.imotion.evo.evolvers.Evolver;
-    import nl.imotion.evo.genes.CollectionGene;
-    import nl.imotion.evo.genes.IntGene;
+    import nl.imotion.evo.evolvers.BitmapEvolver;
+    import nl.imotion.evo.evolvers.IEvolver;
     import nl.imotion.evo.genes.LimitMethod;
     import nl.imotion.evo.genes.NumberGene;
     import nl.imotion.evo.genes.UintGene;
-    import nl.imotion.utils.momentum.MomentumCalculator;
-
-    import test.evo.*;
 
 
     /**
@@ -49,33 +39,20 @@ package test.evo.scribbler
      * Date: 19-sep-2010
      * Time: 20:06:56
      */
-    public class ScribblerEvolver extends Evolver implements IVisualEvolver
+    public class ScribblerEvolver extends BitmapEvolver
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _container:Sprite;
-
-        private var _areaWidth:Number;
-        private var _areaHeight:Number;
-
-        private var _previous:IEvolver;
-        private var _next:IEvolver;
-
-        private var scribbler:Scribbler;
-
-        private var _lastDraw:Bitmap;
-        private var _bestDraw:Bitmap;
-
-        private var _momentumCalc:MomentumCalculator;
+        private var _minSize        :Number;
+        private var _maxSize        :Number;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
         public function ScribblerEvolver( areaWidth:Number, areaHeight:Number )
         {
-            _areaWidth = areaWidth;
-            _areaHeight = areaHeight;
+            super( new Scribbler(), areaWidth, areaHeight );
 
             init();
         }
@@ -83,125 +60,44 @@ package test.evo.scribbler
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        override public function init():Evolver
+        override public function reset():IEvolver
+        {
+            genome.editGene( "stepLength", { minVal: _minSize, maxVal: _maxSize } );
+            genome.resetGenes( [ "x", "y", "startAngle", "seed", "mutateSeed" ] );
+
+            return super.reset();
+        }
+
+        // ____________________________________________________________________________________________________
+        // PRIVATE
+
+        private function init():void
         {
             genome = new Genome();
 
-            genome.addGene( new UintGene( "x", 0, _areaWidth, 0.01 ) );
-            genome.addGene( new UintGene( "y", 0, _areaHeight, 0.01 ) );
-            genome.addGene( new NumberGene( "startAngle", 0, Math.PI*2, 0.1, LimitMethod.WRAP ) );
-//            genome.addGene( new CollectionGene( "startAngle", [ Math.PI*0.25, Math.PI*1.75 ], 1, LimitMethod.WRAP ) );
+            //For good result: keep x/y movement small and straightening high
 
-//            genome.addGene( new IntGene( "rotation", -180, 180, 0.1, LimitMethod.WRAP ) );
+            genome.addGene( new UintGene( "x", 0, areaWidth, 0.005 ) );
+            genome.addGene( new UintGene( "y", 0, areaHeight, 0.005 ) );
+            genome.addGene( new NumberGene( "startAngle", 0, Math.PI*2, 0.1, LimitMethod.WRAP ) );
 
             genome.addGene( new NumberGene( "seed", 0, 1, 0, LimitMethod.WRAP ) );
             genome.addGene( new NumberGene( "mutateSeed", 0, 1, 0.01, LimitMethod.WRAP ) );
             genome.addGene( new UintGene( "stepLength", 1, 75, 0.05 ) );
             genome.addGene( new UintGene( "life", 10, 20, 0.01 ) );
             genome.addGene( new NumberGene( "strokeWidth", 1, 1, 0  ) );
-//            genome.addGene( new NumberGene( "straightening", 0.9, 0.95, 0.001 ) );
-            genome.addGene( new NumberGene( "straightening", 0.95, 1, 0.01 ) );
+            genome.addGene( new NumberGene( "straightening", 0.85, 0.95, 0.05 ) );
 
-//            genome.addGene( new NumberGene( "alpha", 0.5, 1, 0.1 ) );
-//            genome.addGene( new NumberGene( "brightness", 0, 1, 0.1, LimitMethod.CUT_OFF ) );
+            genome.addGene( new NumberGene( "alpha", 0.5, 1, 0.1 ) );
+//            genome.addGene( new NumberGene( "brightness", 0, 0.5, 0.1, LimitMethod.CUT_OFF ) );
 
 //            genome.addGene( new CollectionGene( "colorR", [ 0x00, 0xff ], 0.1, LimitMethod.WRAP, 0 ) );
 
-//            genome.addGene( new NumberGene  ( "colorR", 0, 0xFF, 0.1, LimitMethod.CUT_OFF ) );
-//            genome.addGene( new NumberGene  ( "colorG", 0, 0xFF, 0.1, LimitMethod.CUT_OFF ) );
-//            genome.addGene( new NumberGene  ( "colorB", 0, 0xFF, 0.1, LimitMethod.CUT_OFF ) );
+//            genome.addGene( new NumberGene  ( "colorR", 0x00, 0xFF, 0.1, LimitMethod.CUT_OFF ) );
+//            genome.addGene( new NumberGene  ( "colorG", 0x00, 0xFF, 0.1, LimitMethod.CUT_OFF ) );
+//            genome.addGene( new NumberGene  ( "colorB", 0x00, 0xFF, 0.1, LimitMethod.CUT_OFF ) );
 
-            _container = new Sprite();
-
-            scribbler = new Scribbler();
-            _container.addChild( scribbler );
-
-            _momentumCalc = new MomentumCalculator( 20 );
-
-            return this;
         }
-
-
-        public function reset( minSize:Number, maxSize:Number ):IEvolver
-        {
-            genome.editGene( "stepLength", { minVal: minSize, maxVal: maxSize } );
-            genome.resetGenes( [ "x", "y", "startAngle", "seed", "mutateSeed" ] );
-//            genome.resetGenes( [ "startAngle", "seed", "mutateSeed" ] );
-            previousGenome = null;
-
-            fitness = 0;
-            _lastDraw =
-             _bestDraw = null;
-
-            _momentumCalc.reset();
-
-            return this;
-        }
-
-
-        public function draw():Bitmap
-        {
-            genome.apply( scribbler );
-            scribbler.update();
-
-            var bounds:Rectangle = scribbler.getRect( _container );
-            bounds.left -=2;
-            bounds.top -=2;
-            bounds.right +=2;
-            bounds.bottom +=2;
-
-            var leftExtra:Number = ( bounds.left < 0 ) ? -bounds.left : 0;
-            var topExtra:Number = ( bounds.top < 0 ) ? -bounds.top : 0;
-            var rightExtra:Number = ( bounds.right > _areaWidth ) ? bounds.right - _areaWidth : 0;
-            var bottomExtra:Number = ( bounds.bottom > _areaHeight ) ? bounds.bottom - _areaHeight : 0;
-
-            var matrix:Matrix = new Matrix();
-            matrix.tx = -bounds.left - leftExtra;
-            matrix.ty = -bounds.top - topExtra;
-
-            var bWidth:Number = Math.max( 1, bounds.width - leftExtra - rightExtra );
-            var bHeight:Number = Math.max( 1, bounds.height - topExtra - bottomExtra );
-
-            var bmd:BitmapData = new BitmapData( bWidth, bHeight, true, 0x00000000 );
-            bmd.draw( _container, matrix );
-
-            _lastDraw = new Bitmap( bmd );
-            _lastDraw.x = scribbler.x - ( scribbler.x - bounds.left ) + leftExtra;
-            _lastDraw.y = scribbler.y - ( scribbler.y - bounds.top ) + topExtra;
-
-            var bm:Bitmap = new Bitmap( bmd );
-            bm.transform.matrix = _lastDraw.transform.matrix;
-
-            return bm;
-        }
-
-
-        override public function reward( fitness:Number ):Genome
-        {
-            _bestDraw = _lastDraw;
-            _lastDraw = null;
-//            variation = 1 - fitness;
-
-            _momentumCalc.addSample( fitness );
-
-            return super.reward( fitness );
-        }
-
-
-        override public function punish( fitness:Number ):Genome
-        {
-            _lastDraw = null;
-//            variation = Math.min( 1, variation + ( variation * 0.01 ) );
-
-            _momentumCalc.addSample( fitness );
-
-            return super.punish( fitness );
-        }
-
-
-        // ____________________________________________________________________________________________________
-        // PRIVATE
-
 
         // ____________________________________________________________________________________________________
         // PROTECTED
@@ -210,54 +106,26 @@ package test.evo.scribbler
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
-
-        public function get previous():IEvolver
+        public function get minSize():Number
         {
-            return _previous;
+            return _minSize;
+        }
+
+        public function set minSize( value:Number ):void
+        {
+            _minSize = value;
         }
 
 
-        public function set previous( value:IEvolver ):void
+        public function get maxSize():Number
         {
-            _previous = value;
+            return _maxSize;
         }
 
-
-        public function get next():IEvolver
+        public function set maxSize( value:Number ):void
         {
-            return _next;
+            _maxSize = value;
         }
-
-
-        public function set next( value:IEvolver ):void
-        {
-            _next = value;
-        }
-
-
-        public function get lastDraw():Bitmap
-        {
-            return _lastDraw;
-        }
-
-
-        public function get bestDraw():Bitmap
-        {
-            return _bestDraw;
-        }
-
-
-        public function get momentum():Number
-        {
-            return _momentumCalc.isReady ? _momentumCalc.momentum : 1;
-        }
-
-
-        public function get momentumIsReady():Boolean
-        {
-            return _momentumCalc.isReady;
-        }
-
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

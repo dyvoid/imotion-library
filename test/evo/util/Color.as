@@ -24,7 +24,7 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package test.evo
+package test.evo.util
 {
     /**
      * Util for working with Color

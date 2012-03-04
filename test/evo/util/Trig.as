@@ -1,7 +1,7 @@
 /**
  * @author    Pieter van de Sluis
  */
-package test.evo
+package test.evo.util
 {
     public class Trig
     {

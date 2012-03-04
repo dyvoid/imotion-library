@@ -34,7 +34,10 @@ package test.evo.shapeshifter
     import flash.geom.Matrix;
     import flash.geom.Point;
 
+    import nl.imotion.evo.evolvers.IUpdateableDisplayObject;
+
     import test.evo.*;
+    import test.evo.util.Rndm;
 
 
     /**
@@ -42,7 +45,7 @@ package test.evo.shapeshifter
      * Date: 19-sep-2010
      * Time: 19:44:57
      */
-    public class ShapeShifter extends Sprite
+    public class ShapeShifter extends Sprite implements IUpdateableDisplayObject
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES

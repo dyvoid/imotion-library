@@ -24,17 +24,16 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package test.evo
+package nl.imotion.evo.evolvers
 {
-    import flash.display.Bitmap;
+    import flash.display.IDisplayObject;
 
 
-    public interface IVisualEvolver extends IEvolver
+    public interface IUpdateableDisplayObject extends IDisplayObject
     {
-        function get momentum():Number;
+        
+        function update():void
 
-        function reset( minSize:Number, maxSize:Number ):IEvolver;
-
-        function get bestDraw():Bitmap;
     }
+    
 }
