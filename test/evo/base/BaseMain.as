@@ -1,6 +1,8 @@
-package test.evo.scribbler
+package test.evo.base
 {
-    import flash.display.Bitmap;
+    import flash.display.BitmapData;
+
+    import test.evo.scribbler.*;
     import flash.display.Bitmap;
     import flash.display.Sprite;
     import flash.events.Event;
@@ -13,19 +15,12 @@ package test.evo.scribbler
      * @author Pieter van de Sluis
      */
 
-
-    [SWF(backgroundColor="#ffffff",width="1100",height="900",frameRate="31")]
-    public class MainScribbler2 extends Sprite
+    public class BaseMain extends Sprite
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        [Embed(source="../../../../lib/pieter_silhouette_4.jpg")]
-        private var SourceImage:Class;
-
         private var _nature:BitmapNature;
-
-        private var _sourceImg:Bitmap;
 
         private var _mainContainer      :Sprite;
         private var _resultContainer    :Sprite;
@@ -34,35 +29,31 @@ package test.evo.scribbler
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function MainScribbler2()
+        public function BaseMain()
         {
-            init();
+
         }
 
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-
-        // ____________________________________________________________________________________________________
-        // PRIVATE
-
-        private function init():void
+        public function init( nature:BitmapNature ):void
         {
             initViews();
 
-            _sourceImg = new SourceImage();
-
-            _nature = new ScribblerNature( _sourceImg.bitmapData );
+            _nature = nature;
 
             this.addEventListener( Event.ENTER_FRAME, enterFrameHandler );
         }
 
+        // ____________________________________________________________________________________________________
+        // PRIVATE
 
         private function initViews():void
         {
             _mainContainer = new Sprite();
             _mainContainer.x =
-            _mainContainer.y = 50;
+            _mainContainer.y = 10;
             this.addChild( _mainContainer );
 
             _resultContainer = new Sprite();

@@ -1,5 +1,6 @@
-package test.evo.scribbler
+package test.evo.shapeshifter
 {
+    import test.evo.scribbler.*;
     import flash.display.BitmapData;
 
     import nl.imotion.evo.evolvers.IBitmapEvolver;
@@ -11,7 +12,7 @@ package test.evo.scribbler
     /**
      * @author Pieter van de Sluis
      */
-    public class ScribblerNature extends BitmapNature
+    public class ShapeShifterNature extends BitmapNature
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
@@ -19,19 +20,19 @@ package test.evo.scribbler
         private var _currMinSize    :Number;
         private var _currMaxSize    :Number;
 
-        private var _minSizeRange   :Range = new Range( 2, 2 );
-        private var _maxSizeRange   :Range = new Range( 20, 5 );
+        private var _minSizeRange   :Range = new Range( 25, 2 );
+        private var _maxSizeRange   :Range = new Range( 50, 8 );
 
-        private var _numEvosRange   :Range = new Range( 200, 2000 );
+        private var _numEvosRange   :Range = new Range( 400, 1000 );
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function ScribblerNature( sourceBitmapData:BitmapData )
+        public function ShapeShifterNature( sourceBitmapData:BitmapData )
         {
             super( sourceBitmapData );
 
-            maxNumPopulations = 3;
+            maxNumPopulations = 4;
         }
 
         // ____________________________________________________________________________________________________
@@ -39,7 +40,7 @@ package test.evo.scribbler
 
         override protected function createEvo():IBitmapEvolver
         {
-            var evo:ScribblerEvolver = new ScribblerEvolver( sourceBitmapData.width, sourceBitmapData.height );
+            var evo:ShapeShifterEvolver = new ShapeShifterEvolver( sourceBitmapData.width, sourceBitmapData.height );
             evo.minSize = _currMinSize;
             evo.maxSize = _currMaxSize;
 
@@ -49,7 +50,7 @@ package test.evo.scribbler
 
         override protected function resetEvo( evo:IBitmapEvolver ):void
         {
-            var s:ScribblerEvolver = evo as ScribblerEvolver;
+            var s:ShapeShifterEvolver = evo as ShapeShifterEvolver;
             s.minSize = _currMinSize;
             s.maxSize = _currMaxSize;
 

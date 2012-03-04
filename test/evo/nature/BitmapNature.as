@@ -31,8 +31,7 @@ package test.evo.nature
         private var _sourceBitmapData        :BitmapData;
 
         private var _maxNumPopulations       :uint = 1;
-
-        private var _numEvosPerPopulation    :Number = 2;
+        private var _numEvosPerPopulation    :uint = 2;
 
         private var _evaluator       :IFitnessEvaluator;
 
@@ -44,10 +43,12 @@ package test.evo.nature
 
         private var _status          :EvolveStatus;
 
+        private var _useMating       :Boolean = true;
+
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function BitmapNature( sourceBitmapData:BitmapData, evaluator:IFitnessEvaluator = null )
+        public function BitmapNature( sourceBitmapData:BitmapData = null, evaluator:IFitnessEvaluator = null )
         {
             _sourceBitmapData = sourceBitmapData;
             _evaluator = ( evaluator == null ) ? new BitmapEvaluator( sourceBitmapData ) : evaluator;
@@ -72,7 +73,7 @@ package test.evo.nature
                 _status.generationNr = 0;
                 _status.fitness = 0;
 
-                initializePopulation();
+                initializePopulation( _useMating );
 
                 _momentumCalc.reset();
             }
@@ -81,6 +82,8 @@ package test.evo.nature
 
             var evo:IBitmapEvolver = _firstEvo;
             var newPopulationFitness:Number = 0;
+
+            var i:int = 0;
 
             do
             {
@@ -284,10 +287,15 @@ package test.evo.nature
             return _status.clone();
         }
 
-
         public function get sourceBitmapData():BitmapData
         {
             return _sourceBitmapData;
+        }
+
+
+        public function set sourceBitmapData( value:BitmapData ):void
+        {
+            _sourceBitmapData = value;
         }
 
 
@@ -300,6 +308,17 @@ package test.evo.nature
         public function set maxNumPopulations( value:uint ):void
         {
             _maxNumPopulations = value;
+        }
+
+
+        public function get useMating():Boolean
+        {
+            return _useMating;
+        }
+
+        public function set useMating( value:Boolean ):void
+        {
+            _useMating = value;
         }
 
         // ____________________________________________________________________________________________________

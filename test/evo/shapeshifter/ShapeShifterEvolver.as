@@ -26,24 +26,16 @@
 
 package test.evo.shapeshifter
 {
-    import flash.display.Bitmap;
-    import flash.display.BitmapData;
-    import flash.display.Sprite;
-    import flash.geom.Matrix;
-    import flash.geom.Rectangle;
-
-    import nl.imotion.evo.Genome;
-    import nl.imotion.evo.evolvers.Evolver;
-    import nl.imotion.evo.evolvers.IEvolver;
-    import nl.imotion.evo.evolvers.IBitmapEvolver;
     import nl.imotion.evo.genes.CollectionGene;
     import nl.imotion.evo.genes.IntGene;
+
+    import nl.imotion.evo.Genome;
+    import nl.imotion.evo.evolvers.BitmapEvolver;
+    import nl.imotion.evo.evolvers.IEvolver;
     import nl.imotion.evo.genes.LimitMethod;
     import nl.imotion.evo.genes.NumberGene;
     import nl.imotion.evo.genes.UintGene;
-    import nl.imotion.utils.momentum.MomentumCalculator;
 
-    import test.evo.*;
     import test.evo.util.Texture;
 
 
@@ -52,167 +44,57 @@ package test.evo.shapeshifter
      * Date: 19-sep-2010
      * Time: 20:06:56
      */
-    public class ShapeShifterEvolver extends Evolver implements IBitmapEvolver
+    public class ShapeShifterEvolver extends BitmapEvolver
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _container:Sprite;
-
-//        public function get container():Sprite{return _container;}
-
-        private var _areaWidth:Number;
-        private var _areaHeight:Number;
-
-        private var _previous:IEvolver;
-        private var _next:IEvolver;
-
-        private var shapeShifter:ShapeShifter;
-
-        private var _lastDraw:Bitmap;
-        private var _bestDraw:Bitmap;
-
-        private var _momentumCalc:MomentumCalculator;
+        private var _minSize        :Number;
+        private var _maxSize        :Number;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
         public function ShapeShifterEvolver( areaWidth:Number, areaHeight:Number )
         {
-            _areaWidth = areaWidth;
-            _areaHeight = areaHeight;
+            super( new ShapeShifter(), areaWidth, areaHeight );
 
             init();
         }
 
-
         // ____________________________________________________________________________________________________
         // PUBLIC
 
+        override public function reset():IEvolver
+        {
+            genome.editGene( "size", { minVal: minSize, maxVal: maxSize } );
+            genome.resetGenes( [ "x", "y", "rotation", "size", "numPoints", "distortionRatio" ] );
 
-        override public function init():Evolver
+            return super.reset();
+        }
+
+        // ____________________________________________________________________________________________________
+        // PRIVATE
+
+        private function init():void
         {
             genome = new Genome();
 
-            genome.addGene( new UintGene( "x", 0, _areaWidth, 0.01 ) );
-            genome.addGene( new UintGene( "y", 0, _areaHeight, 0.01 ) );
-//            genome.addGene( new NumberGene( "scaleX", 0.5, 2, 0.1 ) );
-//            genome.addGene( new NumberGene( "scaleY", 0.5, 2, 0.1 ) );
+            genome.addGene( new UintGene( "x", 0, areaWidth, 0.001 ) );
+            genome.addGene( new UintGene( "y", 0, areaHeight, 0.001 ) );
             genome.addGene( new IntGene( "rotation", -180, 180, 0.1, LimitMethod.WRAP ) );
-            genome.addGene( new CollectionGene( "texture", [ Texture.ABSTRACT ], 0.1 ) );
+            genome.addGene( new CollectionGene( "texture", [ Texture.ABSTRACT, Texture.INK, Texture.RUST ], 0.1 ) );
 
             genome.addGene( new UintGene( "seed", 0, 0xffffff, 0 ) );
             genome.addGene( new UintGene( "numPoints", 4, 15, 0.3 ) );
-            genome.addGene( new UintGene( "size", 50, 100, 0.2 ) );
+            genome.addGene( new UintGene( "size", 50, 100, 0.01 ) );
             genome.addGene( new NumberGene( "distortionRatio", 0.2, 0.4, 0.1 ) );
 
             genome.addGene( new NumberGene( "colorR", 0, 1, 0.1 ) );
             genome.addGene( new NumberGene( "colorG", 0, 1, 0.1 ) );
             genome.addGene( new NumberGene( "colorB", 0, 1, 0.1 ) );
 
-            _container = new Sprite();
-
-            shapeShifter = new ShapeShifter();
-            _container.addChild( shapeShifter );
-
-            _momentumCalc = new MomentumCalculator( 25 );
-
-            return this;
         }
-
-
-        public function reset( minSize:Number, maxSize:Number ):IEvolver
-        {
-            genome.editGene( "size", { minVal: minSize, maxVal: maxSize } )
-            genome.resetGenes( [ "x", "y", "rotation" ] );
-            previousGenome = null;
-
-            fitness = 0;
-            _lastDraw =
-            _bestDraw = null;
-
-            _momentumCalc.reset();
-
-            return this;
-        }
-
-
-        public function draw():Bitmap
-        {
-            genome.apply( shapeShifter );
-            shapeShifter.update();
-
-            var bounds:Rectangle = shapeShifter.getRect( _container );
-
-            var leftExtra:Number = ( bounds.left < 0 ) ? -bounds.left : 0;
-            var topExtra:Number = ( bounds.top < 0 ) ? -bounds.top : 0;
-            var rightExtra:Number = ( bounds.right > _areaWidth ) ? bounds.right - _areaWidth : 0;
-            var bottomExtra:Number = ( bounds.bottom > _areaHeight ) ? bounds.bottom - _areaHeight : 0;
-
-            var matrix:Matrix = new Matrix();
-            matrix.tx = -bounds.left - leftExtra;
-            matrix.ty = -bounds.top - topExtra;
-
-            var bWidth:Number = Math.max( 1, bounds.width - leftExtra - rightExtra );
-            var bHeight:Number = Math.max( 1, bounds.height - topExtra - bottomExtra );
-
-            var bmd:BitmapData = new BitmapData( bWidth, bHeight, true, 0x00000000 );
-            bmd.draw( _container, matrix );
-
-            _lastDraw = new Bitmap( bmd );
-            _lastDraw.x = shapeShifter.x - ( shapeShifter.x - bounds.left ) + leftExtra;
-            _lastDraw.y = shapeShifter.y - ( shapeShifter.y - bounds.top ) + topExtra;
-
-            var bm:Bitmap = new Bitmap( bmd );
-            bm.transform.matrix = _lastDraw.transform.matrix;
-
-            return bm;
-        }
-
-
-        override public function reward( fitness:Number ):Genome
-        {
-            _bestDraw = _lastDraw;
-            _lastDraw = null;
-//            variation = 1 - fitness;
-
-            _momentumCalc.addSample( fitness );
-
-            return super.reward( fitness );
-        }
-
-
-        override public function punish( fitness:Number ):Genome
-        {
-            _lastDraw = null;
-//            variation = Math.min( 1, variation + ( variation * 0.01 ) );
-
-            _momentumCalc.addSample( fitness );
-
-            return super.punish( fitness );
-        }
-
-
-        override public function clone():Evolver
-        {
-            var evolver:Evolver = new ShapeShifterEvolver( _areaWidth, _areaHeight );
-
-            if ( previousGenome )
-                evolver.previousGenome = previousGenome.clone();
-
-            if ( genome )
-                evolver.genome = genome.clone();
-
-            evolver.fitness = fitness;
-            evolver.mutationEffect = mutationEffect;
-
-            return evolver;
-        }
-
-
-        // ____________________________________________________________________________________________________
-        // PRIVATE
-
 
         // ____________________________________________________________________________________________________
         // PROTECTED
@@ -221,48 +103,26 @@ package test.evo.shapeshifter
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
-
-        public function get previous():IEvolver
+        public function get minSize():Number
         {
-            return _previous;
+            return _minSize;
+        }
+
+        public function set minSize( value:Number ):void
+        {
+            _minSize = value;
         }
 
 
-        public function set previous( value:IEvolver ):void
+        public function get maxSize():Number
         {
-            _previous = value;
+            return _maxSize;
         }
 
-
-        public function get next():IEvolver
+        public function set maxSize( value:Number ):void
         {
-            return _next;
+            _maxSize = value;
         }
-
-
-        public function set next( value:IEvolver ):void
-        {
-            _next = value;
-        }
-
-
-        public function get lastDraw():Bitmap
-        {
-            return _lastDraw;
-        }
-
-
-        public function get bestDraw():Bitmap
-        {
-            return _bestDraw;
-        }
-
-
-        public function get momentum():Number
-        {
-            return _momentumCalc.isReady ? _momentumCalc.momentum : 1;
-        }
-
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

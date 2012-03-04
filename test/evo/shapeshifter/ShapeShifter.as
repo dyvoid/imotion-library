@@ -69,7 +69,6 @@ package test.evo.shapeshifter
 
         private var _graphics:Graphics;
 
-
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
@@ -80,7 +79,6 @@ package test.evo.shapeshifter
             _graphics = _shape.graphics;
         }
 
-
         // ____________________________________________________________________________________________________
         // PUBLIC
 
@@ -89,7 +87,6 @@ package test.evo.shapeshifter
             _randomizer.seed = _seed;
             _randomizer.reset();
             _graphics.clear();
-//            _graphics.beginFill( ( _colorR << 16 ) | ( _colorG << 8 ) | _colorB );
 
             var m:Matrix = new Matrix();
             m.rotate( ( Math.PI * 2 ) * _randomizer.random() );
