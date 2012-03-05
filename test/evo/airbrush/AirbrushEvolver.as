@@ -26,17 +26,13 @@
 
 package test.evo.airbrush
 {
-    import flash.display.Bitmap;
-    import flash.display.BitmapData;
-    import flash.geom.Matrix;
-    import flash.geom.Rectangle;
-
+    import test.evo.scribbler.*;
     import nl.imotion.evo.Genome;
+    import nl.imotion.evo.evolvers.BitmapEvolver;
     import nl.imotion.evo.evolvers.IEvolver;
     import nl.imotion.evo.genes.LimitMethod;
+    import nl.imotion.evo.genes.NumberGene;
     import nl.imotion.evo.genes.UintGene;
-
-    import test.evo.*;
 
 
     /**
@@ -44,127 +40,53 @@ package test.evo.airbrush
      * Date: 19-sep-2010
      * Time: 20:06:56
      */
-    public class AirbrushEvolver extends EvolverSprite implements IEvolver
+    public class AirbrushEvolver extends BitmapEvolver
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _areaWidth:Number;
-        private var _areaHeight:Number;
-
-        private var _previous:IEvolver;
-        private var _next:IEvolver;
-
-        private var _minSize:Number;
-        private var _maxSize:Number;
-
-        private var _airbrush:Airbrush;
-
-        private var _lastDraw:Bitmap;
-        private var _bestDraw:Bitmap;
+        private var _minSize        :Number;
+        private var _maxSize        :Number;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
         public function AirbrushEvolver( areaWidth:Number, areaHeight:Number )
         {
-            _areaWidth = areaWidth;
-            _areaHeight = areaHeight;
+            super( new Airbrush(), areaWidth, areaHeight );
 
             init();
         }
 
-
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-
-        override public function init():EvolverSprite
+        override public function reset():IEvolver
         {
-            genome = new Genome( 1 );
+            genome.editGene( "size", { minVal: _minSize, maxVal: _maxSize } );
+            genome.resetGenes( [ "x", "y" ] );
 
-            genome.addGene( new UintGene( "x", 0, _areaWidth, 0.01 ) );
-            genome.addGene( new UintGene( "y", 0, _areaHeight, 0.01 ) );
+            return super.reset();
+        }
+
+        // ____________________________________________________________________________________________________
+        // PRIVATE
+
+        private function init():void
+        {
+            genome = new Genome();
+
+            //For good result: keep x/y movement small and straightening high
+
+            genome.addGene( new UintGene( "x", 0, areaWidth, 0.01 ) );
+            genome.addGene( new UintGene( "y", 0, areaHeight, 0.01 ) );
             genome.addGene( new UintGene( "size", 50, 100, 0.2 ) );
-            genome.addGene( new UintGene( "seed", 0, 0xffffffff, 0 ) );
 
             genome.addGene( new UintGene( "colorR", 0, 0xFF, 0.2, LimitMethod.CUT_OFF ) );
             genome.addGene( new UintGene( "colorG", 0, 0xFF, 0.2, LimitMethod.CUT_OFF ) );
             genome.addGene( new UintGene( "colorB", 0, 0xFF, 0.2, LimitMethod.CUT_OFF ) );
 
-            _airbrush = new Airbrush();
-            this.addChild( _airbrush );
-
-            return this;
         }
-
-
-        public function reset( minSize:Number, maxSize:Number ):IEvolver
-        {
-            _minSize = minSize;
-            _maxSize = maxSize;
-
-            var sizeGene:UintGene = genome.getGeneByPropName( "size" ) as UintGene;
-            sizeGene.minVal = minSize;
-            sizeGene.maxVal = maxSize;
-
-            genome.resetGenes();
-            previousGenome = null;
-
-            fitness = 0;
-            _lastDraw =
-            _bestDraw = null;
-
-            return this;
-        }
-
-
-        public function draw():Bitmap
-        {
-            genome.apply( _airbrush );
-            _airbrush.update();
-
-            var bounds:Rectangle = _airbrush.getRect( this );
-            var matrix:Matrix = new Matrix();
-            matrix.tx = -bounds.left;
-            matrix.ty = -bounds.top;
-
-            var bmd:BitmapData = new BitmapData( Math.max( 1, bounds.width ), Math.max( 1, bounds.height ), true, 0x00000000 );
-            bmd.draw( this, matrix );
-
-            _lastDraw = new Bitmap( bmd );
-            _lastDraw.x = _airbrush.x - ( _airbrush.x - bounds.left );
-            _lastDraw.y = _airbrush.y - ( _airbrush.y - bounds.top );
-
-            var bm:Bitmap = new Bitmap( bmd );
-            bm.transform.matrix = _lastDraw.transform.matrix;
-
-            return bm;
-        }
-
-
-        override public function reward( fitness:Number ):Genome
-        {
-            _bestDraw = _lastDraw;
-            _lastDraw = null;
-//            variation = 1 - fitness;
-
-            return super.reward( fitness );
-        }
-
-
-        override public function punish( fitness:Number ):Genome
-        {
-            _lastDraw = null;
-//            variation = Math.min( 1, variation + ( variation * 0.01 ) );
-
-            return super.punish( fitness );
-        }
-
-
-        // ____________________________________________________________________________________________________
-        // PRIVATE
-
 
         // ____________________________________________________________________________________________________
         // PROTECTED
@@ -173,42 +95,26 @@ package test.evo.airbrush
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
-
-        public function get previous():IEvolver
+        public function get minSize():Number
         {
-            return _previous;
+            return _minSize;
+        }
+
+        public function set minSize( value:Number ):void
+        {
+            _minSize = value;
         }
 
 
-        public function set previous( value:IEvolver ):void
+        public function get maxSize():Number
         {
-            _previous = value;
+            return _maxSize;
         }
 
-
-        public function get next():IEvolver
+        public function set maxSize( value:Number ):void
         {
-            return _next;
+            _maxSize = value;
         }
-
-
-        public function set next( value:IEvolver ):void
-        {
-            _next = value;
-        }
-
-
-        public function get lastDraw():Bitmap
-        {
-            return _lastDraw;
-        }
-
-
-        public function get bestDraw():Bitmap
-        {
-            return _bestDraw;
-        }
-
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

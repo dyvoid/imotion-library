@@ -29,7 +29,7 @@ package nl.imotion.evo.evolvers
         private var _previous:ILinkedEvolver;
         private var _next:ILinkedEvolver;
 
-        private var _evoTarget:IUpdateableDisplayObject;
+        private var _evoTarget:DisplayObject;
 
         private var _previousBitmap:Bitmap;
         private var _bitmap:Bitmap;
@@ -39,7 +39,7 @@ package nl.imotion.evo.evolvers
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function BitmapEvolver( evoTarget:IUpdateableDisplayObject, areaWidth:Number, areaHeight:Number )
+        public function BitmapEvolver( evoTarget:DisplayObject, areaWidth:Number, areaHeight:Number )
         {
             _evoTarget = evoTarget;
             _areaWidth = areaWidth;
@@ -105,7 +105,9 @@ package nl.imotion.evo.evolvers
             if ( !_bitmap )
             {
                 genome.apply( _evoTarget );
-                _evoTarget.update();
+
+                if ( _evoTarget is IUpdateableDisplayObject )
+                    IUpdateableDisplayObject( _evoTarget ).update();
 
                 var bounds:Rectangle = _evoTarget.getBounds( _container );
 
@@ -189,7 +191,7 @@ package nl.imotion.evo.evolvers
         }
 
 
-        public function get evoTarget():IUpdateableDisplayObject
+        public function get evoTarget():DisplayObject
         {
             return _evoTarget;
         }

@@ -1,6 +1,9 @@
-package test.evo.shapeshifter
+package test.evo.airbrush
 {
+    import test.evo.scribbler.*;
     import flash.display.Bitmap;
+
+    import mx.core.BitmapAsset;
 
     import test.evo.base.BaseMain;
 
@@ -10,22 +13,21 @@ package test.evo.shapeshifter
      */
 
     [SWF(backgroundColor="#ffffff",width="1100",height="900",frameRate="31")]
-    public class ShapeShiferMain extends BaseMain
+    public class AirbrushMain extends BaseMain
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        [Embed(source="../../../../lib/charlize.png")]
+        [Embed(source="../assets/charlize.png")]
         private var SourceImage:Class;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function ShapeShiferMain()
+        public function AirbrushMain()
         {
             var image:Bitmap = new SourceImage();
-            var nature:ShapeShifterNature = new ShapeShifterNature( image.bitmapData );
-//            nature.useMating = false;
+            var nature:AirbrushNature = new AirbrushNature( image.bitmapData );
 
             start( nature );
         }

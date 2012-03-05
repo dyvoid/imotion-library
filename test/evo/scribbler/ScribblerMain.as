@@ -17,7 +17,7 @@ package test.evo.scribbler
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        [Embed(source="../../../../lib/charlize_silhouette.png")]
+        [Embed(source="../assets/charlize.png")]
         private var SourceImage:Class;
 
         // ____________________________________________________________________________________________________
@@ -28,7 +28,7 @@ package test.evo.scribbler
             var image:Bitmap = new SourceImage();
             var nature:ScribblerNature = new ScribblerNature( image.bitmapData );
 
-            init( nature );
+            start( nature );
         }
 
         // ____________________________________________________________________________________________________

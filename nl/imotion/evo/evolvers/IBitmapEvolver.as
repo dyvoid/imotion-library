@@ -27,6 +27,7 @@
 package nl.imotion.evo.evolvers
 {
     import flash.display.Bitmap;
+    import flash.display.DisplayObject;
 
 
     public interface IBitmapEvolver extends IEvolver, ILinkedEvolver
@@ -34,7 +35,7 @@ package nl.imotion.evo.evolvers
         function get momentum():Number;
         function get momentumIsReady():Boolean;
 
-        function get evoTarget():IUpdateableDisplayObject;
+        function get evoTarget():DisplayObject;
 
         function getBitmap():Bitmap;
 

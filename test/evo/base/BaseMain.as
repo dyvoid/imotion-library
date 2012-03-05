@@ -37,7 +37,7 @@ package test.evo.base
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        public function init( nature:BitmapNature ):void
+        public function start( nature:BitmapNature ):void
         {
             initViews();
 

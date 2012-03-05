@@ -28,9 +28,13 @@ package test.evo.airbrush
 {
     import flash.display.BitmapData;
     import flash.display.BitmapDataChannel;
+    import flash.display.GradientType;
     import flash.display.Graphics;
     import flash.display.Sprite;
     import flash.geom.ColorTransform;
+    import flash.geom.Matrix;
+
+    import nl.imotion.evo.evolvers.IUpdateableDisplayObject;
 
 
     /**
@@ -38,20 +42,18 @@ package test.evo.airbrush
      * Date: 16-okt-2010
      * Time: 13:27:19
      */
-    public class Airbrush extends Sprite
+    public class Airbrush extends Sprite implements IUpdateableDisplayObject
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
         private var _size:uint;
 
-        private var _noiseMap:BitmapData;
-
         private var _colorR:uint;
         private var _colorG:uint;
         private var _colorB:uint;
 
-        private var _seed:uint;
+        private var _matrix:Matrix;
 
 
         // ____________________________________________________________________________________________________
@@ -59,26 +61,23 @@ package test.evo.airbrush
 
         public function Airbrush()
         {
-            super();
+            _matrix = new Matrix();
         }
-
 
         // ____________________________________________________________________________________________________
         // PUBLIC
 
         public function update():void
         {
-            _noiseMap = new BitmapData( _size * 2, _size * 2, true );
-            _noiseMap.noise( _seed, 0, 150, BitmapDataChannel.ALPHA, false );
+            var color:uint = ( _colorR << 16 ) | ( _colorG << 8 ) | _colorB;
+
+            _matrix.createGradientBox( _size, _size );
 
             var g:Graphics = this.graphics;
             g.clear();
-            g.beginBitmapFill( _noiseMap );
-            g.drawCircle( 0, 0, _size );
-
-            var c:ColorTransform = this.transform.colorTransform;
-            c.color = ( _colorR << 16 ) | ( _colorG << 8 ) | _colorB;
-            this.transform.colorTransform = c;
+            g.beginGradientFill( GradientType.RADIAL, [ color, color ], [ 1, 0 ], [ 0x00, 0xff ], _matrix );
+            g.drawCircle( 0, 0, _size * 2 );
+            g.endFill();
         }
 
 
@@ -103,18 +102,6 @@ package test.evo.airbrush
         public function set size( value:uint ):void
         {
             _size = value;
-        }
-
-
-        public function get seed():uint
-        {
-            return _seed;
-        }
-
-
-        public function set seed( value:uint ):void
-        {
-            _seed = value;
         }
 
 
