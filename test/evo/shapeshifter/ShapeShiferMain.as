@@ -9,13 +9,13 @@ package test.evo.shapeshifter
      * @author Pieter van de Sluis
      */
 
-    [SWF(backgroundColor="#ffffff",width="1100",height="900",frameRate="31")]
+    [SWF(backgroundColor="#ffffff",width="1100",height="800",frameRate="31")]
     public class ShapeShiferMain extends BaseMain
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        [Embed(source="../../../../lib/charlize.png")]
+        [Embed(source="../assets/charlize.png")]
         private var SourceImage:Class;
 
         // ____________________________________________________________________________________________________

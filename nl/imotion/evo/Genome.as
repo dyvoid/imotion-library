@@ -53,7 +53,6 @@ package nl.imotion.evo
             _genes = new Vector.<Gene>();
         }
 
-
         // ____________________________________________________________________________________________________
         // PUBLIC
 
@@ -171,7 +170,10 @@ package nl.imotion.evo
             var numGenes:uint = _genes.length;
             for ( var i:int = 0; i < numGenes; i++ )
             {
-                offspring._genes[ i ].baseValue = Math.random() < 0.5 ? _genes[ i ].baseValue : mateGenome.genes[ i ].baseValue;
+                if ( Math.random() < 0.5 )
+                {
+                    offspring._genes[ i ].baseValue = mateGenome.genes[ i ].baseValue;
+                }
             }
 
             return offspring;

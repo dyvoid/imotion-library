@@ -24,8 +24,9 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package test.evo.shapeshifter
+package test.evo.cell
 {
+    import test.evo.shapeshifter.*;
     import nl.imotion.evo.genes.CollectionGene;
     import nl.imotion.evo.genes.IntGene;
 
@@ -44,20 +45,23 @@ package test.evo.shapeshifter
      * Date: 19-sep-2010
      * Time: 20:06:56
      */
-    public class ShapeShifterEvolver extends BitmapEvolver
+    public class CellEvolver extends BitmapEvolver
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _minSize        :Number;
-        private var _maxSize        :Number;
+        private var _x:Number = 0;
+        private var _y:Number = 0;
+
+        private var _width:Number = 0;
+        private var _height:Number = 0;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function ShapeShifterEvolver( areaWidth:Number, areaHeight:Number )
+        public function CellEvolver( areaWidth:Number, areaHeight:Number )
         {
-            super( new ShapeShifter(), areaWidth, areaHeight );
+            super( new Cell(), areaWidth, areaHeight );
 
             init();
         }
@@ -65,12 +69,22 @@ package test.evo.shapeshifter
         // ____________________________________________________________________________________________________
         // PUBLIC
 
+        override public function mutate( mutationDampening:Number = 0, updateMomentum:Boolean = false ):Genome
+        {
+            super.mutate( mutationDampening, updateMomentum );
+
+            genome.apply( evoTarget );
+
+            return genome;
+        }
+
+
         override public function reset():IEvolver
         {
-            genome.editGene( "size", { minVal: minSize, maxVal: maxSize } );
-            genome.resetGenes( [ "x", "y", "rotation", "distortionRatio", "seed" ] );
+            momentumCalc.reset();
+            fitness = 0;
 
-            return super.reset();
+            return this;
         }
 
         // ____________________________________________________________________________________________________
@@ -80,27 +94,13 @@ package test.evo.shapeshifter
         {
             genome = new Genome();
 
-            genome.addGene( new UintGene( "x", 0, areaWidth, 0.001 ) );
-            genome.addGene( new UintGene( "y", 0, areaHeight, 0.001 ) );
-            genome.addGene( new IntGene( "rotation", -180, 180, 0.1, LimitMethod.WRAP ) );
+            genome.addGene( new NumberGene( "x", 0, areaWidth, 0, LimitMethod.CUT_OFF, 0 ) );
+            genome.addGene( new NumberGene( "y", 0, areaHeight, 0, LimitMethod.CUT_OFF, 0 ) );
 
-//            genome.addGene( new NumberGene( "scaleX", 0.5, 2, 0.1 ) );
-//            genome.addGene( new NumberGene( "scaleY", 0.5, 2, 0.1 ) );
+            genome.addGene( new NumberGene( "width", 0, areaWidth, 0, LimitMethod.CUT_OFF, 0 ) );
+            genome.addGene( new NumberGene( "height", 0, areaHeight, 0, LimitMethod.CUT_OFF, 0 ) );
 
-            genome.addGene( new CollectionGene( "texture", [ Texture.ABSTRACT ], 0.1 ) );
-            genome.addGene( new NumberGene( "textureOffsetX", 0, 1, 0.01, LimitMethod.WRAP ) );
-            genome.addGene( new NumberGene( "textureOffsetY", 0,1, 0.01, LimitMethod.WRAP ) );
-            genome.addGene( new NumberGene( "textureOffsetRotation", 0, 1, 0.01, LimitMethod.WRAP ) );
-
-            genome.addGene( new UintGene( "seed", 0, 0xffffff, 0 ) );
-            genome.addGene( new UintGene( "numPoints", 4, 15, 0.3 ) );
-            genome.addGene( new UintGene( "size", 50, 100, 0.01 ) );
-            genome.addGene( new NumberGene( "distortionRatio", 0.2, 0.8, 0.1 ) );
-
-            genome.addGene( new NumberGene( "redMultiplier", 0, 2, 0.1 ) );
-            genome.addGene( new NumberGene( "greenMultiplier", 0, 2, 0.1 ) );
-            genome.addGene( new NumberGene( "blueMultiplier", 0, 2, 0.1 ) );
-
+            genome.addGene( new NumberGene( "brightness", 0, 1, 0.1 ) );
         }
 
         // ____________________________________________________________________________________________________
@@ -110,25 +110,67 @@ package test.evo.shapeshifter
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
-        public function get minSize():Number
+        private function get cell():Cell
         {
-            return _minSize;
-        }
-
-        public function set minSize( value:Number ):void
-        {
-            _minSize = value;
+            return evoTarget as Cell;
         }
 
 
-        public function get maxSize():Number
+        public function get x():Number
         {
-            return _maxSize;
+            return cell.x;
         }
 
-        public function set maxSize( value:Number ):void
+
+        public function set x( value:Number ):void
         {
-            _maxSize = value;
+            genome.editGene( "x", { baseValue: value / areaWidth } );
+            genome.apply( evoTarget );
+        }
+
+
+        public function get y():Number
+        {
+            return cell.y;
+        }
+
+
+        public function set y( value:Number ):void
+        {
+            genome.editGene( "y", { baseValue: value / areaHeight } );
+            genome.apply( evoTarget );
+        }
+
+
+        public function get width():Number
+        {
+            return cell.width;
+        }
+
+
+        public function set width( value:Number ):void
+        {
+            genome.editGene( "width", { baseValue: value / areaWidth } );
+            genome.apply( evoTarget );
+        }
+
+
+        public function get height():Number
+        {
+            return cell.height;
+        }
+
+
+        public function set height( value:Number ):void
+        {
+            genome.editGene( "height", { baseValue: value / areaHeight } );
+            genome.apply( evoTarget );
+        }
+
+
+        public function get surfaceSize():Number
+        {
+            return cell.surfaceSize;
         }
 
         // ____________________________________________________________________________________________________

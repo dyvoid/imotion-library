@@ -47,7 +47,9 @@ package test.evo.airbrush
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _size:uint;
+        private var _graphics:Graphics;
+
+        private var _radius:uint = 50;
 
         private var _colorR:uint;
         private var _colorG:uint;
@@ -55,6 +57,14 @@ package test.evo.airbrush
 
         private var _matrix:Matrix;
 
+        private var _alpha1:Number = 1;
+        private var _alpha2:Number = 0;
+
+        private var _ratio1:uint = 0x00;
+        private var _ratio2:uint = 0xff;
+
+        private var _brightness1:uint = 0x00;
+        private var _brightness2:uint = 0x00;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
@@ -69,17 +79,17 @@ package test.evo.airbrush
 
         public function update():void
         {
-            var color:uint = ( _colorR << 16 ) | ( _colorG << 8 ) | _colorB;
+            var color1:uint = ( _brightness1 << 16 ) | ( _brightness1 << 8 ) | _brightness1;
+            var color2:uint = ( _brightness2 << 16 ) | ( _brightness2 << 8 ) | _brightness2;
 
-            _matrix.createGradientBox( _size, _size );
+            _matrix = new Matrix();
+            _matrix.createGradientBox( 2 * _radius, 2 * _radius, 0, -_radius, -_radius );
 
-            var g:Graphics = this.graphics;
-            g.clear();
-            g.beginGradientFill( GradientType.RADIAL, [ color, color ], [ 1, 0 ], [ 0x00, 0xff ], _matrix );
-            g.drawCircle( 0, 0, _size * 2 );
-            g.endFill();
+            graphics.clear();
+            graphics.beginGradientFill( GradientType.RADIAL, [ color1, color2 ], [ _alpha1, _alpha2 ], [ _ratio1, _ratio2 ], _matrix );
+            graphics.drawCircle( 0, 0, _radius );
+            graphics.endFill();
         }
-
 
         // ____________________________________________________________________________________________________
         // PRIVATE
@@ -93,15 +103,15 @@ package test.evo.airbrush
         // GETTERS / SETTERS
 
 
-        public function get size():uint
+        public function get radius():uint
         {
-            return _size;
+            return _radius;
         }
 
 
-        public function set size( value:uint ):void
+        public function set radius( value:uint ):void
         {
-            _size = value;
+            _radius = value;
         }
 
 
@@ -140,6 +150,89 @@ package test.evo.airbrush
             _colorB = value;
         }
 
+
+        public function get matrix():Matrix
+        {
+            return _matrix;
+        }
+
+
+        public function set matrix( value:Matrix ):void
+        {
+            _matrix = value;
+        }
+
+
+        public function get alpha1():Number
+        {
+            return _alpha1;
+        }
+
+
+        public function set alpha1( value:Number ):void
+        {
+            _alpha1 = value;
+        }
+
+
+        public function get alpha2():Number
+        {
+            return _alpha2;
+        }
+
+
+        public function set alpha2( value:Number ):void
+        {
+            _alpha2 = value;
+        }
+
+
+        public function get ratio1():uint
+        {
+            return _ratio1;
+        }
+
+
+        public function set ratio1( value:uint ):void
+        {
+            _ratio1 = value;
+        }
+
+
+        public function get ratio2():uint
+        {
+            return _ratio2;
+        }
+
+
+        public function set ratio2( value:uint ):void
+        {
+            _ratio2 = value;
+        }
+
+
+        public function get brightness1():uint
+        {
+            return _brightness1;
+        }
+
+
+        public function set brightness1( value:uint ):void
+        {
+            _brightness1 = value;
+        }
+
+
+        public function get brightness2():uint
+        {
+            return _brightness2;
+        }
+
+
+        public function set brightness2( value:uint ):void
+        {
+            _brightness2 = value;
+        }
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

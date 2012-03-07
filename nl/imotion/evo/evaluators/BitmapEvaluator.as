@@ -4,6 +4,7 @@ package nl.imotion.evo.evaluators
     import flash.display.BitmapData;
     import flash.display.BlendMode;
     import flash.geom.Matrix;
+    import flash.utils.getTimer;
 
     import nl.imotion.evo.evolvers.IBitmapEvolver;
 

@@ -64,7 +64,7 @@ package nl.imotion.evo.genes
 
         public function mutate( mutationDampening:Number = 0, mutation:Number = NaN, updateMomentum:Boolean = false ):*
         {
-            if ( mutationDampening == 1 ) return getValue();
+            if ( mutationDampening == 1 || _mutationEffect == 0 ) return getValue();
 
             mutation = ( !isNaN( mutation ) ) ? mutation : Math.random() * 2 - 1;
 

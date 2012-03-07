@@ -24,19 +24,21 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package test.evo.shapeshifter
+package test.evo.voronoi
 {
-    import nl.imotion.evo.genes.CollectionGene;
-    import nl.imotion.evo.genes.IntGene;
+    import com.nodename.Delaunay.Voronoi;
+
+    import flash.display.Bitmap;
+
+    import flash.geom.Point;
 
     import nl.imotion.evo.Genome;
     import nl.imotion.evo.evolvers.BitmapEvolver;
     import nl.imotion.evo.evolvers.IEvolver;
+    import nl.imotion.evo.genes.IntGene;
     import nl.imotion.evo.genes.LimitMethod;
     import nl.imotion.evo.genes.NumberGene;
     import nl.imotion.evo.genes.UintGene;
-
-    import test.evo.util.Texture;
 
 
     /**
@@ -44,20 +46,19 @@ package test.evo.shapeshifter
      * Date: 19-sep-2010
      * Time: 20:06:56
      */
-    public class ShapeShifterEvolver extends BitmapEvolver
+    public class VoronoiRegionEvolver extends BitmapEvolver
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _minSize        :Number;
-        private var _maxSize        :Number;
+
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function ShapeShifterEvolver( areaWidth:Number, areaHeight:Number )
+        public function VoronoiRegionEvolver( areaWidth:Number, areaHeight:Number )
         {
-            super( new ShapeShifter(), areaWidth, areaHeight );
+            super( new VoronoiRegion(), areaWidth, areaHeight );
 
             init();
         }
@@ -65,10 +66,18 @@ package test.evo.shapeshifter
         // ____________________________________________________________________________________________________
         // PUBLIC
 
+
+        override public function getBitmap():Bitmap
+        {
+            bitmap = null;
+
+            return super.getBitmap();
+        }
+
+
         override public function reset():IEvolver
         {
-            genome.editGene( "size", { minVal: minSize, maxVal: maxSize } );
-            genome.resetGenes( [ "x", "y", "rotation", "distortionRatio", "seed" ] );
+            genome.resetGenes( [ "colorR", "colorG", "colorB" ] );
 
             return super.reset();
         }
@@ -80,27 +89,22 @@ package test.evo.shapeshifter
         {
             genome = new Genome();
 
-            genome.addGene( new UintGene( "x", 0, areaWidth, 0.001 ) );
-            genome.addGene( new UintGene( "y", 0, areaHeight, 0.001 ) );
-            genome.addGene( new IntGene( "rotation", -180, 180, 0.1, LimitMethod.WRAP ) );
+            genome.addGene( new NumberGene( "centerX", 0, areaWidth, 0 ) );
+            genome.addGene( new NumberGene( "centerY", 0, areaHeight, 0 ) );
 
-//            genome.addGene( new NumberGene( "scaleX", 0.5, 2, 0.1 ) );
-//            genome.addGene( new NumberGene( "scaleY", 0.5, 2, 0.1 ) );
+            genome.addGene( new NumberGene( "textureOffsetX", 0.1, 0.9, 0.00, LimitMethod.WRAP ) );
+            genome.addGene( new NumberGene( "textureOffsetY", 0.1, 0.9, 0.00, LimitMethod.WRAP ) );
+            genome.addGene( new NumberGene( "textureOffsetRotation", 0.5, 0.7, 0.00, LimitMethod.WRAP ) );
 
-            genome.addGene( new CollectionGene( "texture", [ Texture.ABSTRACT ], 0.1 ) );
-            genome.addGene( new NumberGene( "textureOffsetX", 0, 1, 0.01, LimitMethod.WRAP ) );
-            genome.addGene( new NumberGene( "textureOffsetY", 0,1, 0.01, LimitMethod.WRAP ) );
-            genome.addGene( new NumberGene( "textureOffsetRotation", 0, 1, 0.01, LimitMethod.WRAP ) );
-
-            genome.addGene( new UintGene( "seed", 0, 0xffffff, 0 ) );
-            genome.addGene( new UintGene( "numPoints", 4, 15, 0.3 ) );
-            genome.addGene( new UintGene( "size", 50, 100, 0.01 ) );
-            genome.addGene( new NumberGene( "distortionRatio", 0.2, 0.8, 0.1 ) );
+            genome.addGene( new NumberGene( "colorR", 0x00, 0xff, 0.3 ) );
+            genome.addGene( new NumberGene( "colorG", 0x00, 0xff, 0.3 ) );
+            genome.addGene( new NumberGene( "colorB", 0x00, 0xff, 0.3 ) );
 
             genome.addGene( new NumberGene( "redMultiplier", 0, 2, 0.1 ) );
             genome.addGene( new NumberGene( "greenMultiplier", 0, 2, 0.1 ) );
             genome.addGene( new NumberGene( "blueMultiplier", 0, 2, 0.1 ) );
 
+            genome.apply( evoTarget );
         }
 
         // ____________________________________________________________________________________________________
@@ -110,25 +114,15 @@ package test.evo.shapeshifter
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
-        public function get minSize():Number
+        public function get point():Point
         {
-            return _minSize;
-        }
-
-        public function set minSize( value:Number ):void
-        {
-            _minSize = value;
+            return VoronoiRegion( evoTarget ).point;
         }
 
 
-        public function get maxSize():Number
+        public function set voronoi( value:Voronoi ):void
         {
-            return _maxSize;
-        }
-
-        public function set maxSize( value:Number ):void
-        {
-            _maxSize = value;
+            VoronoiRegion( evoTarget ).voronoi = value;
         }
 
         // ____________________________________________________________________________________________________

@@ -60,7 +60,7 @@ package nl.imotion.evo.evolvers
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        public function mutate( mutationDampening:Number = 0, updateMomentum:Boolean = true ):Genome
+        public function mutate( mutationDampening:Number = 0, updateMomentum:Boolean = false ):Genome
         {
             if ( !genome ) throw new Error( ERROR_NO_GENOME );
 

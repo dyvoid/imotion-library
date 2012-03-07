@@ -74,8 +74,8 @@ package nl.imotion.evo.genes
             var xml:XML = super.toXML();
             
             xml[ "@type" ]      = "Number";
-            xml[ "@minVal" ]    = minVal.toPrecision( 21 );
-            xml[ "@maxVal" ]    = maxVal.toPrecision( 21 );
+            xml[ "@minVal" ]    = minVal.toString();
+            xml[ "@maxVal" ]    = maxVal.toString();
 
             return xml;
         }

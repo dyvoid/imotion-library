@@ -43,7 +43,10 @@ package test.evo.util
         private static var _rust:BitmapData = new RustyTexture();
         private static var _flower:BitmapData = new FlowerTexture();
         private static var _wall:BitmapData = new WallTexture();
-        private static var _noise:BitmapData = new NoiseTexture();
+
+        [Embed(source="../assets/noise.png")]
+        private static var NoiseTexure:Class; 
+        private static var _noise:BitmapData = new NoiseTexure().bitmapData;
 
         // ____________________________________________________________________________________________________
         // PUBLIC

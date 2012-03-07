@@ -51,7 +51,7 @@ package nl.imotion.evo.evolvers
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        override public function mutate( mutationDampening:Number = 0, updateMomentum:Boolean = true ):Genome
+        override public function mutate( mutationDampening:Number = 0, updateMomentum:Boolean = false ):Genome
         {
             super.mutate( mutationDampening, updateMomentum );
 
@@ -254,7 +254,7 @@ package nl.imotion.evo.evolvers
 
         public function get momentum():Number
         {
-            return _momentumCalc.isReady ? _momentumCalc.momentum : 1;
+            return _momentumCalc.isReady ? _momentumCalc.momentum : 0;
         }
 
 

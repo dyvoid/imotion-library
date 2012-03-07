@@ -63,7 +63,7 @@ package test.evo.airbrush
 
         override public function reset():IEvolver
         {
-            genome.editGene( "size", { minVal: _minSize, maxVal: _maxSize } );
+            genome.editGene( "radius", { minVal: _minSize, maxVal: _maxSize } );
             genome.resetGenes( [ "x", "y" ] );
 
             return super.reset();
@@ -78,13 +78,23 @@ package test.evo.airbrush
 
             //For good result: keep x/y movement small and straightening high
 
-            genome.addGene( new UintGene( "x", 0, areaWidth, 0.01 ) );
-            genome.addGene( new UintGene( "y", 0, areaHeight, 0.01 ) );
-            genome.addGene( new UintGene( "size", 50, 100, 0.2 ) );
+            genome.addGene( new UintGene( "x", 0, areaWidth, 0.001 ) );
+            genome.addGene( new UintGene( "y", 0, areaHeight, 0.001 ) );
 
-            genome.addGene( new UintGene( "colorR", 0, 0xFF, 0.2, LimitMethod.CUT_OFF ) );
-            genome.addGene( new UintGene( "colorG", 0, 0xFF, 0.2, LimitMethod.CUT_OFF ) );
-            genome.addGene( new UintGene( "colorB", 0, 0xFF, 0.2, LimitMethod.CUT_OFF ) );
+            genome.addGene( new UintGene( "radius", 50, 100, 0.2 ) );
+
+            genome.addGene( new UintGene( "brightness1", 0x00, 0xff, 0.1 ) );
+            genome.addGene( new UintGene( "brightness2", 0x00, 0xff, 0.1 ) );
+
+            genome.addGene( new NumberGene( "alpha1", 0, 1, 0.1 ) );
+            genome.addGene( new NumberGene( "alpha2", 0, 1, 0.1 ) );
+
+            genome.addGene( new UintGene( "ratio1", 0x00, 0x87, 0.05 ) );
+            genome.addGene( new UintGene( "ratio2", 0x88, 0xff, 0.05 ) );
+
+//            genome.addGene( new UintGene( "colorR", 0, 0xFF, 0.2, LimitMethod.CUT_OFF ) );
+//            genome.addGene( new UintGene( "colorG", 0, 0xFF, 0.2, LimitMethod.CUT_OFF ) );
+//            genome.addGene( new UintGene( "colorB", 0, 0xFF, 0.2, LimitMethod.CUT_OFF ) );
 
         }
 

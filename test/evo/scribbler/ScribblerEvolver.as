@@ -89,14 +89,6 @@ package test.evo.scribbler
             genome.addGene( new NumberGene( "straightening", 0.85, 0.95, 0.05 ) );
 
             genome.addGene( new NumberGene( "alpha", 0.5, 1, 0.1 ) );
-//            genome.addGene( new NumberGene( "brightness", 0, 0.5, 0.1, LimitMethod.CUT_OFF ) );
-
-//            genome.addGene( new CollectionGene( "colorR", [ 0x00, 0xff ], 0.1, LimitMethod.WRAP, 0 ) );
-
-//            genome.addGene( new NumberGene  ( "colorR", 0x00, 0xFF, 0.1, LimitMethod.CUT_OFF ) );
-//            genome.addGene( new NumberGene  ( "colorG", 0x00, 0xFF, 0.1, LimitMethod.CUT_OFF ) );
-//            genome.addGene( new NumberGene  ( "colorB", 0x00, 0xFF, 0.1, LimitMethod.CUT_OFF ) );
-
         }
 
         // ____________________________________________________________________________________________________

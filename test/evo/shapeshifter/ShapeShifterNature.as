@@ -20,10 +20,10 @@ package test.evo.shapeshifter
         private var _currMinSize    :Number;
         private var _currMaxSize    :Number;
 
-        private var _minSizeRange   :Range = new Range( 25, 2 );
-        private var _maxSizeRange   :Range = new Range( 50, 8 );
+        private var _minSizeRange   :Range = new Range( 60, 2 );
+        private var _maxSizeRange   :Range = new Range( 75, 8 );
 
-        private var _numEvosRange   :Range = new Range( 400, 1000 );
+        private var _numEvosRange   :Range = new Range( 100, 1000 );
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
@@ -32,7 +32,9 @@ package test.evo.shapeshifter
         {
             super( sourceBitmapData );
 
-            maxNumPopulations = 4;
+            minEvoFitness = 0.8;
+            maxNumPopulations = 6;
+            useMating = false;
         }
 
         // ____________________________________________________________________________________________________
@@ -60,7 +62,16 @@ package test.evo.shapeshifter
 
         override protected function initializePopulation( useMating:Boolean = true ):void
         {
-            var relPop:Number = ( status.populationNr - 1 ) / ( maxNumPopulations - 1 );
+            var relPop:Number;
+            if ( maxNumPopulations > 1 )
+            {
+                relPop = ( status.populationNr - 1 ) / ( maxNumPopulations - 1 );
+            }
+            else
+            {
+                relPop = 1;
+            }
+
             numEvosPerPopulation = _numEvosRange.getValueFromRelativePos( relPop );
 
             _currMinSize = _minSizeRange.getValueFromRelativePos( relPop );

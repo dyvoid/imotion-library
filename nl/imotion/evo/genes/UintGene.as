@@ -59,12 +59,9 @@ package nl.imotion.evo.genes
 
         override public function getValue():*
         {
-            var n:Number = baseValue * _totalRange;
-            //Optimized Math.floor()
-            var ni:int = n;
-            ni = ( n < 0 && n != ni ) ? ni - 1 : ni;
+            var n:uint = baseValue * _totalRange;
 
-            return _minVal + ni;
+            return _minVal + n;
         }
 
 

@@ -1,5 +1,6 @@
-package test.evo.scribbler
+package test.evo.cell
 {
+    import test.evo.scribbler.*;
     import flash.display.Bitmap;
 
     import mx.core.BitmapAsset;
@@ -11,22 +12,22 @@ package test.evo.scribbler
      * @author Pieter van de Sluis
      */
 
-    [SWF(backgroundColor="#ffffff",width="1100",height="800",frameRate="31")]
-    public class ScribblerMain extends BaseMain
+    [SWF(backgroundColor="#ff00ff",width="1100",height="800",frameRate="31")]
+    public class CellMain extends BaseMain
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        [Embed(source="../assets/lion_silhouette.png")]
+        [Embed(source="../assets/Tiger800x640.png")]
         private var SourceImage:Class;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function ScribblerMain()
+        public function CellMain()
         {
             var image:Bitmap = new SourceImage();
-            var nature:ScribblerNature = new ScribblerNature( image.bitmapData );
+            var nature:CellNature = new CellNature( image.bitmapData );
 
             start( nature );
         }

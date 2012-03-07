@@ -31,11 +31,11 @@ package test.evo.nature
         private var _sourceBitmapData        :BitmapData;
 
         private var _maxNumPopulations       :uint = 1;
-        private var _numEvosPerPopulation    :uint = 2;
+        private var _numEvosPerPopulation    :uint = 50;
 
         private var _evaluator       :IFitnessEvaluator;
 
-        private var _minEvoFitness   :Number = 0.7;
+        private var _minEvoFitness   :Number = 0.5;
 
         private var _fitnessList     :/*IBitmapEvolver*/Array = [];
 
@@ -80,39 +80,7 @@ package test.evo.nature
 
             _status.type = EvolveStatus.FINISHED_GENERATION;
 
-            var evo:IBitmapEvolver = _firstEvo;
-            var newPopulationFitness:Number = 0;
-
-            var i:int = 0;
-
-            do
-            {
-                if ( IBitmapEvolver( evo ).momentum != 0 || !IBitmapEvolver( evo ).momentumIsReady )
-                {
-                    evo.mutate();
-                    var fitness:Number = _evaluator.evaluate( evo );
-
-                    if ( evo.fitness < fitness )
-                    {
-                        evo.reward( fitness );
-                    }
-                    else
-                    {
-                        evo.punish();
-                    }
-                }
-                else if ( evo.fitness < _minEvoFitness )
-                {
-                    evo.genome = createMatedGenome();
-                    resetEvo( evo );
-                }
-
-                newPopulationFitness += evo.fitness;
-
-                evo = IBitmapEvolver( evo.next );
-            }
-            while ( evo );
-
+            var newPopulationFitness:Number = mutateAndEvaluateEvos( _firstEvo );
             newPopulationFitness = newPopulationFitness / _fitnessList.length;
             _momentumCalc.addSample( newPopulationFitness );
 
@@ -183,8 +151,7 @@ package test.evo.nature
 
             for each ( var evo:IBitmapEvolver in _fitnessList )
             {
-                if ( evo.fitness > _minEvoFitness )
-                    result.addChildAt( evo.getBitmap(), 0 );
+                result.addChildAt( evo.getBitmap(), 0 );
             }
 
             var resultBmd:BitmapData = new BitmapData( _sourceBitmapData.width, _sourceBitmapData.height, true, 0x00000000 )
@@ -207,7 +174,7 @@ package test.evo.nature
             if ( !_firstEvo )
             {
                 _firstEvo = createEvo();
-                _fitnessList[ _fitnessList.length ] = _firstEvo;
+                _fitnessList[ 0 ] = _firstEvo;
             }
 
             var evo:IBitmapEvolver = _firstEvo;
@@ -246,8 +213,56 @@ package test.evo.nature
         
         protected function resetEvo( evo:IBitmapEvolver ):void
         {
-            // Implement in subclass
             evo.reset();
+        }
+
+
+        protected function mutateEvo( evo:IBitmapEvolver ):void
+        {
+            evo.mutate();
+        }
+
+
+        protected function evaluateEvo( evo:IBitmapEvolver ):Number
+        {
+            return _evaluator.evaluate( evo )
+        }
+
+
+        protected function mutateAndEvaluateEvos( firstEvo:IBitmapEvolver ):Number
+        {
+            var evo:IBitmapEvolver = firstEvo;
+            var newPopulationFitness:Number = 0;
+
+            do
+            {
+                if ( evo.momentum != 0 || !IBitmapEvolver( evo ).momentumIsReady )
+                {
+                    mutateEvo( evo );
+                    var fitness:Number = evaluateEvo( evo );
+
+                    if ( evo.fitness < fitness )
+                    {
+                        evo.reward( fitness );
+                    }
+                    else
+                    {
+                        evo.punish();
+                    }
+                }
+                else if ( evo.fitness < _minEvoFitness )
+                {
+                    evo.genome = createMatedGenome();
+                    resetEvo( evo );
+                }
+
+                newPopulationFitness += evo.fitness;
+
+                evo = IBitmapEvolver( evo.next );
+            }
+            while ( evo );
+
+            return newPopulationFitness;
         }
 
 
@@ -270,13 +285,13 @@ package test.evo.nature
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
-        protected function get numEvosPerPopulation():Number
+        public function get numEvosPerPopulation():uint
         {
             return _numEvosPerPopulation;
         }
 
 
-        protected function set numEvosPerPopulation( value:Number ):void
+        public function set numEvosPerPopulation( value:uint ):void
         {
             _numEvosPerPopulation = value;
         }
@@ -320,6 +335,72 @@ package test.evo.nature
         {
             _useMating = value;
         }
+
+
+        public function get minEvoFitness():Number
+        {
+            return _minEvoFitness;
+        }
+
+
+        public function set minEvoFitness( value:Number ):void
+        {
+            _minEvoFitness = value;
+        }
+
+
+        public function get firstEvo():IBitmapEvolver
+        {
+            return _firstEvo;
+        }
+
+
+        public function set firstEvo( value:IBitmapEvolver ):void
+        {
+            _firstEvo = value;
+        }
+
+
+        public function get fitnessList():Array
+        {
+            return _fitnessList;
+        }
+
+        public function set fitnessList( value:Array ):void
+        {
+            _fitnessList = value;
+        }
+
+
+        public function get targetPopulationFitness():Number
+        {
+            return _targetPopulationFitness;
+        }
+
+
+        public function set targetPopulationFitness( value:Number ):void
+        {
+            _targetPopulationFitness = value;
+        }
+
+
+        public function get minGenerationMomentum():Number
+        {
+            return _minGenerationMomentum;
+        }
+
+
+        public function set minGenerationMomentum( value:Number ):void
+        {
+            _minGenerationMomentum = value;
+        }
+
+
+        public function get momentumCalc():MomentumCalculator
+        {
+            return _momentumCalc;
+        }
+
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

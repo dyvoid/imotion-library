@@ -36,9 +36,6 @@ package test.evo.shapeshifter
 
     import nl.imotion.evo.evolvers.IUpdateableDisplayObject;
 
-    import test.evo.*;
-    import test.evo.util.Rndm;
-
 
     /**
      * @author Pieter van de Sluis
@@ -54,8 +51,9 @@ package test.evo.shapeshifter
         private var _seed:Number = 0.5;
 
         private var _texture:BitmapData;
-
-        private var _randomizer:Rndm;
+        private var _textureOffsetX:Number;
+        private var _textureOffsetY:Number;
+        private var _textureOffsetRotation:Number;
 
         private var _size:Number = 50;
         private var _distortionRatio:Number = 0;
@@ -63,18 +61,20 @@ package test.evo.shapeshifter
 
         private var _shape:Shape;
 
-        private var _colorR:Number;
-        private var _colorG:Number;
-        private var _colorB:Number;
+        private var _redMultiplier:Number;
+        private var _greenMultiplier:Number;
+        private var _blueMultiplier:Number;
 
         private var _graphics:Graphics;
+
+        private var _randomizer:SeededRandom;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
         public function ShapeShifter()
         {
-            _randomizer = new Rndm();
+            _randomizer = new SeededRandom();
             this.addChild( _shape = new Shape() );
             _graphics = _shape.graphics;
         }
@@ -85,20 +85,22 @@ package test.evo.shapeshifter
         public function update():void
         {
             _randomizer.seed = _seed;
+            _randomizer.size = _numPoints;
             _randomizer.reset();
+
             _graphics.clear();
 
             var m:Matrix = new Matrix();
-            m.rotate( ( Math.PI * 2 ) * _randomizer.random() );
-            m.tx = _randomizer.random() * _texture.width;
-            m.ty = _randomizer.random() * _texture.height;
+            m.rotate( _textureOffsetRotation * ( Math.PI * 2 ) );
+            m.tx = _textureOffsetX * _texture.width;
+            m.ty = _textureOffsetY * _texture.height;
             _graphics.beginBitmapFill( _texture, m );
 
             var colorTransformer:ColorTransform = _shape.transform.colorTransform;
 
-            colorTransformer.redMultiplier = _colorR;
-            colorTransformer.greenMultiplier = _colorG;
-            colorTransformer.blueMultiplier = _colorB;
+            colorTransformer.redMultiplier = _redMultiplier;
+            colorTransformer.greenMultiplier = _greenMultiplier;
+            colorTransformer.blueMultiplier = _blueMultiplier;
 
             _shape.transform.colorTransform = colorTransformer;
 
@@ -142,39 +144,39 @@ package test.evo.shapeshifter
         // GETTERS / SETTERS
 
 
-        public function get colorR():Number
+        public function get redMultiplier():Number
         {
-            return _colorR;
+            return _redMultiplier;
         }
 
 
-        public function set colorR( value:Number ):void
+        public function set redMultiplier( value:Number ):void
         {
-            _colorR = value;
+            _redMultiplier = value;
         }
 
 
-        public function get colorG():Number
+        public function get greenMultiplier():Number
         {
-            return _colorG;
+            return _greenMultiplier;
         }
 
 
-        public function set colorG( value:Number ):void
+        public function set greenMultiplier( value:Number ):void
         {
-            _colorG = value;
+            _greenMultiplier = value;
         }
 
 
-        public function get colorB():Number
+        public function get blueMultiplier():Number
         {
-            return _colorB;
+            return _blueMultiplier;
         }
 
 
-        public function set colorB( value:Number ):void
+        public function set blueMultiplier( value:Number ):void
         {
-            _colorB = value;
+            _blueMultiplier = value;
         }
 
 
@@ -235,6 +237,42 @@ package test.evo.shapeshifter
         public function set texture( value:BitmapData ):void
         {
             _texture = value;
+        }
+
+
+        public function get textureOffsetX():Number
+        {
+            return _textureOffsetX;
+        }
+
+
+        public function set textureOffsetX( value:Number ):void
+        {
+            _textureOffsetX = value;
+        }
+
+
+        public function get textureOffsetY():Number
+        {
+            return _textureOffsetY;
+        }
+
+
+        public function set textureOffsetY( value:Number ):void
+        {
+            _textureOffsetY = value;
+        }
+
+
+        public function get textureOffsetRotation():Number
+        {
+            return _textureOffsetRotation;
+        }
+
+
+        public function set textureOffsetRotation( value:Number ):void
+        {
+            _textureOffsetRotation = value;
         }
 
 

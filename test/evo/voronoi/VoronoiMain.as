@@ -1,5 +1,6 @@
-package test.evo.scribbler
+package test.evo.voronoi
 {
+    import test.evo.scribbler.*;
     import flash.display.Bitmap;
 
     import mx.core.BitmapAsset;
@@ -12,21 +13,21 @@ package test.evo.scribbler
      */
 
     [SWF(backgroundColor="#ffffff",width="1100",height="800",frameRate="31")]
-    public class ScribblerMain extends BaseMain
+    public class VoronoiMain extends BaseMain
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        [Embed(source="../assets/lion_silhouette.png")]
+        [Embed(source="../assets/charlize.png")]
         private var SourceImage:Class;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function ScribblerMain()
+        public function VoronoiMain()
         {
             var image:Bitmap = new SourceImage();
-            var nature:ScribblerNature = new ScribblerNature( image.bitmapData );
+            var nature:VoronoiNature = new VoronoiNature( image.bitmapData );
 
             start( nature );
         }

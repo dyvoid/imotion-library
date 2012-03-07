@@ -20,10 +20,10 @@ package test.evo.airbrush
         private var _currMinSize    :Number;
         private var _currMaxSize    :Number;
 
-        private var _minSizeRange   :Range = new Range( 2, 2 );
-        private var _maxSizeRange   :Range = new Range( 20, 5 );
+        private var _minSizeRange   :Range = new Range( 100, 10 );
+        private var _maxSizeRange   :Range = new Range( 150, 15 );
 
-        private var _numEvosRange   :Range = new Range( 200, 2000 );
+        private var _numEvosRange   :Range = new Range( 50, 500 );
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
@@ -32,7 +32,9 @@ package test.evo.airbrush
         {
             super( sourceBitmapData );
 
+            minEvoFitness = 0.8;
             maxNumPopulations = 3;
+//            useMating = false;
         }
 
         // ____________________________________________________________________________________________________
@@ -41,8 +43,8 @@ package test.evo.airbrush
         override protected function createEvo():IBitmapEvolver
         {
             var evo:AirbrushEvolver = new AirbrushEvolver( sourceBitmapData.width, sourceBitmapData.height );
-//            evo.minSize = _currMinSize;
-//            evo.maxSize = _currMaxSize;
+            evo.minSize = _currMinSize;
+            evo.maxSize = _currMaxSize;
 
             return evo;
         }
@@ -51,8 +53,8 @@ package test.evo.airbrush
         override protected function resetEvo( evo:IBitmapEvolver ):void
         {
             var s:AirbrushEvolver = evo as AirbrushEvolver;
-//            s.minSize = _currMinSize;
-//            s.maxSize = _currMaxSize;
+            s.minSize = _currMinSize;
+            s.maxSize = _currMaxSize;
 
             super.resetEvo( evo );
         }
