@@ -5,6 +5,9 @@ package test.evo.cell
     import flash.geom.Point;
     import flash.geom.Rectangle;
 
+    import nl.imotion.evo.evolvers.Evolver;
+    import nl.imotion.evo.evolvers.ILinkedEvolver;
+
     import nl.imotion.utils.grid.GridCalculator;
 
     import flash.display.BitmapData;
@@ -26,7 +29,7 @@ package test.evo.cell
         private var _cellWidth      :Number;
         private var _cellHeight     :Number;
 
-        private var _minSurfaceSize :Number = 1024;
+        private var _minSurfaceSize :Number = 256;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
@@ -84,9 +87,26 @@ package test.evo.cell
             }
             while ( evo );
 
-            result.applyFilter( result, result.rect, new Point( 0, 0 ), new BlurFilter( 30, 30, BitmapFilterQuality.HIGH ) );
+            result.applyFilter( result, result.rect, new Point( 0, 0 ), new BlurFilter( 60, 60, BitmapFilterQuality.HIGH ) );
 
             return result;
+        }
+
+
+        public function getXML():XML
+        {
+            var xml:XML = <root />;
+            var evo:ILinkedEvolver = firstEvo;
+
+            do
+            {
+                xml.appendChild( evo.genome.toXML() );
+
+                evo = evo.next;
+            }
+            while ( evo );
+
+            return xml;
         }
 
 
@@ -105,7 +125,7 @@ package test.evo.cell
 
             if ( sourceBitmapData.width > sourceBitmapData.height )
             {
-                numRows = 4;
+                numRows = 2;
                 _cellHeight = sourceBitmapData.height / numRows;
 
                 numCols = int( sourceBitmapData.width / _cellHeight );
@@ -113,7 +133,7 @@ package test.evo.cell
             }
             else
             {
-                numCols = 4;
+                numCols = 2;
                 _cellWidth = sourceBitmapData.width / numCols;
 
                 numRows = int( sourceBitmapData.height / _cellWidth );

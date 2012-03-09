@@ -1,6 +1,12 @@
 package test.evo.base
 {
     import flash.display.BitmapData;
+    import flash.events.MouseEvent;
+    import flash.net.FileReference;
+    import flash.text.TextField;
+    import flash.utils.ByteArray;
+
+    import mx.graphics.codec.PNGEncoder;
 
     import test.evo.scribbler.*;
     import flash.display.Bitmap;
@@ -25,6 +31,8 @@ package test.evo.base
         private var _mainContainer      :Sprite;
         private var _resultContainer    :Sprite;
         private var _previewContainer   :Sprite;
+
+        private var _saveButton         :Sprite;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
@@ -61,6 +69,22 @@ package test.evo.base
 
             _previewContainer = new Sprite();
             _mainContainer.addChild( _previewContainer );
+
+            _saveButton = new Sprite();
+            _saveButton.buttonMode = true;
+            _saveButton.mouseChildren = false;
+
+            var saveText:TextField = new TextField();
+            saveText.text = "save";
+            saveText.width  = saveText.textWidth + 5;
+            saveText.height = saveText.textHeight + 5;
+            _saveButton.addChild( saveText );
+
+            _saveButton.x = stage.stageWidth  - _saveButton.getBounds( this ).width  - 10;
+            _saveButton.y = stage.stageHeight - _saveButton.getBounds( this ).height - 10;
+            this.addChild( _saveButton );
+
+            _saveButton.addEventListener( MouseEvent.CLICK, handleSaveButtonClick );
         }
 
 
@@ -70,6 +94,19 @@ package test.evo.base
             {
                 _previewContainer.removeChildAt( 0 );
             }
+        }
+
+
+        private function saveImage():void
+        {
+            var result:BitmapData = new BitmapData( _mainContainer.width, _mainContainer.height );
+            result.draw( _mainContainer );
+
+            var encoder:PNGEncoder = new PNGEncoder();
+            var encodedPNG:ByteArray = encoder.encode( result );
+
+            var fileRef:FileReference = new FileReference();
+            fileRef.save( encodedPNG, "result.png" );
         }
 
         // ____________________________________________________________________________________________________
@@ -125,6 +162,12 @@ package test.evo.base
         private function enterFrameHandler( e:Event ):void
         {
             evolve();
+        }
+
+
+        private function handleSaveButtonClick( e:MouseEvent ):void
+        {
+            saveImage();
         }
 
     }

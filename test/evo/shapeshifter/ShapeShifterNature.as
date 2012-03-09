@@ -20,20 +20,27 @@ package test.evo.shapeshifter
         private var _currMinSize    :Number;
         private var _currMaxSize    :Number;
 
-        private var _minSizeRange   :Range = new Range( 60, 2 );
-        private var _maxSizeRange   :Range = new Range( 75, 8 );
+        private var _minSizeRange   :Range = new Range( 30, 5 );
+        private var _maxSizeRange   :Range = new Range( 100, 60 );
 
-        private var _numEvosRange   :Range = new Range( 100, 1000 );
+        private var _numEvosRange   :Range = new Range( 100, 500 );
+
+        [Embed(source="../assets/charlize_complexity_map.png")]
+        private var ComplexityMap:Class;
+
+        private var _complexityMap:BitmapData;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
         public function ShapeShifterNature( sourceBitmapData:BitmapData )
         {
+            _complexityMap = new ComplexityMap().bitmapData;
+
             super( sourceBitmapData );
 
             minEvoFitness = 0.8;
-            maxNumPopulations = 6;
+            maxNumPopulations = 20;
             useMating = false;
         }
 
@@ -42,7 +49,7 @@ package test.evo.shapeshifter
 
         override protected function createEvo():IBitmapEvolver
         {
-            var evo:ShapeShifterEvolver = new ShapeShifterEvolver( sourceBitmapData.width, sourceBitmapData.height );
+            var evo:ShapeShifterEvolver = new ShapeShifterEvolver( sourceBitmapData.width, sourceBitmapData.height, _complexityMap );
             evo.minSize = _currMinSize;
             evo.maxSize = _currMaxSize;
 

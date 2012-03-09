@@ -38,7 +38,7 @@ package test.evo.voronoi
 
             minEvoFitness = 0.5;
             maxNumPopulations = 1;
-            numEvosPerPopulation = 300;
+            numEvosPerPopulation = 100;
 
             _plotBounds = new Rectangle( 0, 0, sourceBitmapData.width, sourceBitmapData.height );
             _points = new Vector.<Point>();
@@ -54,20 +54,6 @@ package test.evo.voronoi
             _points[ _points.length ] = evo.point;
 
             return evo;
-        }
-
-
-        override protected function resetEvo( evo:IBitmapEvolver ):void
-        {
-            var s:VoronoiRegionEvolver = evo as VoronoiRegionEvolver;
-
-            super.resetEvo( evo );
-        }
-
-
-        override public function evolve():EvolveStatus
-        {
-            return super.evolve();
         }
 
 
@@ -139,7 +125,6 @@ package test.evo.voronoi
             while ( evo );
 
             _voronoi = new Voronoi( _points, null, _plotBounds );
-            var reg:Object = _voronoi.regions();
 
 
             evo = firstEvo;
@@ -147,33 +132,30 @@ package test.evo.voronoi
             {
                 VoronoiRegionEvolver( evo ).voronoi = _voronoi;
 
-//                if ( IBitmapEvolver( evo ).momentum != 0 || !IBitmapEvolver( evo ).momentumIsReady )
-//                {
-                    var fitness:Number = evaluateEvo( evo );
+                var fitness:Number = evaluateEvo( evo );
 
-                    if ( evo.fitness < fitness )
+                if ( evo.fitness < fitness )
+                {
+                    evo.reward( fitness );
+                }
+                else
+                {
+                    evo.punish();
+
+                    if ( evo.momentum == 0 && evo.fitness < minEvoFitness )
                     {
-                        evo.reward( fitness );
+                        evo.genome = createMatedGenome();
+                        resetEvo( evo );
                     }
-                    else
-                    {
-                        evo.punish();
-
-                        if ( evo.momentum == 0 && evo.fitness < minEvoFitness )
-                        {
-                            evo.genome = createMatedGenome();
-                            resetEvo( evo );
-                        }
-
-                    }
-//                }
-
+                }
 
                 newPopulationFitness += evo.fitness;
 
                 evo = IBitmapEvolver( evo.next );
             }
             while ( evo );
+
+            newPopulationFitness = newPopulationFitness / fitnessList.length;
 
             return newPopulationFitness;
         }

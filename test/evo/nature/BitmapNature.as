@@ -197,7 +197,6 @@ package test.evo.nature
                 evoCount++;
 
                 evo = IBitmapEvolver( evo.next );
-
             }
             while ( evo );
         }
@@ -276,8 +275,8 @@ package test.evo.nature
             }
             else
             {
-                var genome1:Genome = _fitnessList[ 0 ].genome.clone();
-                var genome2:Genome = _fitnessList[ 1 ].genome.clone();
+                var genome1:Genome = _fitnessList[ 0 ].genome;
+                var genome2:Genome = _fitnessList[ 1 ].genome;
 
                 return genome1.mate( genome2 );
             }

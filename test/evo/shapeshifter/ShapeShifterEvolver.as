@@ -26,6 +26,8 @@
 
 package test.evo.shapeshifter
 {
+    import flash.display.BitmapData;
+
     import nl.imotion.evo.genes.CollectionGene;
     import nl.imotion.evo.genes.IntGene;
 
@@ -35,6 +37,7 @@ package test.evo.shapeshifter
     import nl.imotion.evo.genes.LimitMethod;
     import nl.imotion.evo.genes.NumberGene;
     import nl.imotion.evo.genes.UintGene;
+    import nl.imotion.utils.range.Range;
 
     import test.evo.util.Texture;
 
@@ -52,12 +55,18 @@ package test.evo.shapeshifter
         private var _minSize        :Number;
         private var _maxSize        :Number;
 
+        private var _sizeRange      :Range;
+
+        private var _complexityMap   :BitmapData;
+
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function ShapeShifterEvolver( areaWidth:Number, areaHeight:Number )
+        public function ShapeShifterEvolver( areaWidth:Number, areaHeight:Number, complexityMap:BitmapData = null )
         {
             super( new ShapeShifter(), areaWidth, areaHeight );
+
+            _complexityMap = complexityMap;
 
             init();
         }
@@ -73,6 +82,25 @@ package test.evo.shapeshifter
             return super.reset();
         }
 
+
+        override public function mutate( mutationDampening:Number = 0, updateMomentum:Boolean = false ):Genome
+        {
+            super.mutate( mutationDampening, updateMomentum );
+
+            if ( _complexityMap )
+            {
+                var x:Number = genome.getGeneByPropName( "x" ).baseValue * areaWidth;
+                var y:Number = genome.getGeneByPropName( "y" ).baseValue * areaHeight;
+
+                var pixelVal:uint = _complexityMap.getPixel( x, y );
+
+                var sizeRatio:Number = 1 - ( ( ( pixelVal >> 16 ) & 0xFF ) / 0xff );
+                genome.getGeneByPropName( "size" ).baseValue = sizeRatio;
+            }
+
+            return genome;
+        }
+
         // ____________________________________________________________________________________________________
         // PRIVATE
 
@@ -80,21 +108,21 @@ package test.evo.shapeshifter
         {
             genome = new Genome();
 
-            genome.addGene( new UintGene( "x", 0, areaWidth, 0.001 ) );
-            genome.addGene( new UintGene( "y", 0, areaHeight, 0.001 ) );
+            genome.addGene( new UintGene( "x", 0, areaWidth, 0 ) );
+            genome.addGene( new UintGene( "y", 0, areaHeight, 0 ) );
             genome.addGene( new IntGene( "rotation", -180, 180, 0.1, LimitMethod.WRAP ) );
 
 //            genome.addGene( new NumberGene( "scaleX", 0.5, 2, 0.1 ) );
 //            genome.addGene( new NumberGene( "scaleY", 0.5, 2, 0.1 ) );
 
-            genome.addGene( new CollectionGene( "texture", [ Texture.ABSTRACT ], 0.1 ) );
+            genome.addGene( new CollectionGene( "texture", [ Texture.NOISE ], 0.1 ) );
             genome.addGene( new NumberGene( "textureOffsetX", 0, 1, 0.01, LimitMethod.WRAP ) );
             genome.addGene( new NumberGene( "textureOffsetY", 0,1, 0.01, LimitMethod.WRAP ) );
             genome.addGene( new NumberGene( "textureOffsetRotation", 0, 1, 0.01, LimitMethod.WRAP ) );
 
             genome.addGene( new UintGene( "seed", 0, 0xffffff, 0 ) );
             genome.addGene( new UintGene( "numPoints", 4, 15, 0.3 ) );
-            genome.addGene( new UintGene( "size", 50, 100, 0.01 ) );
+            genome.addGene( new UintGene( "size", 50, 100, 0 ) );
             genome.addGene( new NumberGene( "distortionRatio", 0.2, 0.8, 0.1 ) );
 
             genome.addGene( new NumberGene( "redMultiplier", 0, 2, 0.1 ) );
@@ -118,6 +146,11 @@ package test.evo.shapeshifter
         public function set minSize( value:Number ):void
         {
             _minSize = value;
+
+            if ( _maxSize )
+            {
+                _sizeRange = new Range( _minSize, _maxSize );
+            }
         }
 
 
@@ -129,6 +162,11 @@ package test.evo.shapeshifter
         public function set maxSize( value:Number ):void
         {
             _maxSize = value;
+
+            if ( _minSize )
+            {
+                _sizeRange = new Range( _minSize, _maxSize );
+            }
         }
 
         // ____________________________________________________________________________________________________
