@@ -56,12 +56,16 @@ package test.evo.cell
         private var _width:Number = 0;
         private var _height:Number = 0;
 
+        private var _minSurfaceSize:Number;
+
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function CellEvolver( areaWidth:Number, areaHeight:Number )
+        public function CellEvolver( areaWidth:Number, areaHeight:Number, minSurfaceSize:Number )
         {
             super( new Cell(), areaWidth, areaHeight );
+
+            _minSurfaceSize = minSurfaceSize;
 
             init();
         }
@@ -100,7 +104,9 @@ package test.evo.cell
             genome.addGene( new NumberGene( "width", 0, areaWidth, 0, LimitMethod.CUT_OFF, 0 ) );
             genome.addGene( new NumberGene( "height", 0, areaHeight, 0, LimitMethod.CUT_OFF, 0 ) );
 
-            genome.addGene( new NumberGene( "brightness", 0, 1, 0.1 ) );
+            genome.addGene( new UintGene( "colorR", 0x00, 0xFF, 0.15, LimitMethod.BOUNCE ) );
+            genome.addGene( new UintGene( "colorG", 0x00, 0xFF, 0.15, LimitMethod.BOUNCE ) );
+            genome.addGene( new UintGene( "colorB", 0x00, 0xFF, 0.15, LimitMethod.BOUNCE ) );
         }
 
         // ____________________________________________________________________________________________________

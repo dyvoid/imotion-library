@@ -64,7 +64,18 @@ package test.evo.base
         }
 
 
-        private function evolve():void
+        private function clearPreviewContainer():void
+        {
+            while( _previewContainer.numChildren > 0 )
+            {
+                _previewContainer.removeChildAt( 0 );
+            }
+        }
+
+        // ____________________________________________________________________________________________________
+        // PROTECTED
+
+        protected function evolve():void
         {
             var status:EvolveStatus = _nature.evolve();
 
@@ -94,22 +105,19 @@ package test.evo.base
             }
         }
 
-
-        private function clearPreviewContainer():void
-        {
-            while( _previewContainer.numChildren > 0 )
-            {
-                _previewContainer.removeChildAt( 0 );
-            }
-        }
-
-        // ____________________________________________________________________________________________________
-        // PROTECTED
-
-
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
+        protected function get resultContainer():Sprite
+        {
+            return _resultContainer;
+        }
+
+
+        protected function get previewContainer():Sprite
+        {
+            return _previewContainer;
+        }
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

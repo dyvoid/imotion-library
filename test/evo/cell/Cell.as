@@ -15,7 +15,9 @@ package test.evo.cell
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        private var _brightness     :Number = 0;
+        private var _colorR:uint = 0;
+        private var _colorG:uint = 0;
+        private var _colorB:uint = 0;
 
         private var _shapeWidth     :Number = 0;
         private var _shapeHeight    :Number = 0;
@@ -30,6 +32,32 @@ package test.evo.cell
 
         // ____________________________________________________________________________________________________
         // PUBLIC
+
+        public function get surfaceSize():Number
+        {
+            return _shapeWidth * _shapeHeight;
+        }
+
+        // ____________________________________________________________________________________________________
+        // PRIVATE
+
+        private function draw():void
+        {
+            var color:uint = ( _colorR << 16 ) | ( _colorG << 8 ) | _colorB;
+
+            graphics.clear();
+            graphics.beginFill( color );
+            graphics.lineStyle( 1, color, 1, false, LineScaleMode.NORMAL, CapsStyle.SQUARE );
+            graphics.drawRect( 0, 0, _shapeWidth, _shapeHeight );
+            graphics.endFill();
+        }
+
+        // ____________________________________________________________________________________________________
+        // PROTECTED
+
+
+        // ____________________________________________________________________________________________________
+        // GETTERS / SETTERS
 
         override public function set width( value:Number ):void
         {
@@ -69,49 +97,52 @@ package test.evo.cell
         }
 
 
-        public function get brightness():Number
+        public function get colorR():uint
         {
-            return _brightness;
+            return _colorR;
         }
 
 
-        public function set brightness( value:Number ):void
+        public function set colorR( value:uint ):void
         {
-            if ( _brightness == value ) return;
+            if ( _colorR == value ) return;
 
-            _brightness = value;
+            _colorR = value;
 
             draw();
         }
 
 
-        public function get surfaceSize():Number
+        public function get colorG():uint
         {
-            return _shapeWidth * _shapeHeight;
+            return _colorG;
         }
 
-        // ____________________________________________________________________________________________________
-        // PRIVATE
 
-        private function draw():void
+        public function set colorG( value:uint ):void
         {
-            var colorChannel:uint = 0xff * _brightness;
-            var color:uint = ( colorChannel << 16 ) | ( colorChannel << 8 ) | colorChannel;
+            if ( _colorG == value ) return;
 
-            graphics.clear();
-            graphics.beginFill( color );
-            graphics.lineStyle( 1, color, 1, false, LineScaleMode.NORMAL, CapsStyle.SQUARE );
-            graphics.drawRect( 0, 0, _shapeWidth, _shapeHeight );
-            graphics.endFill();
+            _colorG = value;
+
+            draw();
         }
 
-        // ____________________________________________________________________________________________________
-        // PROTECTED
+
+        public function get colorB():uint
+        {
+            return _colorB;
+        }
 
 
-        // ____________________________________________________________________________________________________
-        // GETTERS / SETTERS
+        public function set colorB( value:uint ):void
+        {
+            if ( _colorB == value ) return;
 
+            _colorB = value;
+
+            draw();
+        }
 
         // ____________________________________________________________________________________________________
         // EVENT HANDLERS

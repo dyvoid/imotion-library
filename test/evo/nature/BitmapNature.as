@@ -81,7 +81,6 @@ package test.evo.nature
             _status.type = EvolveStatus.FINISHED_GENERATION;
 
             var newPopulationFitness:Number = mutateAndEvaluateEvos( _firstEvo );
-            newPopulationFitness = newPopulationFitness / _fitnessList.length;
             _momentumCalc.addSample( newPopulationFitness );
 
             _fitnessList.sortOn( "fitness", Array.DESCENDING | Array.NUMERIC );
@@ -89,7 +88,7 @@ package test.evo.nature
             _status.fitness = newPopulationFitness;
             _status.momentum = _momentumCalc.momentum;
 
-            if ( newPopulationFitness > _targetPopulationFitness || ( _momentumCalc.isReady && ( Math.abs( _momentumCalc.momentum ) < _minGenerationMomentum ) ) )
+            if ( newPopulationFitness >= _targetPopulationFitness || ( _momentumCalc.isReady && ( Math.abs( _momentumCalc.momentum ) < _minGenerationMomentum ) ) )
             {
                 if ( _status.populationNr == _maxNumPopulations )
                 {
@@ -261,6 +260,8 @@ package test.evo.nature
                 evo = IBitmapEvolver( evo.next );
             }
             while ( evo );
+
+            newPopulationFitness = newPopulationFitness / _fitnessList.length;
 
             return newPopulationFitness;
         }
