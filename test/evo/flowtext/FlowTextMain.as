@@ -1,5 +1,7 @@
-package test.evo.airbrush
+package test.evo.flowtext
 {
+    import flash.text.Font;
+
     import test.evo.scribbler.*;
     import flash.display.Bitmap;
 
@@ -13,21 +15,25 @@ package test.evo.airbrush
      */
 
     [SWF(backgroundColor="#ffffff",width="1100",height="800",frameRate="31")]
-    public class AirbrushMain extends BaseMain
+    public class FlowTextMain extends BaseMain
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        [Embed(source="../assets/freedom.png")]
+        [Embed(source="../assets/freedom_silhouette.png")]
         private var SourceImage:Class;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function AirbrushMain()
+        public function FlowTextMain()
         {
+            Font.registerFont( Arial );
+            Font.registerFont( Andalus );
+            Font.registerFont( Junkos );
+
             var image:Bitmap = new SourceImage();
-            var nature:AirbrushNature = new AirbrushNature( image.bitmapData );
+            var nature:FlowTextNature = new FlowTextNature( image.bitmapData );
 
             start( nature );
         }

@@ -32,7 +32,7 @@ package test.evo.base
         private var _resultContainer    :Sprite;
         private var _previewContainer   :Sprite;
 
-        private var _saveButton         :Sprite;
+        private var _saveButton         :LabelButton;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
@@ -70,16 +70,7 @@ package test.evo.base
             _previewContainer = new Sprite();
             _mainContainer.addChild( _previewContainer );
 
-            _saveButton = new Sprite();
-            _saveButton.buttonMode = true;
-            _saveButton.mouseChildren = false;
-
-            var saveText:TextField = new TextField();
-            saveText.text = "save";
-            saveText.width  = saveText.textWidth + 5;
-            saveText.height = saveText.textHeight + 5;
-            _saveButton.addChild( saveText );
-
+            _saveButton = new LabelButton( "save image" );
             _saveButton.x = stage.stageWidth  - _saveButton.getBounds( this ).width  - 10;
             _saveButton.y = stage.stageHeight - _saveButton.getBounds( this ).height - 10;
             this.addChild( _saveButton );
@@ -99,7 +90,7 @@ package test.evo.base
 
         private function saveImage():void
         {
-            var result:BitmapData = new BitmapData( _mainContainer.width, _mainContainer.height );
+            var result:BitmapData = new BitmapData( _mainContainer.width, _mainContainer.height, true, 0x00000000 );
             result.draw( _mainContainer );
 
             var encoder:PNGEncoder = new PNGEncoder();
@@ -130,7 +121,7 @@ package test.evo.base
                 case EvolveStatus.FINISHED_All:
                     trace( "Finished population: " + ( status.populationNr ) + ". Population time: " + status.populationTime );
 
-                    _resultContainer.addChild( new Bitmap( _nature.getBitmapData() ) );
+                    _resultContainer.addChild( new Bitmap( _nature.draw() ) );
                 break;
             }
 

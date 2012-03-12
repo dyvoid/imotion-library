@@ -9,6 +9,8 @@ package test.evo.cell
 
     import nl.imotion.evo.evolvers.Evolver;
 
+    import test.evo.base.LabelButton;
+
     import test.evo.nature.EvolveStatus;
     import test.evo.scribbler.*;
     import flash.display.Bitmap;
@@ -28,7 +30,7 @@ package test.evo.cell
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        [Embed(source="../assets/charlize.png")]
+        [Embed(source="../assets/freedom.png")]
         private var SourceImage:Class;
 
         private var _nature:CellNature;
@@ -49,30 +51,39 @@ package test.evo.cell
 
         private function initView():void
         {
-            var exportButton:Sprite = new Sprite();
-            exportButton.buttonMode = true;
-            exportButton.mouseChildren = false;
+            var exportGenomeXMLButton:LabelButton = new LabelButton( "export genome xml" );
 
-            var exportText:TextField = new TextField();
-            exportText.text = "export XML";
-            exportText.width  = exportText.textWidth + 5;
-            exportText.height = exportText.textHeight + 5;
-            exportButton.addChild( exportText );
+            exportGenomeXMLButton.x = stage.stageWidth  - exportGenomeXMLButton.getBounds( this ).width  - 10;
+            exportGenomeXMLButton.y = stage.stageHeight - exportGenomeXMLButton.getBounds( this ).height - 40;
+            this.addChild( exportGenomeXMLButton );
 
-            exportButton.x = stage.stageWidth  - exportButton.getBounds( this ).width  - 10;
-            exportButton.y = stage.stageHeight - exportButton.getBounds( this ).height - 30;
-            this.addChild( exportButton );
+            exportGenomeXMLButton.addEventListener( MouseEvent.CLICK, handleGenomeExportClick );
 
-            exportButton.addEventListener( MouseEvent.CLICK, handleExportButtonClick );
+            var exportCenterPointXMLButton:LabelButton = new LabelButton( "export center point xml" );
+
+            exportCenterPointXMLButton.x = stage.stageWidth  - exportCenterPointXMLButton.getBounds( this ).width  - 10;
+            exportCenterPointXMLButton.y = stage.stageHeight - exportCenterPointXMLButton.getBounds( this ).height - 70;
+            this.addChild( exportCenterPointXMLButton );
+
+            exportCenterPointXMLButton.addEventListener( MouseEvent.CLICK, handleCenterPointExportClick );
         }
 
 
-        private function handleExportButtonClick( e:MouseEvent ):void
+        private function handleGenomeExportClick( e:MouseEvent ):void
         {
-            var xml:XML = _nature.getXML();
+            var xml:XML = _nature.getGenomeXML();
 
             var fileRef:FileReference = new FileReference();
-            fileRef.save( xml, "result.xml" );
+            fileRef.save( xml, "genome.xml" );
+        }
+
+
+        private function handleCenterPointExportClick( e:MouseEvent ):void
+        {
+            var xml:XML = _nature.getCenterPointXML();
+
+            var fileRef:FileReference = new FileReference();
+            fileRef.save( xml, "centerpoint.xml" );
         }
 
         // ____________________________________________________________________________________________________
@@ -93,7 +104,7 @@ package test.evo.cell
 
             if ( _nature.status.type == EvolveStatus.FINISHED_All )
             {
-                var complexityMap:BitmapData = _nature.getComplexityMap();
+                var complexityMap:BitmapData = _nature.drawComplexityMap();
 
                 resultContainer.addChild( new Bitmap( complexityMap ) );
             }

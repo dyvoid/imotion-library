@@ -24,18 +24,14 @@
  * http://code.google.com/p/imotionproductions/
  */
 
-package test.evo.voronoi
+package test.evo.capsule
 {
-    import com.nodename.Delaunay.Voronoi;
+    import nl.imotion.evo.genes.CollectionGene;
 
-    import flash.display.Bitmap;
-
-    import flash.geom.Point;
-
+    import test.evo.scribbler.*;
     import nl.imotion.evo.Genome;
     import nl.imotion.evo.evolvers.BitmapEvolver;
     import nl.imotion.evo.evolvers.IEvolver;
-    import nl.imotion.evo.genes.IntGene;
     import nl.imotion.evo.genes.LimitMethod;
     import nl.imotion.evo.genes.NumberGene;
     import nl.imotion.evo.genes.UintGene;
@@ -46,19 +42,20 @@ package test.evo.voronoi
      * Date: 19-sep-2010
      * Time: 20:06:56
      */
-    public class VoronoiRegionEvolver extends BitmapEvolver
+    public class CapsuleEvolver extends BitmapEvolver
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-
+        private var _minSize        :Number;
+        private var _maxSize        :Number;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function VoronoiRegionEvolver( areaWidth:Number, areaHeight:Number )
+        public function CapsuleEvolver( areaWidth:Number, areaHeight:Number )
         {
-            super( new VoronoiRegion(), areaWidth, areaHeight );
+            super( new Capsule(), areaWidth, areaHeight );
 
             init();
         }
@@ -66,18 +63,10 @@ package test.evo.voronoi
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-
-        override public function getBitmap():Bitmap
-        {
-            bitmap = null;
-
-            return super.getBitmap();
-        }
-
-
         override public function reset():IEvolver
         {
-            genome.resetGenes( [ "colorR", "colorG", "colorB" ] );
+            genome.editGene( "thickness", { minVal: _minSize, maxVal: _maxSize } );
+            genome.resetGenes( [ "x", "y" ] );
 
             return super.reset();
         }
@@ -89,22 +78,16 @@ package test.evo.voronoi
         {
             genome = new Genome();
 
-            genome.addGene( new NumberGene( "centerX", 0, areaWidth, 0 ) );
-            genome.addGene( new NumberGene( "centerY", 0, areaHeight, 0 ) );
+            genome.addGene( new UintGene( "x", 0, areaWidth, 0.0005 ) );
+            genome.addGene( new UintGene( "y", 0, areaHeight, 0.0005 ) );
 
-            genome.addGene( new NumberGene( "textureOffsetX", 0.1, 0.9, 0.00, LimitMethod.WRAP ) );
-            genome.addGene( new NumberGene( "textureOffsetY", 0.1, 0.9, 0.00, LimitMethod.WRAP ) );
-            genome.addGene( new NumberGene( "textureOffsetRotation", 0.5, 0.7, 0.00, LimitMethod.WRAP ) );
+            genome.addGene( new CollectionGene( "rotation", [ 0, 180 ], 0.1 ) );
 
-            genome.addGene( new NumberGene( "colorR", 0x00, 0xff, 0.3 ) );
-            genome.addGene( new NumberGene( "colorG", 0x00, 0xff, 0.3 ) );
-            genome.addGene( new NumberGene( "colorB", 0x00, 0xff, 0.3 ) );
+            genome.addGene( new UintGene( "thickness", 5, 25, 0.05 ) );
 
-            genome.addGene( new NumberGene( "redMultiplier", 0, 2, 0.1 ) );
-            genome.addGene( new NumberGene( "greenMultiplier", 0, 2, 0.1 ) );
-            genome.addGene( new NumberGene( "blueMultiplier", 0, 2, 0.1 ) );
+            genome.addGene( new UintGene( "length", 5, 100, 0.05 ) );
 
-            genome.apply( evoTarget );
+            genome.addGene( new UintGene( "brightness", 0x00, 0xff, 0.1 ) );
         }
 
         // ____________________________________________________________________________________________________
@@ -114,31 +97,25 @@ package test.evo.voronoi
         // ____________________________________________________________________________________________________
         // GETTERS / SETTERS
 
-        public function get point():Point
+        public function get minSize():Number
         {
-            return VoronoiRegion( evoTarget ).point;
+            return _minSize;
+        }
+
+        public function set minSize( value:Number ):void
+        {
+            _minSize = value;
         }
 
 
-        public function set voronoi( value:Voronoi ):void
+        public function get maxSize():Number
         {
-            VoronoiRegion( evoTarget ).voronoi = value;
+            return _maxSize;
         }
 
-
-        public function set centerX( value:Number ):void
+        public function set maxSize( value:Number ):void
         {
-            genome.getGeneByPropName( "centerX" ).baseValue = value / areaWidth;
-
-            genome.apply( evoTarget );
-        }
-
-
-        public function set centerY( value:Number ):void
-        {
-            genome.getGeneByPropName( "centerY" ).baseValue = value / areaHeight;
-            
-            genome.apply( evoTarget );
+            _maxSize = value;
         }
 
         // ____________________________________________________________________________________________________

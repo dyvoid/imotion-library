@@ -15,8 +15,11 @@ package test.evo.shapeshifter
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        [Embed(source="../assets/charlize.png")]
+        [Embed(source="../assets/freedom.png")]
         private var SourceImage:Class;
+
+        [Embed(source="../assets/freedom_complexity_map.png")]
+        private var ComplexityMap:Class;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
@@ -24,7 +27,8 @@ package test.evo.shapeshifter
         public function ShapeShiferMain()
         {
             var image:Bitmap = new SourceImage();
-            var nature:ShapeShifterNature = new ShapeShifterNature( image.bitmapData );
+            var complexityMap:Bitmap = new ComplexityMap();
+            var nature:ShapeShifterNature = new ShapeShifterNature( image.bitmapData, complexityMap.bitmapData );
 //            nature.useMating = false;
 
             start( nature );

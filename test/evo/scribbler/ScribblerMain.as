@@ -17,7 +17,7 @@ package test.evo.scribbler
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        [Embed(source="../assets/lion_silhouette.png")]
+        [Embed(source="../assets/freedom_silhouette.png")]
         private var SourceImage:Class;
 
         // ____________________________________________________________________________________________________

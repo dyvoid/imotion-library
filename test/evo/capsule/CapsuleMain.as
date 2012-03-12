@@ -1,4 +1,4 @@
-package test.evo.airbrush
+package test.evo.capsule
 {
     import test.evo.scribbler.*;
     import flash.display.Bitmap;
@@ -13,21 +13,21 @@ package test.evo.airbrush
      */
 
     [SWF(backgroundColor="#ffffff",width="1100",height="800",frameRate="31")]
-    public class AirbrushMain extends BaseMain
+    public class CapsuleMain extends BaseMain
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
 
-        [Embed(source="../assets/freedom.png")]
+        [Embed(source="../assets/charlize_silhouette.png")]
         private var SourceImage:Class;
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function AirbrushMain()
+        public function CapsuleMain()
         {
             var image:Bitmap = new SourceImage();
-            var nature:AirbrushNature = new AirbrushNature( image.bitmapData );
+            var nature:CapsuleNature = new CapsuleNature( image.bitmapData );
 
             start( nature );
         }

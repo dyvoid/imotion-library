@@ -9,6 +9,7 @@ package test.evo.voronoi
 
     import flash.display.BitmapData;
     import flash.geom.Rectangle;
+    import flash.utils.ByteArray;
 
     import nl.imotion.evo.evolvers.IBitmapEvolver;
 
@@ -29,6 +30,11 @@ package test.evo.voronoi
 
         private var _plotBounds     :Rectangle;
 
+        [Embed(source="../assets/charlize_centerpoint.xml", mimeType="application/octet-stream")]
+        private var CenterPointXMLData:Class;
+
+        private var _centerPointXML:XML;
+
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
@@ -39,6 +45,9 @@ package test.evo.voronoi
             minEvoFitness = 0.5;
             maxNumPopulations = 1;
             numEvosPerPopulation = 100;
+
+            var byteArray:ByteArray = new CenterPointXMLData() as ByteArray;
+            _centerPointXML = new XML( byteArray.readUTFBytes( byteArray.length ) );
 
             _plotBounds = new Rectangle( 0, 0, sourceBitmapData.width, sourceBitmapData.height );
             _points = new Vector.<Point>();
@@ -54,6 +63,41 @@ package test.evo.voronoi
             _points[ _points.length ] = evo.point;
 
             return evo;
+        }
+
+
+        override protected function initializePopulation( useMating:Boolean = true ):void
+        {
+            if ( _centerPointXML )
+            {
+                for ( var i:int = 0; i < _centerPointXML.item.length(); i++ )
+                {
+                    var node:XML = _centerPointXML.item[i];
+
+                    var evo:VoronoiRegionEvolver = createEvo() as VoronoiRegionEvolver;
+                    evo.centerX = Number( node.@x );
+                    evo.centerY = Number( node.@y );
+
+                    if( i > 0 )
+                    {
+                        var prevEvo:IBitmapEvolver = fitnessList[ i - 1 ];
+
+                        prevEvo.next = evo;
+                        evo.previous = prevEvo;
+                    }
+
+                    fitnessList[ fitnessList.length ] =evo;
+
+                    if ( i > 10 )
+                        break;
+                }
+
+                firstEvo = fitnessList[ 0 ];
+            }
+            else
+            {
+                super.initializePopulation( useMating );
+            }
         }
 
 
@@ -126,7 +170,6 @@ package test.evo.voronoi
 
             _voronoi = new Voronoi( _points, null, _plotBounds );
 
-
             evo = firstEvo;
             do
             {
@@ -152,6 +195,7 @@ package test.evo.voronoi
                 newPopulationFitness += evo.fitness;
 
                 evo = IBitmapEvolver( evo.next );
+                trace("next");
             }
             while ( evo );
 

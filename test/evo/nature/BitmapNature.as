@@ -1,6 +1,7 @@
 package test.evo.nature
 {
-    import test.evo.*;
+    import nl.imotion.evo.evolvers.ILinkedEvolver;
+
     import flash.display.BitmapData;
     import flash.display.DisplayObject;
     import flash.display.Sprite;
@@ -10,9 +11,7 @@ package test.evo.nature
     import nl.imotion.evo.evaluators.BitmapEvaluator;
     import nl.imotion.evo.evaluators.IFitnessEvaluator;
     import nl.imotion.evo.evolvers.IBitmapEvolver;
-    import nl.imotion.evo.evolvers.IBitmapEvolver;
     import nl.imotion.utils.momentum.MomentumCalculator;
-    import nl.imotion.utils.range.Range;
 
 
     /**
@@ -144,7 +143,7 @@ package test.evo.nature
         }
 
 
-        public function getBitmapData():BitmapData
+        public function draw():BitmapData
         {
             var result:Sprite = new Sprite();
 
@@ -157,6 +156,23 @@ package test.evo.nature
             resultBmd.draw( result );
 
             return resultBmd;
+        }
+
+
+        public function getGenomeXML():XML
+        {
+            var xml:XML = <root />;
+            var evo:ILinkedEvolver = firstEvo;
+
+            do
+            {
+                xml.appendChild( evo.genome.toXML() );
+
+                evo = evo.next;
+            }
+            while ( evo );
+
+            return xml;
         }
 
         // ____________________________________________________________________________________________________

@@ -19,10 +19,10 @@ package test.evo.scribbler
         private var _currMinSize    :Number;
         private var _currMaxSize    :Number;
 
-        private var _minSizeRange   :Range = new Range( 20, 2 );
-        private var _maxSizeRange   :Range = new Range( 50, 5 );
+        private var _minSizeRange   :Range = new Range( 4, 1 );
+        private var _maxSizeRange   :Range = new Range( 10, 3 );
 
-        private var _numEvosRange   :Range = new Range( 100, 2000 );
+        private var _numEvosRange   :Range = new Range( 300, 1000 );
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR

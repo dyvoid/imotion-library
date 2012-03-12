@@ -1,4 +1,4 @@
-package test.evo.shapeshifter
+package test.evo.capsule
 {
     import test.evo.scribbler.*;
     import flash.display.BitmapData;
@@ -12,7 +12,7 @@ package test.evo.shapeshifter
     /**
      * @author Pieter van de Sluis
      */
-    public class ShapeShifterNature extends BitmapNature
+    public class CapsuleNature extends BitmapNature
     {
         // ____________________________________________________________________________________________________
         // PROPERTIES
@@ -20,25 +20,20 @@ package test.evo.shapeshifter
         private var _currMinSize    :Number;
         private var _currMaxSize    :Number;
 
-        private var _minSizeRange   :Range = new Range( 30, 2 );
-        private var _maxSizeRange   :Range = new Range( 100, 30 );
+        private var _minSizeRange   :Range = new Range( 10, 4 );
+        private var _maxSizeRange   :Range = new Range( 20, 10 );
 
-        private var _numEvosRange   :Range = new Range( 100, 500 );
-
-        private var _complexityMap  :BitmapData;
+        private var _numEvosRange   :Range = new Range( 200, 1000 );
 
         // ____________________________________________________________________________________________________
         // CONSTRUCTOR
 
-        public function ShapeShifterNature( sourceBitmapData:BitmapData, complexityMap:BitmapData = null )
+        public function CapsuleNature( sourceBitmapData:BitmapData )
         {
-            _complexityMap = complexityMap;
-
             super( sourceBitmapData );
 
-            minEvoFitness = 0.85;
-            maxNumPopulations = 20;
-            useMating = false;
+            minEvoFitness = 0.8;
+            maxNumPopulations = 5;
         }
 
         // ____________________________________________________________________________________________________
@@ -46,7 +41,7 @@ package test.evo.shapeshifter
 
         override protected function createEvo():IBitmapEvolver
         {
-            var evo:ShapeShifterEvolver = new ShapeShifterEvolver( sourceBitmapData.width, sourceBitmapData.height, _complexityMap );
+            var evo:CapsuleEvolver = new CapsuleEvolver( sourceBitmapData.width, sourceBitmapData.height );
             evo.minSize = _currMinSize;
             evo.maxSize = _currMaxSize;
 
@@ -56,7 +51,7 @@ package test.evo.shapeshifter
 
         override protected function resetEvo( evo:IBitmapEvolver ):void
         {
-            var s:ShapeShifterEvolver = evo as ShapeShifterEvolver;
+            var s:CapsuleEvolver = evo as CapsuleEvolver;
             s.minSize = _currMinSize;
             s.maxSize = _currMaxSize;
 
@@ -66,16 +61,7 @@ package test.evo.shapeshifter
 
         override protected function initializePopulation( useMating:Boolean = true ):void
         {
-            var relPop:Number;
-            if ( maxNumPopulations > 1 )
-            {
-                relPop = ( status.populationNr - 1 ) / ( maxNumPopulations - 1 );
-            }
-            else
-            {
-                relPop = 1;
-            }
-
+            var relPop:Number = ( status.populationNr - 1 ) / ( maxNumPopulations - 1 );
             numEvosPerPopulation = _numEvosRange.getValueFromRelativePos( relPop );
 
             _currMinSize = _minSizeRange.getValueFromRelativePos( relPop );

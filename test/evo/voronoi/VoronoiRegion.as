@@ -48,6 +48,7 @@ package test.evo.voronoi
         public function VoronoiRegion()
         {
             _point = new Point( 0, 0 );
+            _texture = Texture.NOISE;
         }
 
         // ____________________________________________________________________________________________________
@@ -57,8 +58,6 @@ package test.evo.voronoi
         {
             var region:Vector.<Point> = _voronoi.region( _point );
             var color:uint = ( colorR << 16 ) | ( colorB << 8 ) | colorG;
-
-            _texture = Texture.NOISE;
 
             drawRegion( region, color );
         }
@@ -71,8 +70,10 @@ package test.evo.voronoi
             this.x = region[ 0 ].x;
             this.y = region[ 0 ].y;
 
+//            trace(region[ j ].x+"::"+region[ j ].y);
+
             graphics.clear();
-            graphics.lineStyle( 1, color );
+//            graphics.lineStyle( 1, color );
             graphics.beginFill( color );
 
             /*var m:Matrix = new Matrix();
@@ -92,6 +93,7 @@ package test.evo.voronoi
             {
                 var p:Point = region[ j ];
                 graphics.lineTo( p.x - this.x, p.y - this.y );
+//                trace(region[ j ].x+"::"+region[ j ].y);
             }
 
             graphics.endFill();

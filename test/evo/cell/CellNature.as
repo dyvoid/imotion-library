@@ -49,67 +49,6 @@ package test.evo.cell
         // ____________________________________________________________________________________________________
         // PUBLIC
 
-        public function getComplexityMap():BitmapData
-        {
-            var result:BitmapData = new BitmapData( sourceBitmapData.width, sourceBitmapData.height, false );
-
-            var minSurfaceSize:Number = _cellWidth * _cellHeight;
-            var maxSurfaceSize:Number = 0;
-
-            var evo:CellEvolver;
-
-            evo = CellEvolver( firstEvo );
-            do
-            {
-                var evoSurfaceSize:Number = evo.surfaceSize;
-
-                if ( evoSurfaceSize < minSurfaceSize )
-                    minSurfaceSize = evoSurfaceSize;
-
-                if ( evoSurfaceSize > maxSurfaceSize )
-                    maxSurfaceSize = evoSurfaceSize;
-
-                evo = CellEvolver( evo.next );
-            }
-            while ( evo );
-
-            var surfaceSizeRange:Range = new Range( minSurfaceSize, maxSurfaceSize );
-
-            evo = CellEvolver( firstEvo );
-            do
-            {
-                var brightness:Number = 0xff - ( 0xff * surfaceSizeRange.getRelativePosFromValue( evo.surfaceSize ) );
-                var color:uint = ( brightness << 16 ) | ( brightness << 8 ) | brightness;
-
-                result.fillRect( new Rectangle( evo.x, evo.y, evo.width, evo.height ), color );
-
-                evo = CellEvolver( evo.next );
-            }
-            while ( evo );
-
-            result.applyFilter( result, result.rect, new Point( 0, 0 ), new BlurFilter( 60, 60, BitmapFilterQuality.HIGH ) );
-
-            return result;
-        }
-
-
-        public function getXML():XML
-        {
-            var xml:XML = <root />;
-            var evo:ILinkedEvolver = firstEvo;
-
-            do
-            {
-                xml.appendChild( evo.genome.toXML() );
-
-                evo = evo.next;
-            }
-            while ( evo );
-
-            return xml;
-        }
-
-
         override protected function createEvo():IBitmapEvolver
         {
             var evo:CellEvolver = new CellEvolver( sourceBitmapData.width, sourceBitmapData.height, _minSurfaceSize );
@@ -263,6 +202,70 @@ package test.evo.cell
             return newPopulationFitness;
         }
 
+
+        public function drawComplexityMap():BitmapData
+        {
+            var result:BitmapData = new BitmapData( sourceBitmapData.width, sourceBitmapData.height, false );
+
+            var minSurfaceSize:Number = _cellWidth * _cellHeight;
+            var maxSurfaceSize:Number = 0;
+
+            var evo:CellEvolver;
+
+            evo = CellEvolver( firstEvo );
+            do
+            {
+                var evoSurfaceSize:Number = evo.surfaceSize;
+
+                if ( evoSurfaceSize < minSurfaceSize )
+                    minSurfaceSize = evoSurfaceSize;
+
+                if ( evoSurfaceSize > maxSurfaceSize )
+                    maxSurfaceSize = evoSurfaceSize;
+
+                evo = CellEvolver( evo.next );
+            }
+            while ( evo );
+
+            var surfaceSizeRange:Range = new Range( minSurfaceSize, maxSurfaceSize );
+
+            evo = CellEvolver( firstEvo );
+            do
+            {
+                var brightness:Number = 0xff - ( 0xff * surfaceSizeRange.getRelativePosFromValue( evo.surfaceSize ) );
+                var color:uint = ( brightness << 16 ) | ( brightness << 8 ) | brightness;
+
+                result.fillRect( new Rectangle( evo.x, evo.y, evo.width, evo.height ), color );
+
+                evo = CellEvolver( evo.next );
+            }
+            while ( evo );
+
+            result.applyFilter( result, result.rect, new Point( 0, 0 ), new BlurFilter( 60, 60, BitmapFilterQuality.HIGH ) );
+
+            return result;
+        }
+
+
+        public function getCenterPointXML():XML
+        {
+            var xml:XML = <root />;
+            var evo:CellEvolver = firstEvo as CellEvolver;
+
+            do
+            {
+                var centerX:Number = evo.x + evo.width  * 0.5;
+                var centerY:Number = evo.y + evo.height * 0.5;
+
+                var node:XML = <item x={centerX} y={centerY} surfaceSize={evo.surfaceSize} />;
+                xml.appendChild( node );
+
+                evo = evo.next as CellEvolver;
+            }
+            while ( evo );
+
+            return xml;
+        }
 
         // ____________________________________________________________________________________________________
         // PRIVATE
