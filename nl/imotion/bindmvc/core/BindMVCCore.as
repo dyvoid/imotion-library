@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT license
  *
- * Copyright (c) 2009-2011 Pieter van de Sluis
+ * Copyright (c) 2009-2013 Pieter van de Sluis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -73,16 +73,19 @@ package nl.imotion.bindmvc.core
         }
 
 
-        public function startup( base:DisplayObject ):void
+        public function startup( base:DisplayObject, useAutoBinding:Boolean = true ):void
         {
             if ( _isStarted )
             {
                 throw new Error( "BindMVCCore has already been started." );
             }
 
-            base.addEventListener( Event.ADDED_TO_STAGE, 	 addedToStageHandler, true );
-            base.addEventListener( Event.REMOVED_FROM_STAGE, removedFromStageHandler, true );
-
+            if ( useAutoBinding )
+            {
+                base.addEventListener( Event.ADDED_TO_STAGE, 	 addedToStageHandler, true );
+                base.addEventListener( Event.REMOVED_FROM_STAGE, removedFromStageHandler, true );
+            }
+            
             _isStarted = true;
         }
 

@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT license
  *
- * Copyright (c) 2009-2011 Pieter van de Sluis
+ * Copyright (c) 2009-2013 Pieter van de Sluis
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,6 @@
 
 package nl.imotion.evo.genes
 {
-    import flash.sampler._getInvocationCount;
-
 
     /**
      * @author Pieter van de Sluis
