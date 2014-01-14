@@ -28,7 +28,6 @@ package nl.imotion.evo.evolvers
 {
     import flash.display.DisplayObject;
 
-    import test.evo.scribbler.*;
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.Sprite;
